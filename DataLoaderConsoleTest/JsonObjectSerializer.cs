@@ -11,14 +11,6 @@ namespace DataLoaderConsoleTest
     {
         public override string FileFormat { get; } = ".json";
 
-        public static readonly JsonSerializerOptions DefaultOptions = new JsonSerializerOptions
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true,
-        };
-
         private readonly JsonSerializerOptions jsonSerializerOptions;
 
         public JsonObjectSerializer(JsonSerializerOptions jsonSerializerOptions = null)
@@ -47,7 +39,7 @@ namespace DataLoaderConsoleTest
             JsonSerializer.Serialize(fStream, obj, jsonSerializerOptions);
         }
 
-        public override async void SerializeAsync<T>(T obj, string fileName)
+        public override async Task SerializeAsync<T>(T obj, string fileName)
         {
             using var fStream = new FileStream(GetFileName(fileName),
                 FileMode.Create, FileAccess.Write, FileShare.None);

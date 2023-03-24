@@ -9,7 +9,7 @@ namespace DataLoaderConsoleTest
         public abstract T Deserialize<T>(string fileName);
         public abstract Task<T> DeserializeAsync<T>(string fileName);
         public abstract void Serialize<T>(T obj, string fileName);
-        public abstract void SerializeAsync<T>(T obj, string fileName);
+        public abstract Task SerializeAsync<T>(T obj, string fileName);
 
         protected string GetFileName(string fileName)
         {
