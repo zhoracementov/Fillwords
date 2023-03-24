@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32901.82
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilwordsWPF", "FilwordsWPF\FilwordsWPF.csproj", "{896510A9-04D3-4F5E-BB07-187B23F3597F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D8C4F4A9-E4D6-4E1A-91E2-DFA7F259E03F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLoaderConsoleTest", "DataLoaderConsoleTest\DataLoaderConsoleTest.csproj", "{7B97E4D5-7C78-4C69-A796-4F98A65D735E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{896510A9-04D3-4F5E-BB07-187B23F3597F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{896510A9-04D3-4F5E-BB07-187B23F3597F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{896510A9-04D3-4F5E-BB07-187B23F3597F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{896510A9-04D3-4F5E-BB07-187B23F3597F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B97E4D5-7C78-4C69-A796-4F98A65D735E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B97E4D5-7C78-4C69-A796-4F98A65D735E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B97E4D5-7C78-4C69-A796-4F98A65D735E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B97E4D5-7C78-4C69-A796-4F98A65D735E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7B97E4D5-7C78-4C69-A796-4F98A65D735E} = {D8C4F4A9-E4D6-4E1A-91E2-DFA7F259E03F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A5A8BD6-9804-431C-A41A-CF786735CB0B}
+	EndGlobalSection
+EndGlobal
