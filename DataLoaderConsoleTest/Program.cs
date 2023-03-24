@@ -2,11 +2,13 @@
 
 namespace DataLoaderConsoleTest
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            IObjectSerializer jsonObjectSerializer = new JsonObjectSerializer();
+            Console.WriteLine(jsonObjectSerializer.GetType().FullName);
+            Console.ReadKey();
         }
     }
 }
