@@ -21,7 +21,7 @@ namespace DataLoaderConsoleTest.Load
         private readonly JsonObjectSerializer json;
 
         public TDataOutput Data { get; private set; }
-        public override bool IsLoaded => Data != null && (int)Data.GetType().GetProperty("Count").GetValue(Data) > 0;
+        public override bool IsLoaded => Data?.Count > 0;
 
         public JsonWebLoader(string url, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
         {
