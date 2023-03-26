@@ -17,7 +17,9 @@ namespace DataLoaderConsoleTest
 
             loader.WebDownloadDataAsync()
                 .ContinueWith(x => loader.DeserializeDataFromFileAsync()
-                .ContinueWith(x => Print(new WordInfoDefinitionConverter((IDictionary<string, WordInfo>)loader.Data).Convert())));
+                .ContinueWith(x =>
+                Print(new WordInfoDefinitionConverter((IDictionary<string, WordInfo>)loader.Data).Convert()))
+                .ContinueWith(x => Console.WriteLine(loader.IsLoaded)));
 
             Console.ReadKey();
         }

@@ -23,7 +23,7 @@ namespace DataLoaderConsoleTest.Load
         private readonly JsonObjectSerializer json;
 
         public object Data { get; private set; }
-        public override bool IsLoaded => (int)OutputType.GetProperty("Count").GetValue(Data) > 0;
+        public override bool IsLoaded => Data != null && (int)OutputType.GetProperty("Count").GetValue(Data) > 0;
         public override Type OutputType { get; }
 
         public JsonWebLoader(string url, Type type, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
