@@ -1,6 +1,4 @@
-﻿using DataLoaderConsoleTest.Data;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -10,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataLoaderConsoleTest.Load
 {
-    internal class JsonWebLoader : WebDataLoader
+    internal class JsonWebLoader<TDataOutput> : WebDataLoader where TDataOutput : ICollection
     {
         public static readonly JsonSerializerOptions DefaultOptions = new JsonSerializerOptions
         {
@@ -22,22 +20,20 @@ namespace DataLoaderConsoleTest.Load
 
         private readonly JsonObjectSerializer json;
 
-        public object Data { get; private set; }
-        public override bool IsLoaded => Data != null && (int)OutputType.GetProperty("Count").GetValue(Data) > 0;
-        public override Type OutputType { get; }
+        public TDataOutput Data { get; private set; }
+        public override bool IsLoaded => Data != null && (int)Data.GetType().GetProperty("Count").GetValue(Data) > 0;
 
-        public JsonWebLoader(string url, Type type, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
+        public JsonWebLoader(string url, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
         {
             URL = url;
             OutputFileName = outputFileName;
-            OutputType = type;
 
             json = new JsonObjectSerializer(jsonSerializerOptions ?? DefaultOptions);
         }
 
         public override async Task DeserializeDataFromFileAsync(string fileName = null)
         {
-            Data = await json.DeserializeAsync<Dictionary<string, WordInfo>>(fileName ?? OutputFileName);
+            Data = await json.DeserializeAsync<TDataOutput>(fileName ?? OutputFileName);
         }
 
         public override async Task WebDownloadDataAsync()

@@ -10,7 +10,6 @@ namespace DataLoaderConsoleTest.Load
         public string URL { get; protected set; }
         public string OutputFileName { get; protected set; }
         public abstract bool IsLoaded { get; }
-        public abstract Type OutputType { get; }
 
         public abstract Task WebDownloadDataAsync();
         public abstract Task DeserializeDataFromFileAsync(string fileName = null);
