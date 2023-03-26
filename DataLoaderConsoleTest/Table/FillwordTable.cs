@@ -1,8 +1,8 @@
 ﻿namespace DataLoaderConsoleTest.Table
 {
-    internal class FilwordTable
+    internal class FillwordTable
     {
         public Point[,] Points { get; set; }
-        public FilwordTableItem[] WordNodes { get; set; }
+        public FillwordTableItem[] WordNodes { get; set; }
     }
 }

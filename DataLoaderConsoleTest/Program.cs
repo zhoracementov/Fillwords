@@ -1,6 +1,7 @@
 ﻿using DataLoaderConsoleTest.Data;
 using DataLoaderConsoleTest.Load;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace DataLoaderConsoleTest
@@ -23,7 +24,7 @@ namespace DataLoaderConsoleTest
             Console.ReadKey();
         }
 
-        private static void Print(IDictionary<string, WordInfo> data)
+        private static void Print(IEnumerable data)
         {
             Console.WriteLine(string.Join(Environment.NewLine, data));
         }
