@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using DataLoaderConsoleTest.Data;
+using System.Collections.Generic;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Table
 {
     internal class FilwordTableItem
     {

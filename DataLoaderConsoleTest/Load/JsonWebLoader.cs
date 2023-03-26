@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using DataLoaderConsoleTest.Data;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -6,9 +8,9 @@ using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Threading.Tasks;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Load
 {
-    internal class JsonRusWordsLoader : WebDataLoader
+    internal class JsonWebLoader : WebDataLoader
     {
         public static readonly JsonSerializerOptions DefaultOptions = new JsonSerializerOptions
         {
@@ -20,13 +22,15 @@ namespace DataLoaderConsoleTest
 
         private readonly JsonObjectSerializer json;
 
-        public Dictionary<string, WordInfo> Data { get; private set; }
-        public override bool IsLoaded => Data?.Count > 0;
+        public object Data { get; private set; }
+        public override bool IsLoaded => (int)OutputType.GetProperty("Count").GetValue(Data) > 0;
+        public override Type OutputType { get; }
 
-        public JsonRusWordsLoader(string url, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
+        public JsonWebLoader(string url, Type type, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
         {
             URL = url;
             OutputFileName = outputFileName;
+            OutputType = type;
 
             json = new JsonObjectSerializer(jsonSerializerOptions ?? DefaultOptions);
         }

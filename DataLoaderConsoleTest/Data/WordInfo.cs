@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Data
 {
     internal class WordInfo
     {

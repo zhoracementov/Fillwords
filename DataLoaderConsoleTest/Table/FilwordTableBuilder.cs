@@ -1,7 +1,8 @@
-﻿using System;
+﻿using DataLoaderConsoleTest.Data;
+using System;
 using System.Collections.Generic;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Table
 {
     class FilwordTableBuilder
     {
@@ -17,7 +18,7 @@ namespace DataLoaderConsoleTest
             throw new NotImplementedException();
         }
 
-        public FilwordTable Create(params string[] keys)
+        public FilwordTable Create(int size, params string[] keys)
         {
             throw new NotImplementedException();
         }

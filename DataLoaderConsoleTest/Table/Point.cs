@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Table
 {
     internal class Point
     {

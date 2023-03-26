@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DataLoaderConsoleTest
+﻿namespace DataLoaderConsoleTest.Table
 {
     internal class FilwordTable
     {

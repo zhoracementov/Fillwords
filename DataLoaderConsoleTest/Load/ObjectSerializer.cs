@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Load
 {
     internal abstract class ObjectSerializer : IObjectSerializer
     {

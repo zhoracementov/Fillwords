@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Data
 {
     internal class WordInfoDefinitionConverter
     {
@@ -69,7 +69,7 @@ namespace DataLoaderConsoleTest
 
                     var valueFound = valueMatches[indexInSplit - 1].Value;
                     var valueNew = valueOld.Definition.Replace($"({indexInSplit}*)", valueFound);
-                    
+
                     data[keyLinked] = new WordInfo(valueNew, valueOld.AnswerIsProbablyNotNoun, valueOld.AnswerNeedToIncludePlural);
 
                     Console.WriteLine(valueFound);

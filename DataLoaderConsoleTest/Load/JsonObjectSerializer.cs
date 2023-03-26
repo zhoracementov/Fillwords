@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Load
 {
     internal class JsonObjectSerializer : ObjectSerializer
     {

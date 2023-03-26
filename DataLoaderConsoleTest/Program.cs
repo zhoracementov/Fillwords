@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DataLoaderConsoleTest.Data;
+using DataLoaderConsoleTest.Load;
+using System;
 using System.Collections.Generic;
 
 namespace DataLoaderConsoleTest
@@ -7,14 +9,15 @@ namespace DataLoaderConsoleTest
     {
         private const string FileName = "data2.json";
         private const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
+        private static readonly Type Type = typeof(Dictionary<string, WordInfo>);
 
         private static void Main()
         {
-            var loader = new JsonRusWordsLoader(URL, FileName);
+            var loader = new JsonWebLoader(URL, Type, FileName);
 
             loader.WebDownloadDataAsync()
                 .ContinueWith(x => loader.DeserializeDataFromFileAsync()
-                .ContinueWith(x => Print(new WordInfoDefinitionConverter(loader.Data).Convert())));
+                .ContinueWith(x => Print(new WordInfoDefinitionConverter((IDictionary<string, WordInfo>)loader.Data).Convert())));
 
             Console.ReadKey();
         }
