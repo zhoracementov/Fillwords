@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DataLoaderConsoleTest
 {
@@ -11,12 +12,16 @@ namespace DataLoaderConsoleTest
         {
             var loader = new JsonRusWordsLoader(URL, FileName);
 
-            loader.LoadDataAsync()
-                .ContinueWith(x => loader.SerializeDataToFileAsync()).Wait();
-
-            Console.WriteLine(string.Join(Environment.NewLine, loader.Data));
+            loader.WebDownloadDataAsync()
+                .ContinueWith(x => loader.DeserializeDataFromFileAsync()
+                .ContinueWith(x => Print(new WordInfoDefinitionConverter(loader.Data).Convert())));
 
             Console.ReadKey();
+        }
+
+        private static void Print(IDictionary<string, WordInfo> data)
+        {
+            Console.WriteLine(string.Join(Environment.NewLine, data));
         }
     }
 }

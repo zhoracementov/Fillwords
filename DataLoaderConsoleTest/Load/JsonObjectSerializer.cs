@@ -1,17 +1,14 @@
 ﻿using System.IO;
-using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.Unicode;
 using System.Threading.Tasks;
 
 namespace DataLoaderConsoleTest
 {
     internal class JsonObjectSerializer : ObjectSerializer
     {
-        public override string FileFormat { get; } = ".json";
-
         private readonly JsonSerializerOptions jsonSerializerOptions;
+
+        public override string FileFormat => ".json";
 
         public JsonObjectSerializer(JsonSerializerOptions jsonSerializerOptions = null)
         {

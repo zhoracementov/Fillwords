@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataLoaderConsoleTest
 {
-    internal class JsonRusWordsLoader : DataLoader
+    internal class JsonRusWordsLoader : WebDataLoader
     {
         public static readonly JsonSerializerOptions DefaultOptions = new JsonSerializerOptions
         {
@@ -18,8 +18,9 @@ namespace DataLoaderConsoleTest
             WriteIndented = true,
         };
 
+        private readonly JsonObjectSerializer json;
+
         public Dictionary<string, WordInfo> Data { get; private set; }
-        public JsonObjectSerializer Json { get; private set; }
         public override bool IsLoaded => Data?.Count > 0;
 
         public JsonRusWordsLoader(string url, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
@@ -27,22 +28,23 @@ namespace DataLoaderConsoleTest
             URL = url;
             OutputFileName = outputFileName;
 
-            Json = new JsonObjectSerializer(jsonSerializerOptions ?? DefaultOptions);
+            json = new JsonObjectSerializer(jsonSerializerOptions ?? DefaultOptions);
         }
 
-        public override async Task DeserializeDataFromFileAsync()
+        public override async Task DeserializeDataFromFileAsync(string fileName = null)
         {
-            Data = await Json.DeserializeAsync<Dictionary<string, WordInfo>>(OutputFileName);
+            Data = await json.DeserializeAsync<Dictionary<string, WordInfo>>(fileName ?? OutputFileName);
         }
 
-        public override async Task LoadDataAsync()
+        public override async Task WebDownloadDataAsync()
         {
-            await new WebClient().DownloadFileTaskAsync(URL, OutputFileName);
+            var client = new WebClient();
+            await client.DownloadFileTaskAsync(URL, OutputFileName);
         }
 
         public override async void SerializeDataToFileAsync(string fileName = null)
         {
-            await Json.SerializeAsync(Data, fileName ?? OutputFileName);
+            await json.SerializeAsync(Data, fileName ?? OutputFileName);
         }
     }
 }
