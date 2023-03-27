@@ -19,10 +19,8 @@ namespace DataLoaderConsoleTest.Table
             var table = new Node<Point>[size, size];
             var (min, max) = GetWordsLengthRange();
 
-            max = Math.Min(max, size * size);
-            min = Math.Min(min + 1, size * size);
-
-            max /= (int)FillwordDifficulty.Hard + 1 - (int)difficulty.GetFactorInverse();
+            max = Math.Min(max - 1, size * size);
+            min = Math.Min(min, size * size);
 
             var rnd = new Random(Environment.TickCount);
 
@@ -30,9 +28,11 @@ namespace DataLoaderConsoleTest.Table
             {
                 var currNode = new Node<Point> { Value = currPoint };
                 table[currPoint.X, currPoint.Y] = currNode;
-                var nextLength = rnd.Next(min, max + 1);
+                var nextLength = rnd.Next(min, max);
 
-                while (nextLength >= min && TryGetRandomAroundPoint(currPoint, out currPoint, rnd, pnt => table.IsInRange(pnt) && table.ElementAt(pnt) == null))
+                bool IsCurrect = false;
+
+                while (nextLength >= min && TryGetRandomAroundPoint(currPoint, out currPoint, rnd, pnt => table.IsInRange(pnt) && table.GetAt(pnt) == null))
                 {
                     var nextNode = new Node<Point> { Value = currPoint, Previous = currNode };
                     currNode.Next = nextNode;
@@ -40,53 +40,100 @@ namespace DataLoaderConsoleTest.Table
 
                     table[currPoint.X, currPoint.Y] = currNode;
                     nextLength--;
+                    IsCurrect = true;
                 }
 
-                //var memory = new bool[size, size];
-                //var output = new string[size, size];
-                //var itemNumber = 0;
+                if (!IsCurrect)
+                {
+                    Console.WriteLine("Проблемная нода: [{0},{1}]", currPoint.X, currPoint.Y);
+                    var around = GetPointsAround(currPoint, pnt =>
+                    {
+                        if (!table.IsInRange(pnt)) return false;
+                        var node = table.GetAt(pnt);
+                        return node != null && (node.Next == null || node.Previous == null);
+                    });
 
-                //for (int i = 0; i < size; i++)
-                //{
-                //    for (int j = 0; j < size; j++)
-                //    {
-                //        if (memory[i, j])
-                //            continue;
+                    if (around.Length == 0)
+                    {
+                        Console.WriteLine("ЭТА НОДА НЕ РАЗРЕШИМА!!!");
+                        TryGetRandomAroundPoint(currPoint, out var killRndPoint, rnd, table.IsInRange);
 
-                //        var node = table[i, j];
+                        table.SetAt(currPoint, null);
 
-                //        if (node == null)
-                //            continue;
+                        var destroyNode = table.GetAt(killRndPoint);
 
-                //        while (node.Previous != null)
-                //        {
-                //            node = node.Previous;
-                //        }
+                        while (destroyNode.Previous != null)
+                        {
+                            destroyNode = destroyNode.Previous;
+                        }
 
-                //        var nodeIndex = 1;
-                //        while (node != null)
-                //        {
-                //            var (x, y) = (node.Value.X, node.Value.Y);
-                //            memory[x, y] = true;
-                //            output[x, y] = $"[{itemNumber}|{nodeIndex++}]";
+                        while (destroyNode != null)
+                        {
+                            table.SetAt(destroyNode.Value, null);
+                            destroyNode = destroyNode.Next;
+                        }
+                    }
+                    else
+                    {
+                        var aroundNode = table.GetAt(around.PickRandom(rnd));
+                        if (aroundNode.Previous == null)
+                        {
+                            aroundNode.Previous = currNode;
+                            currNode.Next = aroundNode;
+                        }
+                        else if (aroundNode.Next == null)
+                        {
+                            aroundNode.Next = currNode;
+                            currNode.Previous = aroundNode;
+                        }
+                    }
+                }
 
-                //            node = node.Next;
-                //        }
-                //        itemNumber++;
-                //    }
-                //}
+                var memory = new bool[size, size];
+                var output = new string[size, size];
+                var itemNumber = 0;
 
-                //for (int i = 0; i < size; i++)
-                //{
-                //    for (int j = 0; j < size; j++)
-                //    {
-                //        Console.Write(output[i, j] + "\t");
-                //    }
-                //    Console.WriteLine();
-                //}
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 0; j < size; j++)
+                    {
+                        if (memory[i, j])
+                            continue;
 
-                //Console.WriteLine("-------------------------------------------------");
-                //Console.WriteLine("-------------------------------------------------");
+                        var node = table[i, j];
+
+                        if (node == null)
+                            continue;
+
+                        while (node.Previous != null)
+                        {
+                            node = node.Previous;
+                        }
+
+                        var nodeIndex = 0;
+                        while (node != null)
+                        {
+                            var (x, y) = (node.Value.X, node.Value.Y);
+                            memory[x, y] = true;
+                            output[x, y] = $"[{itemNumber}|{nodeIndex++}]";
+
+                            node = node.Next;
+                        }
+                        itemNumber++;
+                    }
+                }
+
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 0; j < size; j++)
+                    {
+                        Console.Write(output[i, j] + "\t");
+                    }
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("-----------------------------------------------------------------------------------------------------");
+                Console.WriteLine("-----------------------------------------------------------------------------------------------------");
             }
 
             throw new NotImplementedException();
@@ -122,7 +169,7 @@ namespace DataLoaderConsoleTest.Table
         {
             var nextPoints = GetPointsAround(point, predicate);
             var tryPick = nextPoints.Length > 0;
-            output = tryPick ? nextPoints.PickRandom(random) : null;
+            output = tryPick ? nextPoints.PickRandom(random) : point;
             return tryPick;
         }
 

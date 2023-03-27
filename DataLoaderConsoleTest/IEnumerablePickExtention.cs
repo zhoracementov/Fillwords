@@ -73,9 +73,14 @@ namespace DataLoaderConsoleTest
             }
         }
 
-        public static T ElementAt<T>(this T[,] matrix, Point point)
+        public static T GetAt<T>(this T[,] matrix, Point point)
         {
             return matrix[point.X, point.Y];
+        }
+
+        public static void SetAt<T>(this T[,] matrix, Point point, T value)
+        {
+            matrix[point.X, point.Y] = value;
         }
 
         public static bool IsInRange<T>(this T[,] matrix, Point point)
