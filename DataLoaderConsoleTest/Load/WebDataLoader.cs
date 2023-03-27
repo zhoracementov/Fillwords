@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -11,7 +10,7 @@ namespace DataLoaderConsoleTest.Load
         public string OutputFileName { get; protected set; }
         public abstract bool IsLoaded { get; }
 
-        public abstract Task WebDownloadDataAsync();
+        public abstract Task WebDownloadDataAsync(string fileName = null);
         public abstract Task DeserializeDataFromFileAsync(string fileName = null);
         public abstract void SerializeDataToFileAsync(string fileName = null);
 

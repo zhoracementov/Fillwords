@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataLoaderConsoleTest.Load
 {
-    internal class JsonWebLoader<TDataOutput> : WebDataLoader where TDataOutput : ICollection
+    internal class JsonWebDataLoader<TCollectionOut> : WebDataLoader where TCollectionOut : ICollection
     {
         public static readonly JsonSerializerOptions DefaultOptions = new JsonSerializerOptions
         {
@@ -20,10 +20,10 @@ namespace DataLoaderConsoleTest.Load
 
         private readonly JsonObjectSerializer json;
 
-        public TDataOutput Data { get; private set; }
+        public TCollectionOut Data { get; private set; }
         public override bool IsLoaded => Data?.Count > 0;
 
-        public JsonWebLoader(string url, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
+        public JsonWebDataLoader(string url, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
         {
             URL = url;
             OutputFileName = outputFileName;
@@ -33,13 +33,21 @@ namespace DataLoaderConsoleTest.Load
 
         public override async Task DeserializeDataFromFileAsync(string fileName = null)
         {
-            Data = await json.DeserializeAsync<TDataOutput>(fileName ?? OutputFileName);
+            Data = await json.DeserializeAsync<TCollectionOut>(fileName ?? OutputFileName);
         }
 
-        public override async Task WebDownloadDataAsync()
+        public async Task LoadData(string fileName = null)
         {
-            var client = new WebClient();
-            await client.DownloadFileTaskAsync(URL, OutputFileName);
+            if (!CheckDowloadedFile())
+                await WebDownloadDataAsync(fileName);
+
+            await DeserializeDataFromFileAsync(fileName);
+        }
+
+        public override async Task WebDownloadDataAsync(string fileName = null)
+        {
+            using var client = new WebClient();
+            await client.DownloadFileTaskAsync(URL, fileName ?? OutputFileName);
         }
 
         public override async void SerializeDataToFileAsync(string fileName = null)

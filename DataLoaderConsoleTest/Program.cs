@@ -1,7 +1,7 @@
 ﻿using DataLoaderConsoleTest.Data;
 using DataLoaderConsoleTest.Load;
+using DataLoaderConsoleTest.Table;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace DataLoaderConsoleTest
@@ -11,22 +11,27 @@ namespace DataLoaderConsoleTest
         private const string FileName = "data2.json";
         private const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
 
+        private static IDictionary<string, WordInfo> data;
+
         private static void Main()
         {
-            var loader = new JsonWebLoader<Dictionary<string, WordInfo>>(URL, FileName);
+            var loader = new JsonWebDataLoader<Dictionary<string, WordInfo>>(URL, FileName);
+            loader.LoadData().Wait();
 
-            loader.WebDownloadDataAsync()
-                .ContinueWith(x => loader.DeserializeDataFromFileAsync()
-                .ContinueWith(x =>
-                Print(new WordInfoDefinitionConverter(loader.Data).Convert()))
-                .ContinueWith(x => Console.WriteLine(loader.IsLoaded)));
+            var table = new FillwordTableBuilder(loader.Data)
+                .CreateRandomly(5, FillwordDifficulty.Easy);
 
             Console.ReadKey();
         }
 
-        private static void Print(IEnumerable data)
+        private static IDictionary<string, WordInfo> DataConvert(IDictionary<string, WordInfo> data)
         {
-            Console.WriteLine(string.Join(Environment.NewLine, data));
+            return new WordInfoDefinitionConverter(data).Convert();
+        }
+
+        private static void Print<T>(IEnumerable<T> data)
+        {
+            Console.WriteLine(string.Join<T>(Environment.NewLine, data));
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -37,8 +36,8 @@ namespace DataLoaderConsoleTest.Data
                     var keyLinked = groups["key"].Value;
                     var indexInSplit = int.Parse(groups["index"].Value);
 
-                    Console.WriteLine("Слово: {0}", item.Key);
-                    Console.WriteLine("Из какого слова брать: {0}. Определение номер: {1}", keyLinked, indexInSplit);
+                    //Console.WriteLine("Слово: {0}", item.Key);
+                    //Console.WriteLine("Из какого слова брать: {0}. Определение номер: {1}", keyLinked, indexInSplit);
 
                     if (string.IsNullOrEmpty(keyLinked))
                         continue;
@@ -72,10 +71,9 @@ namespace DataLoaderConsoleTest.Data
 
                     data[keyLinked] = new WordInfo(valueNew, valueOld.AnswerIsProbablyNotNoun, valueOld.AnswerNeedToIncludePlural);
 
-                    Console.WriteLine(valueFound);
-                    Console.WriteLine(valueNew);
-
-                    Console.WriteLine();
+                    //Console.WriteLine(valueFound);
+                    //Console.WriteLine(valueNew);
+                    //Console.WriteLine();
                 }
             }
 
