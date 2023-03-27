@@ -72,5 +72,20 @@ namespace DataLoaderConsoleTest
                 }
             }
         }
+
+        public static T ElementAt<T>(this T[,] matrix, Point point)
+        {
+            return matrix[point.X, point.Y];
+        }
+
+        public static bool IsInRange<T>(this T[,] matrix, Point point)
+        {
+            return matrix.IsInRange(point.X, point.Y);
+        }
+
+        public static bool IsInRange<T>(this T[,] matrix, int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < matrix.GetLength(0) && y < matrix.GetLength(1);
+        }
     }
 }

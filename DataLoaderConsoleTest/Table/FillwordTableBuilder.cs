@@ -20,7 +20,9 @@ namespace DataLoaderConsoleTest.Table
             var (min, max) = GetWordsLengthRange();
 
             max = Math.Min(max, size * size);
-            min = Math.Min(min, size * size);
+            min = Math.Min(min + 1, size * size);
+
+            max /= (int)FillwordDifficulty.Hard + 1 - (int)difficulty.GetFactorInverse();
 
             var rnd = new Random(Environment.TickCount);
 
@@ -30,7 +32,7 @@ namespace DataLoaderConsoleTest.Table
                 table[currPoint.X, currPoint.Y] = currNode;
                 var nextLength = rnd.Next(min, max + 1);
 
-                while (nextLength >= min && TryGetRandomAroundPoint(currPoint, out currPoint, rnd, pnt => IsInRange(pnt, table) && table[pnt.X, pnt.Y] == null))
+                while (nextLength >= min && TryGetRandomAroundPoint(currPoint, out currPoint, rnd, pnt => table.IsInRange(pnt) && table.ElementAt(pnt) == null))
                 {
                     var nextNode = new Node<Point> { Value = currPoint, Previous = currNode };
                     currNode.Next = nextNode;
@@ -39,62 +41,58 @@ namespace DataLoaderConsoleTest.Table
                     table[currPoint.X, currPoint.Y] = currNode;
                     nextLength--;
                 }
+
+                //var memory = new bool[size, size];
+                //var output = new string[size, size];
+                //var itemNumber = 0;
+
+                //for (int i = 0; i < size; i++)
+                //{
+                //    for (int j = 0; j < size; j++)
+                //    {
+                //        if (memory[i, j])
+                //            continue;
+
+                //        var node = table[i, j];
+
+                //        if (node == null)
+                //            continue;
+
+                //        while (node.Previous != null)
+                //        {
+                //            node = node.Previous;
+                //        }
+
+                //        var nodeIndex = 1;
+                //        while (node != null)
+                //        {
+                //            var (x, y) = (node.Value.X, node.Value.Y);
+                //            memory[x, y] = true;
+                //            output[x, y] = $"[{itemNumber}|{nodeIndex++}]";
+
+                //            node = node.Next;
+                //        }
+                //        itemNumber++;
+                //    }
+                //}
+
+                //for (int i = 0; i < size; i++)
+                //{
+                //    for (int j = 0; j < size; j++)
+                //    {
+                //        Console.Write(output[i, j] + "\t");
+                //    }
+                //    Console.WriteLine();
+                //}
+
+                //Console.WriteLine("-------------------------------------------------");
+                //Console.WriteLine("-------------------------------------------------");
             }
-
-            //var memory = new bool[size, size];
-            //var output = new string[size, size];
-            //var itemNumber = 1;
-
-            //for (int i = 0; i < size; i++)
-            //{
-            //    for (int j = 0; j < size; j++)
-            //    {
-            //        if (memory[i, j])
-            //            continue;
-
-            //        var node = table[i, j];
-            //        while (node.Previous != null)
-            //        {
-            //            node = node.Previous;
-            //        }
-
-            //        var nodeIndex = 1;
-            //        while (node != null)
-            //        {
-            //            var (x, y) = (node.Value.X, node.Value.Y);
-            //            memory[x, y] = true;
-            //            output[x, y] = $"{itemNumber} {nodeIndex++}";
-
-            //            node = node.Next;
-            //        }
-            //        itemNumber++;
-            //    }
-            //}
-
-            //for (int i = 0; i < size; i++)
-            //{
-            //    for (int j = 0; j < size; j++)
-            //    {
-            //        Console.Write(output[i, j] + "\t");
-            //    }
-            //    Console.WriteLine();
-            //}
 
             throw new NotImplementedException();
         }
 
-        private bool TryGetRandomFreePoint(Node<Point>[,] table, out Point output, Random random = null, Func<Node<Point>, bool> predicate = default)
-        {
-            var freePoints = table
-                .WhereAt(predicate)
-                .ToArray();
-
-            var tryPick = freePoints.Length > 0;
-            output = tryPick ? freePoints.PickRandom(random) : null;
-            return tryPick;
-        }
-
-        private bool TryGetRandomAroundPoint(Point point, out Point output, Random random = null, Func<Point, bool> predicate = default)
+        private Point[] GetPointsAround(Point point, Func<Point, bool> predicate)
         {
             var offset = new (int X, int Y)[]
             {
@@ -102,7 +100,7 @@ namespace DataLoaderConsoleTest.Table
                 (1, 0), (-1, 0),
             };
 
-            var nextPoints = offset
+            return offset
                 .Select(offsetCoord => new Point
                 {
                     X = point.X + offsetCoord.X,
@@ -110,20 +108,22 @@ namespace DataLoaderConsoleTest.Table
                 })
                 .Where(predicate)
                 .ToArray();
+        }
 
-            var tryPick = nextPoints.Length > 0;
-            output = tryPick ? nextPoints.PickRandom(random) : null;
+        private bool TryGetRandomFreePoint(Node<Point>[,] table, out Point output, Random random = null, Func<Node<Point>, bool> predicate = default)
+        {
+            var freePoints = table.WhereAt(predicate).ToArray();
+            var tryPick = freePoints.Length > 0;
+            output = tryPick ? freePoints.PickRandom(random) : null;
             return tryPick;
         }
 
-        private bool IsInRange(Point point, Node<Point>[,] table)
+        private bool TryGetRandomAroundPoint(Point point, out Point output, Random random = null, Func<Point, bool> predicate = default)
         {
-            return IsInRange(point.X, point.Y, table);
-        }
-
-        private bool IsInRange(int x, int y, Node<Point>[,] table)
-        {
-            return x >= 0 && y >= 0 && x < table.GetLength(0) && y < table.GetLength(1);
+            var nextPoints = GetPointsAround(point, predicate);
+            var tryPick = nextPoints.Length > 0;
+            output = tryPick ? nextPoints.PickRandom(random) : null;
+            return tryPick;
         }
 
         private (int Min, int Max) GetWordsLengthRange()

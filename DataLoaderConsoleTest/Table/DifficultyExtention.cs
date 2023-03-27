@@ -6,5 +6,10 @@
         {
             return (double)(int)difficulty / (int)FillwordDifficulty.Hard;
         }
+
+        public static double GetFactorInverse(this FillwordDifficulty difficulty)
+        {
+            return (double)(int)FillwordDifficulty.Hard / (int)difficulty;
+        }
     }
 }
