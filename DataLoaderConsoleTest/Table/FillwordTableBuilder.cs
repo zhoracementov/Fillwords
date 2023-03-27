@@ -24,24 +24,77 @@ namespace DataLoaderConsoleTest.Table
 
             var rnd = new Random(Environment.TickCount);
 
-            var countPoint = size * size;
-            var countIteratedPoints = 0;
+            while (TryGetRandomFreePoint(table, out var currPoint, rnd, pnt => pnt == null))
+            {
+                var currNode = new Node<Point> { Value = currPoint };
+                table[currPoint.X, currPoint.Y] = currNode;
+                var nextLength = rnd.Next(min, max + 1);
+
+                while (nextLength >= min && TryGetRandomAroundPoint(currPoint, out currPoint, rnd, pnt => IsInRange(pnt, table) && table[pnt.X, pnt.Y] == null))
+                {
+                    var nextNode = new Node<Point> { Value = currPoint, Previous = currNode };
+                    currNode.Next = nextNode;
+                    currNode = nextNode;
+
+                    table[currPoint.X, currPoint.Y] = currNode;
+                    nextLength--;
+                }
+            }
+
+            //var memory = new bool[size, size];
+            //var output = new string[size, size];
+            //var itemNumber = 1;
+
+            //for (int i = 0; i < size; i++)
+            //{
+            //    for (int j = 0; j < size; j++)
+            //    {
+            //        if (memory[i, j])
+            //            continue;
+
+            //        var node = table[i, j];
+            //        while (node.Previous != null)
+            //        {
+            //            node = node.Previous;
+            //        }
+
+            //        var nodeIndex = 1;
+            //        while (node != null)
+            //        {
+            //            var (x, y) = (node.Value.X, node.Value.Y);
+            //            memory[x, y] = true;
+            //            output[x, y] = $"{itemNumber} {nodeIndex++}";
+
+            //            node = node.Next;
+            //        }
+            //        itemNumber++;
+            //    }
+            //}
+
+            //for (int i = 0; i < size; i++)
+            //{
+            //    for (int j = 0; j < size; j++)
+            //    {
+            //        Console.Write(output[i, j] + "\t");
+            //    }
+            //    Console.WriteLine();
+            //}
 
             throw new NotImplementedException();
         }
 
-        private bool TryGetRandomFreePoint(Node<Point>[,] table, out Point output, Random random = null, Predicate<Point> predicate = default)
+        private bool TryGetRandomFreePoint(Node<Point>[,] table, out Point output, Random random = null, Func<Node<Point>, bool> predicate = default)
         {
             var freePoints = table
-                .Where(x => predicate(x.Value))
+                .WhereAt(predicate)
                 .ToArray();
 
             var tryPick = freePoints.Length > 0;
-            output = tryPick ? freePoints.PickRandom(random).Value : null;
+            output = tryPick ? freePoints.PickRandom(random) : null;
             return tryPick;
         }
 
-        private bool TryGetRandomAroundPoint(Point point, out Point output, Random random = null, Predicate<Point> predicate = default)
+        private bool TryGetRandomAroundPoint(Point point, out Point output, Random random = null, Func<Point, bool> predicate = default)
         {
             var offset = new (int X, int Y)[]
             {
@@ -55,7 +108,7 @@ namespace DataLoaderConsoleTest.Table
                     X = point.X + offsetCoord.X,
                     Y = point.Y + offsetCoord.Y
                 })
-                .Where(x => predicate(x))
+                .Where(predicate)
                 .ToArray();
 
             var tryPick = nextPoints.Length > 0;

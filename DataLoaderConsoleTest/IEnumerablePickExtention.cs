@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DataLoaderConsoleTest.Table;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DataLoaderConsoleTest
 {
-    public static class IEnumerablePickExtention
+    internal static class IEnumerablePickExtention
     {
         private static readonly Random rnd = new Random(Environment.TickCount);
 
@@ -15,13 +16,15 @@ namespace DataLoaderConsoleTest
 
         public static T PickRandom<T>(this IEnumerable<T> source, Random random = null, Func<T, bool> predicate = default)
         {
-            var count = source.Count();
+            var size = source.Count();
+            random ??= rnd;
+
             T output;
 
             do
             {
-                output = source.ElementAt((random ?? rnd).Next(count));
-            } while (!predicate(output));
+                output = source.ElementAt(random.Next(size));
+            } while (predicate != null && !predicate(output));
             return output;
         }
 
@@ -30,27 +33,42 @@ namespace DataLoaderConsoleTest
             return source.Where(predicate).OrderBy(x => (random ?? rnd).Next());
         }
 
-        public static bool All<T>(this T[,] matrix, Predicate<T> predicate)
+        public static IEnumerable<T> GetAsLinear<T>(this T[,] matrix)
         {
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    if (!predicate(matrix[i, j]))
-                        return false;
+                    yield return matrix[i, j];
                 }
             }
-            return true;
         }
 
-        public static IEnumerable<T> Where<T>(this T[,] matrix, Predicate<T> predicate)
+        public static bool All<T>(this T[,] matrix, Func<T, bool> predicate)
+        {
+            return matrix.GetAsLinear().All(predicate);
+        }
+
+        public static IEnumerable<TOutput> Select<TSource, TOutput>(this TSource[,] matrix, Func<TSource, TOutput> func)
+        {
+            return matrix.GetAsLinear().Select(func);
+        }
+
+        public static IEnumerable<T> Where<T>(this T[,] matrix, Func<T, bool> predicate)
+        {
+            return matrix.GetAsLinear().Where(predicate);
+        }
+
+        public static IEnumerable<Point> WhereAt<T>(this T[,] matrix, Func<T, bool> predicate)
         {
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    if (predicate(matrix[i, j]))
-                        yield return matrix[i, j];
+                    var item = matrix[i, j];
+
+                    if (predicate(item))
+                        yield return new Point { X = i, Y = j };
                 }
             }
         }

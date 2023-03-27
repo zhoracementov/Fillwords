@@ -19,7 +19,7 @@ namespace DataLoaderConsoleTest
             loader.LoadData().Wait();
 
             var table = new FillwordTableBuilder(loader.Data)
-                .CreateRandomly(5, FillwordDifficulty.Easy);
+                .CreateRandomly(5, FillwordDifficulty.Hard);
 
             Console.ReadKey();
         }

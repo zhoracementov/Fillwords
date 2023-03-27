@@ -1,4 +1,6 @@
-﻿namespace DataLoaderConsoleTest.Table
+﻿using System.Collections.Generic;
+
+namespace DataLoaderConsoleTest.Table
 {
     internal class Node<T>
     {
@@ -8,7 +10,7 @@
 
         public override string ToString()
         {
-            return $"{Value}";
+            return Value.ToString();
         }
     }
 }
