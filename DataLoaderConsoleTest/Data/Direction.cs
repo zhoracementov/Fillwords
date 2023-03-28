@@ -1,4 +1,4 @@
-﻿namespace DataLoaderConsoleTest.Table
+﻿namespace DataLoaderConsoleTest.Data
 {
     internal enum Direction
     {

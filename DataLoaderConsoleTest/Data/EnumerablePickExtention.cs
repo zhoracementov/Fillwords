@@ -1,11 +1,10 @@
-﻿using DataLoaderConsoleTest.Table;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataLoaderConsoleTest
+namespace DataLoaderConsoleTest.Data
 {
-    internal static class IEnumerablePickExtention
+    internal static class EnumerablePickExtention
     {
         private static readonly Random rnd = new Random(Environment.TickCount);
 
@@ -33,7 +32,7 @@ namespace DataLoaderConsoleTest
             return source.Where(predicate).OrderBy(x => (random ?? rnd).Next());
         }
 
-        public static IEnumerable<T> GetAsLinear<T>(this T[,] matrix)
+        public static IEnumerable<T> AsLinear<T>(this T[,] matrix)
         {
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
@@ -46,17 +45,17 @@ namespace DataLoaderConsoleTest
 
         public static bool All<T>(this T[,] matrix, Func<T, bool> predicate)
         {
-            return matrix.GetAsLinear().All(predicate);
+            return matrix.AsLinear().All(predicate);
         }
 
         public static IEnumerable<TOutput> Select<TSource, TOutput>(this TSource[,] matrix, Func<TSource, TOutput> func)
         {
-            return matrix.GetAsLinear().Select(func);
+            return matrix.AsLinear().Select(func);
         }
 
         public static IEnumerable<T> Where<T>(this T[,] matrix, Func<T, bool> predicate)
         {
-            return matrix.GetAsLinear().Where(predicate);
+            return matrix.AsLinear().Where(predicate);
         }
 
         public static IEnumerable<Point> WhereAt<T>(this T[,] matrix, Func<T, bool> predicate)

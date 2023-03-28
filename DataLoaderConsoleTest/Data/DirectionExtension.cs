@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataLoaderConsoleTest.Table
+namespace DataLoaderConsoleTest.Data
 {
     internal static class DirectionExtension
     {
