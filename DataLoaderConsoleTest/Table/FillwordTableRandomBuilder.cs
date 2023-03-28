@@ -1,17 +1,41 @@
 ﻿using DataLoaderConsoleTest.Data;
+using DataLoaderConsoleTest.Data.Extenstions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataLoaderConsoleTest.Table
 {
-    internal class FillwordTableRandomBuilder : FillwordTableBuilder
+    internal class FillwordTableRandomBuilder
     {
         private readonly Random rnd = new Random(Environment.TickCount);
 
-        public FillwordTableRandomBuilder(Difficulty difficulty, int size, int min, int max)
-            : base(difficulty, size, min, max) { }
+        private readonly Difficulty difficulty;
 
-        public override FillwordTable Build()
+        private readonly int size;
+        private readonly int min;
+        private readonly int max;
+
+        private readonly Node<Point>[,] table;
+        private readonly IDictionary<string, WordInfo> words;
+
+        public FillwordTableRandomBuilder(IDictionary<string, WordInfo> words, int size, Difficulty difficulty)
+        {
+            this.difficulty = difficulty;
+            this.words = words;
+            this.size = size;
+
+            this.table = new Node<Point>[size, size];
+
+            var (min, max) = GetWordsLengthRange();
+
+            this.min = Math.Min(min, size * size);
+            this.max = Math.Min(max - 1, size * size);
+
+            //TODO: create max len change by difficulty
+        }
+
+        public FillwordTable Build()
         {
             while (TryGetRandomFreePoint(table, out var currPoint, rnd, pnt => pnt == null))
             {
@@ -50,12 +74,10 @@ namespace DataLoaderConsoleTest.Table
                     TryGetRandomAroundPoint(currPoint, out var bindedAroundPoint, rnd, table.IsInRange);
 
                     table.SetAt(currPoint, null);
-                    var destroyNode = table.GetAt(bindedAroundPoint);
 
+                    var destroyNode = table.GetAt(bindedAroundPoint);
                     while (destroyNode.Previous != null)
-                    {
                         destroyNode = destroyNode.Previous;
-                    }
 
                     while (destroyNode != null)
                     {
@@ -79,15 +101,53 @@ namespace DataLoaderConsoleTest.Table
                 }
             }
 
-            var wordsTable = new Node<FillwordTableItem>[size, size];
+            var wordsTable = new FillwordTableItem[size, size];
+            var wordsPlaces = table
+                .Where(x => x.IsHead)
+                .Select(x => GetPoints(x).ToArray())
+                .ToArray();
 
+            foreach (var place in wordsPlaces)
+            {
+                var len = place.Length;
+                var rndWord = words.Keys.PickRandom(rnd, x => x.Length == len);
 
+                Console.WriteLine(rndWord);
 
+                for (int i = 0; i < place.Length; i++)
+                {
+                    var point = place[i];
 
-            throw new NotImplementedException();
+                    wordsTable[point.X, point.Y] = new FillwordTableItem
+                    {
+                        Point = point,
+                        CurrentLetter = rndWord[i],
+                        Word = rndWord,
+                        Info = words[rndWord]
+                    };
+                }
+            }
+
+            return new FillwordTable(wordsTable);
         }
 
-        private bool TryGetRandomFreePoint(Node<Point>[,] table, out Point output, Random random = null, Func<Node<Point>, bool> predicate = default)
+        private (int Min, int Max) GetWordsLengthRange()
+        {
+            var sorted = words.Keys.Select(x => x.Length).OrderBy(x => x).ToArray();
+            return (sorted.First(), sorted.Last());
+        }
+
+        private static IEnumerable<Point> GetPoints(Node<Point> head)
+        {
+            var curr = head;
+            while (curr != null)
+            {
+                yield return curr.Value;
+                curr = curr.Next;
+            }
+        }
+
+        private static bool TryGetRandomFreePoint(Node<Point>[,] table, out Point output, Random random = null, Func<Node<Point>, bool> predicate = default)
         {
             var freePoints = table.WhereAt(predicate).ToArray();
             var tryPick = freePoints.Length > 0;
@@ -95,7 +155,7 @@ namespace DataLoaderConsoleTest.Table
             return tryPick;
         }
 
-        private bool TryGetRandomAroundPoint(Point point, out Point output, Random random = null, Func<Point, bool> predicate = default)
+        private static bool TryGetRandomAroundPoint(Point point, out Point output, Random random = null, Func<Point, bool> predicate = default)
         {
             var nextPoints = GetPointsAround(point, predicate);
             var tryPick = nextPoints.Length > 0;
@@ -103,7 +163,7 @@ namespace DataLoaderConsoleTest.Table
             return tryPick;
         }
 
-        private Point[] GetPointsAround(Point point, Func<Point, bool> predicate)
+        private static Point[] GetPointsAround(Point point, Func<Point, bool> predicate)
         {
             var offset = new (int X, int Y)[]
             {

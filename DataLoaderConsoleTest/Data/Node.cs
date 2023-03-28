@@ -14,5 +14,15 @@
         {
             return Value.ToString();
         }
+
+        public static implicit operator Node<T>(T value)
+        {
+            return new Node<T> { Value = value };
+        }
+
+        public static explicit operator T(Node<T> node)
+        {
+            return node.Value;
+        }
     }
 }

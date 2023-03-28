@@ -1,4 +1,4 @@
-﻿namespace DataLoaderConsoleTest.Data
+﻿namespace DataLoaderConsoleTest.Data.Extenstions
 {
     internal static class DifficultyExtention
     {
