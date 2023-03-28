@@ -6,25 +6,17 @@ using System.Linq;
 
 namespace DataLoaderConsoleTest.Table
 {
-    internal class FillwordTableRandomBuilder
+    internal class FillwordTableRandomBuilder : FillwordTableBuilder
     {
         private readonly Random rnd = new Random(Environment.TickCount);
+        private readonly Node<Point>[,] table;
 
-        private readonly Difficulty difficulty;
-
-        private readonly int size;
         private readonly int min;
         private readonly int max;
 
-        private readonly Node<Point>[,] table;
-        private readonly IDictionary<string, WordInfo> words;
-
         public FillwordTableRandomBuilder(IDictionary<string, WordInfo> words, int size, Difficulty difficulty)
+            : base(words, size, difficulty)
         {
-            this.difficulty = difficulty;
-            this.words = words;
-            this.size = size;
-
             this.table = new Node<Point>[size, size];
 
             var (min, max) = GetWordsLengthRange();
@@ -35,7 +27,7 @@ namespace DataLoaderConsoleTest.Table
             //TODO: create max len change by difficulty
         }
 
-        public FillwordTable Build()
+        public override FillwordTable Build()
         {
             while (TryGetRandomFreePoint(table, out var currPoint, rnd, pnt => pnt == null))
             {
@@ -105,7 +97,7 @@ namespace DataLoaderConsoleTest.Table
             var wordsPlaces = table
                 .Where(x => x.IsHead)
                 .Select(x => GetPoints(x).ToArray())
-                .ToArray();
+                /*.ToArray()*/;
 
             foreach (var place in wordsPlaces)
             {
