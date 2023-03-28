@@ -8,36 +8,41 @@ namespace DataLoaderConsoleTest.Table
 {
     internal class FillwordTableRandomBuilder : FillwordTableBuilder
     {
+        private readonly int MinWordLength = 3;
         private readonly Random rnd = new Random(Environment.TickCount);
+
         private readonly Node<Point>[,] table;
 
         private readonly int min;
         private readonly int max;
+        private readonly int size;
 
-        public FillwordTableRandomBuilder(IDictionary<string, WordInfo> words, int size, Difficulty difficulty)
-            : base(words, size, difficulty)
+        public FillwordTableRandomBuilder(IDictionary<string, WordInfo> words, Difficulty difficulty)
+            : base(words, difficulty)
         {
+            size = (int)difficulty * 3;
+
             this.table = new Node<Point>[size, size];
 
             var (min, max) = GetWordsLengthRange();
 
-            this.min = Math.Min(min, size * size);
-            this.max = Math.Min(max - 1, size * size);
+            this.min = Math.Min(Math.Max(MinWordLength, min), size * size);
+            this.max = Math.Min(max - 1, size * size / 2);
 
             //TODO: create max len change by difficulty
         }
 
         public override FillwordTable Build()
         {
-            while (TryGetRandomFreePoint(table, out var currPoint, rnd, pnt => pnt == null))
+            while (TryGetRandomPoint(table, out var currPoint, rnd, pnt => pnt == null))
             {
                 var currNode = new Node<Point> { Value = currPoint };
                 table[currPoint.X, currPoint.Y] = currNode;
                 var nextLength = rnd.Next(min, max);
 
-                var IsCurrect = false;
+                Console.WriteLine("{0}, {1}", currPoint, nextLength);
 
-                while (nextLength >= min && TryGetRandomAroundPoint(currPoint, out currPoint, rnd, pnt => table.IsInRange(pnt) && table.GetAt(pnt) == null))
+                while (nextLength > 0 && TryGetRandomAroundPoint(currPoint, out currPoint, rnd, pnt => table.IsInRange(pnt) && table.GetAt(pnt) == null))
                 {
                     var nextNode = new Node<Point> { Value = currPoint, Previous = currNode };
                     currNode.Next = nextNode;
@@ -46,52 +51,65 @@ namespace DataLoaderConsoleTest.Table
                     table[currPoint.X, currPoint.Y] = currNode;
                     nextLength--;
 
-                    IsCurrect = true;
+                    Console.WriteLine("{0}, {1}", currPoint, nextLength);
                 }
 
                 Print();
 
-                if (IsCurrect)
+                if (nextLength == 0)
                     continue;
 
-                var around = GetPointsAround(currPoint, pnt =>
+                if (nextLength == 1)
                 {
-                    if (!table.IsInRange(pnt)) return false;
-                    var node = table.GetAt(pnt);
-                    return node != null && (node.Next == null || node.Previous == null);
-                });
-
-                if (around.Length == 0)
-                {
-                    TryGetRandomAroundPoint(currPoint, out var bindedAroundPoint, rnd, table.IsInRange);
-
-                    table.SetAt(currPoint, null);
-
-                    var destroyNode = table.GetAt(bindedAroundPoint);
-                    while (destroyNode.Previous != null)
-                        destroyNode = destroyNode.Previous;
-
-                    while (destroyNode != null)
+                    var around = GetPointsAround(currPoint, pnt =>
                     {
-                        table.SetAt(destroyNode.Value, null);
-                        destroyNode = destroyNode.Next;
+                        if (!table.IsInRange(pnt)) return false;
+                        var node = table.GetAt(pnt);
+                        return node != null && (node.Next == null || node.Previous == null);
+                    });
+
+                    if (around.Length == 0)
+                    {
+                        TryGetRandomAroundPoint(currPoint, out var bindedAroundPoint, rnd, table.IsInRange);
+
+                        table.SetAt(currPoint, null);
+
+                        var destroyNode = table.GetAt(bindedAroundPoint);
+
+                        while (destroyNode.Previous != null)
+                        {
+                            destroyNode = destroyNode.Previous;
+                        }
+
+                        while (destroyNode != null)
+                        {
+                            table.SetAt(destroyNode.Value, null);
+                            destroyNode = destroyNode.Next;
+                        }
+                    }
+                    else
+                    {
+                        var aroundNode = table.GetAt(around.PickRandom(rnd));
+
+                        if (aroundNode.Previous == null)
+                        {
+                            aroundNode.Previous = currNode;
+                            currNode.Next = aroundNode;
+                        }
+                        else if (aroundNode.Next == null)
+                        {
+                            aroundNode.Next = currNode;
+                            currNode.Previous = aroundNode;
+                        }
                     }
                 }
                 else
                 {
-                    var aroundNode = table.GetAt(around.PickRandom(rnd));
-                    if (aroundNode.Previous == null)
-                    {
-                        aroundNode.Previous = currNode;
-                        currNode.Next = aroundNode;
-                    }
-                    else if (aroundNode.Next == null)
-                    {
-                        aroundNode.Next = currNode;
-                        currNode.Previous = aroundNode;
-                    }
+                    throw new NotImplementedException();
                 }
             }
+
+            Print();
 
             var wordsTable = new FillwordTableItem[size, size];
             var wordsPlaces = table
@@ -99,10 +117,18 @@ namespace DataLoaderConsoleTest.Table
                 .Select(x => GetPoints(x).ToArray())
                 /*.ToArray()*/;
 
+            var selectedWords = new List<string>();
+
             foreach (var place in wordsPlaces)
             {
                 var len = place.Length;
-                var rndWord = words.Keys.PickRandom(rnd, x => x.Length == len);
+
+                if (!words.Keys.TryPickRandom(out var rndWord, rnd, x => x.Length == len && !selectedWords.Contains(x)))
+                {
+                    throw new ArgumentException();
+                }
+
+                selectedWords.Add(rndWord);
 
                 Console.WriteLine(rndWord);
 
@@ -139,7 +165,7 @@ namespace DataLoaderConsoleTest.Table
             }
         }
 
-        private static bool TryGetRandomFreePoint(Node<Point>[,] table, out Point output, Random random = null, Func<Node<Point>, bool> predicate = default)
+        private static bool TryGetRandomPoint(Node<Point>[,] table, out Point output, Random random = null, Func<Node<Point>, bool> predicate = default)
         {
             var freePoints = table.WhereAt(predicate).ToArray();
             var tryPick = freePoints.Length > 0;
@@ -149,10 +175,7 @@ namespace DataLoaderConsoleTest.Table
 
         private static bool TryGetRandomAroundPoint(Point point, out Point output, Random random = null, Func<Point, bool> predicate = default)
         {
-            var nextPoints = GetPointsAround(point, predicate);
-            var tryPick = nextPoints.Length > 0;
-            output = tryPick ? nextPoints.PickRandom(random) : point;
-            return tryPick;
+            return GetPointsAround(point, predicate).TryPickRandom(out output, random, predicate);
         }
 
         private static Point[] GetPointsAround(Point point, Func<Point, bool> predicate)
@@ -209,6 +232,7 @@ namespace DataLoaderConsoleTest.Table
                 }
             }
 
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------");
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
@@ -218,7 +242,6 @@ namespace DataLoaderConsoleTest.Table
                 Console.WriteLine();
             }
 
-            Console.WriteLine("-----------------------------------------------------------------------------------------------------");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------");
         }
     }

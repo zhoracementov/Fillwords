@@ -27,6 +27,16 @@ namespace DataLoaderConsoleTest.Data.Extenstions
             return output;
         }
 
+        public static bool TryPickRandom<T>(this IEnumerable<T> source, out T result, Random random = null, Func<T, bool> predicate = default)
+        {
+            var selected = source.Where(predicate).ToArray();
+            var size = selected.Length;
+            var tryResult = size > 0;
+            random ??= rnd;
+            result = selected.ElementAtOrDefault(random.Next(size));
+            return tryResult;
+        }
+
         public static IEnumerable<T> ShakeAll<T>(this IEnumerable<T> source, Random random = null, Func<T, bool> predicate = default)
         {
             return source.Where(predicate).OrderBy(x => (random ?? rnd).Next());
