@@ -103,7 +103,7 @@ namespace DataLoaderConsoleTest.Table
             var wordsPlaces = table
                 .AsLinear()
                 .Where(x => x.IsHead)
-                .Select(x => GetPoints(x).ToArray())
+                .Select(x => x.TraceAllValues().ToArray())
                 /*.ToArray()*/;
 
             var selectedWords = new List<string>();
@@ -142,16 +142,6 @@ namespace DataLoaderConsoleTest.Table
         {
             var sorted = words.Keys.Select(x => x.Length).OrderBy(x => x).ToArray();
             return (sorted.First(), sorted.Last());
-        }
-
-        private static IEnumerable<Point> GetPoints(Node<Point> head)
-        {
-            var curr = head;
-            while (curr != null)
-            {
-                yield return curr.Value;
-                curr = curr.Next;
-            }
         }
 
         private static bool TryGetRandomPoint(Node<Point>[,] table, out Point output, Random random = null, Func<Node<Point>, bool> predicate = default)

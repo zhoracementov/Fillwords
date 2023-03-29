@@ -3,6 +3,7 @@ using DataLoaderConsoleTest.Load;
 using DataLoaderConsoleTest.Table;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DataLoaderConsoleTest
@@ -17,8 +18,17 @@ namespace DataLoaderConsoleTest
             var loader = new JsonWebDataLoader<Dictionary<string, WordInfo>>(URL, FileName);
             loader.LoadData().Wait();
 
-            var data = loader.Data.Where(x => x.Key.Length > 2).ToDictionary(k => k.Key, v => v.Value);
-            var table = new FillwordTableRandomBuilder(data, Difficulty.Medium).Build();
+            Console.WriteLine("Старт!");
+            Console.ReadKey();
+
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
+            var table = new FillwordTableRandomBuilder(loader.Data, Difficulty.Medium).Build();
+
+            stopWatch.Stop();
+
+            Console.WriteLine("RunTime " + stopWatch.Elapsed.Ticks);
 
             Console.WriteLine();
 
