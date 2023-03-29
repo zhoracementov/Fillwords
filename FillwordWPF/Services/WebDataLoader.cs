@@ -1,14 +1,26 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace FillwordWPF.Services
 {
-    internal abstract class WebDataLoader
+    internal abstract class WebDataLoader<TCollectionOut> where TCollectionOut : ICollection
     {
         public string URL { get; protected set; }
         public string OutputFileName { get; protected set; }
-        public abstract bool IsLoaded { get; }
+        public virtual bool IsLoaded => Data?.Count > 0;
+        public virtual TCollectionOut Data { get; protected set; }
+
+        public virtual async Task Load(string fileName = null)
+        {
+            if (!CheckDowloadedFile())
+            {
+                await WebDownloadDataAsync(fileName);
+            }
+
+            await DeserializeDataFromFileAsync(fileName);
+        }
 
         public abstract Task WebDownloadDataAsync(string fileName = null);
         public abstract Task DeserializeDataFromFileAsync(string fileName = null);

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FillwordWPF.Services
 {
-    internal class JsonWebDataLoader<TCollectionOut> : WebDataLoader where TCollectionOut : ICollection
+    internal class JsonWebDataLoader<TCollectionOut> : WebDataLoader<TCollectionOut> where TCollectionOut : ICollection
     {
         public static readonly JsonSerializerOptions DefaultOptions = new JsonSerializerOptions
         {
@@ -19,9 +19,6 @@ namespace FillwordWPF.Services
         };
 
         private readonly JsonObjectSerializer json;
-
-        public TCollectionOut Data { get; private set; }
-        public override bool IsLoaded => Data?.Count > 0;
 
         public JsonWebDataLoader(string url, string outputFileName, JsonSerializerOptions jsonSerializerOptions = null)
         {

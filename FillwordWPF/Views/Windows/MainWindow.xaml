@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FillwordWPF"
         xmlns:vm="clr-namespace:FillwordWPF.ViewModels"
+        xmlns:vw="clr-namespace:FillwordWPF.Views.Windows"
         mc:Ignorable="d"
         Title="{Binding Title}"
         WindowStartupLocation="CenterScreen"
@@ -13,7 +14,5 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <Grid>
-
-    </Grid>
+    <vw:MenuWindow/>
 </Window>
