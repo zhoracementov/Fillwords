@@ -14,5 +14,7 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <vw:MenuWindow/>
+    <Grid>
+        <vw:MenuView/>
+    </Grid>
 </Window>

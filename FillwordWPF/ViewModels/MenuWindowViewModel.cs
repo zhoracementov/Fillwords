@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FillwordWPF.Commands;
+using System;
 using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
@@ -13,10 +14,17 @@ namespace FillwordWPF.ViewModels
 
         public MenuWindowViewModel()
         {
-            if (!App.IsDesignMode)
-            {
-                throw new NotImplementedException();
-            }
+            //if (!App.IsDesignMode)
+            //{
+            //    throw new NotImplementedException();
+            //}
+
+            CloseAppCommand = new RelayCommand(x => CloseApplication());
+        }
+
+        private void CloseApplication()
+        {
+            App.Instance.Shutdown();
         }
     }
 }

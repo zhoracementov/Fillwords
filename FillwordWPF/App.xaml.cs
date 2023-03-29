@@ -12,10 +12,30 @@ namespace FillwordWPF
     {
         public static bool IsDesignMode { get; set; } = true;
 
+        private static App app;
+
+        public static App Instance
+        {
+            get
+            {
+                if (app == null)
+                {
+                    app = new App();
+                }
+
+                return app;
+            }
+        }
+
+        protected App() : base()
+        {
+            //...
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            
+
             IsDesignMode = false;
 
             var w = new MainWindow();

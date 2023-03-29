@@ -16,9 +16,9 @@ namespace FillwordWPF.Views.Windows
     /// <summary>
     /// Логика взаимодействия для MenuWindow.xaml
     /// </summary>
-    public partial class MenuWindow : UserControl
+    public partial class MenuView : UserControl
     {
-        public MenuWindow()
+        public MenuView()
         {
             InitializeComponent();
         }
