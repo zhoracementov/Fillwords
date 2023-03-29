@@ -10,12 +10,12 @@ namespace DataLoaderConsoleTest
 {
     internal class Program
     {
-        private const string FileName = "data2.json";
+        private const string FileName = "data.json";
         private const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
 
         private static void Main()
         {
-            var loader = new JsonWebDataLoader<Dictionary<string, WordInfo>>(URL, FileName);
+            var loader = new JsonWebDataLoader<WordsData>(URL, FileName);
             loader.LoadData().Wait();
 
             Console.WriteLine("Старт!");

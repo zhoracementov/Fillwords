@@ -6,18 +6,18 @@ namespace DataLoaderConsoleTest.Data
 {
     internal class WordInfoDefinitionConverter
     {
-        private readonly IDictionary<string, WordInfo> data;
+        private readonly WordsData data;
 
         public ICollection<string> Errors { get; }
 
-        public WordInfoDefinitionConverter(IDictionary<string, WordInfo> data)
+        public WordInfoDefinitionConverter(WordsData data)
         {
             this.data = data;
 
             Errors = new List<string>();
         }
 
-        public IDictionary<string, WordInfo> Convert()
+        public WordsData Convert()
         {
             var regexCurrDefinition = new Regex(@"(?<key>[\w]+) \((?<index>[\d]+)\*\)");
             var regexSplitLinkedDefinition = new Regex(@"\p{Lu}[^\d\.]+");

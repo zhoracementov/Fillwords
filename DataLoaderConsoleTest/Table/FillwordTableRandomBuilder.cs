@@ -17,7 +17,7 @@ namespace DataLoaderConsoleTest.Table
         private readonly int max;
         private readonly int size;
 
-        public FillwordTableRandomBuilder(IDictionary<string, WordInfo> words, Difficulty difficulty)
+        public FillwordTableRandomBuilder(WordsData words, Difficulty difficulty)
             : base(words, difficulty)
         {
             size = (int)difficulty * 3;
