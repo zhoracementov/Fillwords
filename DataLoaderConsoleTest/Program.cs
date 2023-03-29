@@ -43,15 +43,5 @@ namespace DataLoaderConsoleTest
 
             Console.ReadKey();
         }
-
-        private static IDictionary<string, WordInfo> DataConvert(IDictionary<string, WordInfo> data)
-        {
-            return new WordInfoDefinitionConverter(data).Convert();
-        }
-
-        private static void Print<T>(IEnumerable<T> data)
-        {
-            Console.WriteLine(string.Join<T>(Environment.NewLine, data));
-        }
     }
 }
