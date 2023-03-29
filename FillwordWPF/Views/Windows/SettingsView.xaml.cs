@@ -3,11 +3,11 @@
 namespace FillwordWPF.Views.Windows
 {
     /// <summary>
-    /// Логика взаимодействия для GameView.xaml
+    /// Логика взаимодействия для SettingsView.xaml
     /// </summary>
-    public partial class GameView : UserControl
+    public partial class SettingsView : UserControl
     {
-        public GameView()
+        public SettingsView()
         {
             InitializeComponent();
         }

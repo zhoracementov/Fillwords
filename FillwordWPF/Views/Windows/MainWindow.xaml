@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:FillwordWPF"
         xmlns:vm="clr-namespace:FillwordWPF.ViewModels"
         xmlns:vw="clr-namespace:FillwordWPF.Views.Windows"
+        xmlns:w="clr-namespace:FillwordWPF.Models"
         mc:Ignorable="d"
         Title="{Binding Title}"
         WindowStartupLocation="CenterScreen"
@@ -15,6 +16,6 @@
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <vw:MenuView/>
+        <vw:SettingsView/>
     </Grid>
 </Window>

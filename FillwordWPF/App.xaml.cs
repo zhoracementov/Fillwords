@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -11,13 +10,8 @@ namespace FillwordWPF
     /// </summary>
     public partial class App : Application
     {
-        public static bool IsDesignMode { get; set; } = true;
-
         private static readonly object syncRoot = new object();
         private static volatile App instance;
-
-        public string RecordsFilePath => ConfigurationManager.AppSettings["recordsFilePath"];
-
         public static App Instance
         {
             get
@@ -36,6 +30,8 @@ namespace FillwordWPF
                 return instance;
             }
         }
+
+        public static bool IsDesignMode { get; set; } = true;
 
         private App() : base()
         {
