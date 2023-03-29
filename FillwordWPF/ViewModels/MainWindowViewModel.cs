@@ -4,15 +4,15 @@
     {
         #region Заголовок Окна
 
-        private string _title = "Fillwords";
+        private string title = "Fillwords";
 
         /// <summary>
         /// Заголовок главного окна
         /// </summary>
         public string Title
         {
-            get => _title;
-            private set => Set(ref _title, value);
+            get => title;
+            private set => Set(ref title, value);
         }
 
         #endregion

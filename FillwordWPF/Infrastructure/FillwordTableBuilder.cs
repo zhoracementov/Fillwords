@@ -1,7 +1,6 @@
-﻿
-using FillwordWPF.Infrastructure;
+﻿using FillwordWPF.Models;
 
-namespace FillwordWPF.Models
+namespace FillwordWPF.Infrastructure
 {
     internal abstract class FillwordTableBuilder
     {

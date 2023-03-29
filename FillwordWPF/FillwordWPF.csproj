@@ -4,6 +4,9 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon />
+    <Win32Resource />
+    <StartupObject>FillwordWPF.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

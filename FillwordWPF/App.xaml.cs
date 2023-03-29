@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace FillwordWPF
@@ -13,5 +10,27 @@ namespace FillwordWPF
     /// </summary>
     public partial class App : Application
     {
+        public static bool IsDesignMode { get; set; } = true;
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            
+            IsDesignMode = false;
+
+            var w = new MainWindow();
+            w.Show();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+        }
+
+        public static string CurrentDirectory => IsDesignMode
+                ? Path.GetDirectoryName(GetSourceCodePath())
+                : Environment.CurrentDirectory;
+
+        public static string GetSourceCodePath([CallerFilePath] string path = null) => path;
     }
 }

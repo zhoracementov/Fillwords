@@ -1,10 +1,10 @@
-﻿using FillwordWPF.Infrastructure;
-using FillwordWPF.Infrastructure.Extenstions;
+﻿using FillwordWPF.Infrastructure.Extenstions;
+using FillwordWPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FillwordWPF.Models
+namespace FillwordWPF.Infrastructure
 {
     internal class FillwordTableRandomBuilder : FillwordTableBuilder
     {
@@ -44,7 +44,7 @@ namespace FillwordWPF.Models
 
                 var invertList = new List<Node<Point>>(itLength) { currNode };
 
-                Console.WriteLine("{0}, {1}", currPoint, nextLength);
+                //Console.WriteLine("{0}, {1}", currPoint, nextLength);
 
                 while (nextLength > 0 && TryGetRandomAroundPoint(currPoint, out currPoint, rnd, pnt => table.IsInRange(pnt) && table.GetAt(pnt) == null))
                 {
@@ -57,10 +57,10 @@ namespace FillwordWPF.Models
 
                     invertList.Add(nextNode);
 
-                    Console.WriteLine("{0}, {1}", currPoint, nextLength);
+                    //Console.WriteLine("{0}, {1}", currPoint, nextLength);
                 }
 
-                Print();
+                //Print();
 
                 if (itLength - nextLength >= min)
                     continue;
@@ -90,14 +90,14 @@ namespace FillwordWPF.Models
                             connNode = connNode.Next;
                         }
 
-                        Print();
+                        //Print();
                         break;
                     }
                 }
             }
 
 
-            Print();
+            //Print();
 
             var wordsTable = new FillwordTableItem[size, size];
             var wordsPlaces = table
@@ -119,7 +119,7 @@ namespace FillwordWPF.Models
 
                 selectedWords.Add(rndWord);
 
-                Console.WriteLine(rndWord);
+                //Console.WriteLine(rndWord);
 
                 for (int i = 0; i < place.Length; i++)
                 {
@@ -175,53 +175,53 @@ namespace FillwordWPF.Models
                 .ToArray();
         }
 
-        private void Print()
-        {
-            var memory = new bool[size, size];
-            var output = new string[size, size];
-            var itemNumber = 0;
+        //private void Print()
+        //{
+        //    var memory = new bool[size, size];
+        //    var output = new string[size, size];
+        //    var itemNumber = 0;
 
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    if (memory[i, j])
-                        continue;
+        //    for (int i = 0; i < size; i++)
+        //    {
+        //        for (int j = 0; j < size; j++)
+        //        {
+        //            if (memory[i, j])
+        //                continue;
 
-                    var node = table[i, j];
+        //            var node = table[i, j];
 
-                    if (node == null)
-                        continue;
+        //            if (node == null)
+        //                continue;
 
-                    while (!node.IsHead)
-                    {
-                        node = node.Previous;
-                    }
+        //            while (!node.IsHead)
+        //            {
+        //                node = node.Previous;
+        //            }
 
-                    var nodeIndex = 0;
-                    while (node != null)
-                    {
-                        var (x, y) = (node.Value.X, node.Value.Y);
-                        memory[x, y] = true;
-                        output[x, y] = $"[{itemNumber}|{nodeIndex++}]";
+        //            var nodeIndex = 0;
+        //            while (node != null)
+        //            {
+        //                var (x, y) = (node.Value.X, node.Value.Y);
+        //                memory[x, y] = true;
+        //                output[x, y] = $"[{itemNumber}|{nodeIndex++}]";
 
-                        node = node.Next;
-                    }
-                    itemNumber++;
-                }
-            }
+        //                node = node.Next;
+        //            }
+        //            itemNumber++;
+        //        }
+        //    }
 
-            Console.WriteLine("-----------------------------------------------------------------------------------------------------");
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    Console.Write(output[i, j] + "\t");
-                }
-                Console.WriteLine();
-            }
+        //    Console.WriteLine("-----------------------------------------------------------------------------------------------------");
+        //    for (int i = 0; i < size; i++)
+        //    {
+        //        for (int j = 0; j < size; j++)
+        //        {
+        //            Console.Write(output[i, j] + "\t");
+        //        }
+        //        Console.WriteLine();
+        //    }
 
-            Console.WriteLine("-----------------------------------------------------------------------------------------------------");
-        }
+        //    Console.WriteLine("-----------------------------------------------------------------------------------------------------");
+        //}
     }
 }

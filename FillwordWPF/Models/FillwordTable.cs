@@ -1,28 +1,13 @@
-﻿using FillwordWPF.Infrastructure;
-
-namespace FillwordWPF.Models
+﻿namespace FillwordWPF.Models
 {
     internal class FillwordTable
     {
-        private readonly FillwordTableItem[,] table;
-
-        public FillwordTableItem this[Point point]
-        {
-            get => this[point.X, point.Y];
-            set => this[point.X, point.Y] = value;
-        }
-
-        public FillwordTableItem this[int x, int y]
-        {
-            get => table[x, y];
-            set => table[x, y] = value;
-        }
-
-        public int Size => table.GetLength(0);
+        public FillwordTableItem[,] Table { get; }
+        public int Size => Table.GetLength(0);
 
         public FillwordTable(FillwordTableItem[,] table)
         {
-            this.table = table;
+            Table = table;
         }
     }
 }
