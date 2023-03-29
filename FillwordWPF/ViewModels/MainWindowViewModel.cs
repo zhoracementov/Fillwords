@@ -1,6 +1,6 @@
 ﻿namespace FillwordWPF.ViewModels
 {
-    internal class MainWindowViewModel : ViewModelBase
+    internal class MainWindowViewModel : ViewModel
     {
         #region Заголовок Окна
 

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace FillwordWPF.ViewModels
 {
-    internal abstract class ViewModelBase : INotifyPropertyChanged
+    internal abstract class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
