@@ -18,21 +18,28 @@ namespace DataLoaderConsoleTest.Data.Extenstions
             var size = source.Count();
             random ??= rnd;
 
-            T output;
-
-            do
+            if (predicate == null)
             {
-                output = source.ElementAt(random.Next(size));
-            } while (predicate != null && !predicate(output));
-            return output;
+                return source.ElementAt(random.Next(size));
+            }
+            else
+            {
+                T output;
+                do
+                {
+                    output = source.ElementAt(random.Next(size));
+                } while (!predicate(output));
+                return output;
+            }
         }
 
         public static bool TryPickRandom<T>(this IEnumerable<T> source, out T result, Random random = null, Func<T, bool> predicate = default)
         {
+            random ??= rnd;
+
             var selected = source.Where(predicate).ToArray();
             var size = selected.Length;
             var tryResult = size > 0;
-            random ??= rnd;
             result = selected.ElementAtOrDefault(random.Next(size));
             return tryResult;
         }

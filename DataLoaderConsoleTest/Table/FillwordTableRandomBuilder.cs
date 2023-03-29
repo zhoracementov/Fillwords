@@ -37,8 +37,12 @@ namespace DataLoaderConsoleTest.Table
             while (TryGetRandomPoint(table, out var currPoint, rnd, pnt => pnt == null))
             {
                 var currNode = new Node<Point> { Value = currPoint };
+
                 table[currPoint.X, currPoint.Y] = currNode;
                 var nextLength = rnd.Next(min, max);
+                var itLength = nextLength;
+
+                var invertList = new List<Node<Point>>(itLength) { currNode };
 
                 Console.WriteLine("{0}, {1}", currPoint, nextLength);
 
@@ -51,68 +55,53 @@ namespace DataLoaderConsoleTest.Table
                     table[currPoint.X, currPoint.Y] = currNode;
                     nextLength--;
 
+                    invertList.Add(nextNode);
+
                     Console.WriteLine("{0}, {1}", currPoint, nextLength);
                 }
 
                 Print();
 
-                if (nextLength == 0)
+                if (itLength - nextLength >= min)
                     continue;
 
-                if (nextLength == 1)
+                foreach (var rev in invertList)
                 {
-                    var around = GetPointsAround(currPoint, pnt =>
-                    {
-                        if (!table.IsInRange(pnt)) return false;
-                        var node = table.GetAt(pnt);
-                        return node != null && (node.Next == null || node.Previous == null);
-                    });
-
-                    if (around.Length == 0)
-                    {
-                        TryGetRandomAroundPoint(currPoint, out var bindedAroundPoint, rnd, table.IsInRange);
-
-                        table.SetAt(currPoint, null);
-
-                        var destroyNode = table.GetAt(bindedAroundPoint);
-
-                        while (destroyNode.Previous != null)
-                        {
-                            destroyNode = destroyNode.Previous;
-                        }
-
-                        while (destroyNode != null)
-                        {
-                            table.SetAt(destroyNode.Value, null);
-                            destroyNode = destroyNode.Next;
-                        }
-                    }
-                    else
-                    {
-                        var aroundNode = table.GetAt(around.PickRandom(rnd));
-
-                        if (aroundNode.Previous == null)
-                        {
-                            aroundNode.Previous = currNode;
-                            currNode.Next = aroundNode;
-                        }
-                        else if (aroundNode.Next == null)
-                        {
-                            aroundNode.Next = currNode;
-                            currNode.Previous = aroundNode;
-                        }
-                    }
+                    table.SetAt(rev.Value, null);
                 }
-                else
+
+                foreach (var rev in invertList)
                 {
-                    throw new NotImplementedException();
+                    var connect = GetPointsAround(rev.Value, pnt => table.IsInRange(pnt) && table.GetAt(pnt) != null);
+
+                    if (connect.Length > 0)
+                    {
+                        var rndPick = connect.PickRandom(rnd);
+                        var connNode = table.GetAt(rndPick);
+
+                        while (connNode.Previous != null)
+                        {
+                            connNode = connNode.Previous;
+                        }
+
+                        while (connNode != null)
+                        {
+                            table.SetAt(connNode.Value, null);
+                            connNode = connNode.Next;
+                        }
+
+                        Print();
+                        break;
+                    }
                 }
             }
+
 
             Print();
 
             var wordsTable = new FillwordTableItem[size, size];
             var wordsPlaces = table
+                .AsLinear()
                 .Where(x => x.IsHead)
                 .Select(x => GetPoints(x).ToArray())
                 /*.ToArray()*/;

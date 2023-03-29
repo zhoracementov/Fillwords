@@ -26,7 +26,7 @@ namespace DataLoaderConsoleTest
             {
                 for (int j = 0; j < table.Size; j++)
                 {
-                    Console.Write(table[i, j].CurrentLetter);
+                    Console.Write(table[i, j].CurrentLetter + " ");
                 }
                 Console.WriteLine();
             }

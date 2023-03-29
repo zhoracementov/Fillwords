@@ -17,21 +17,6 @@ namespace DataLoaderConsoleTest.Data.Extenstions
             }
         }
 
-        //public static bool All<T>(this T[,] matrix, Func<T, bool> predicate)
-        //{
-        //    return matrix.AsLinear().All(predicate);
-        //}
-
-        //public static IEnumerable<TOutput> Select<TSource, TOutput>(this TSource[,] matrix, Func<TSource, TOutput> func)
-        //{
-        //    return matrix.AsLinear().Select(func);
-        //}
-
-        public static IEnumerable<T> Where<T>(this T[,] matrix, Func<T, bool> predicate)
-        {
-            return matrix.AsLinear().Where(predicate);
-        }
-
         public static IEnumerable<Point> WhereAt<T>(this T[,] matrix, Func<T, bool> predicate)
         {
             for (int i = 0; i < matrix.GetLength(0); i++)
