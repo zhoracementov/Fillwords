@@ -2,7 +2,7 @@
 
 namespace FillwordWPF.Models
 {
-    internal class FillwordTableItem
+    internal class FillwordItem
     {
         public char? CurrentLetter { get; set; }
         public Point Point { get; set; }

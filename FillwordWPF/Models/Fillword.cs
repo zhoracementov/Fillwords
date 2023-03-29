@@ -1,11 +1,11 @@
 ﻿namespace FillwordWPF.Models
 {
-    internal class FillwordTable
+    internal class Fillword
     {
-        public FillwordTableItem[,] Table { get; }
+        public FillwordItem[,] Table { get; }
         public int Size => Table.GetLength(0);
 
-        public FillwordTable(FillwordTableItem[,] table)
+        public Fillword(FillwordItem[,] table)
         {
             Table = table;
         }

@@ -32,7 +32,7 @@ namespace FillwordWPF.Infrastructure
             //TODO: create max len change by difficulty
         }
 
-        public override FillwordTable Build()
+        public override Fillword Build()
         {
             while (TryGetRandomPoint(table, out var currPoint, rnd, pnt => pnt == null))
             {
@@ -99,7 +99,7 @@ namespace FillwordWPF.Infrastructure
 
             //Print();
 
-            var wordsTable = new FillwordTableItem[size, size];
+            var wordsTable = new FillwordItem[size, size];
             var wordsPlaces = table
                 .AsLinear()
                 .Where(x => x.IsHead)
@@ -125,7 +125,7 @@ namespace FillwordWPF.Infrastructure
                 {
                     var point = place[i];
 
-                    wordsTable[point.X, point.Y] = new FillwordTableItem
+                    wordsTable[point.X, point.Y] = new FillwordItem
                     {
                         Point = point,
                         CurrentLetter = rndWord[i],
@@ -135,7 +135,7 @@ namespace FillwordWPF.Infrastructure
                 }
             }
 
-            return new FillwordTable(wordsTable);
+            return new Fillword(wordsTable);
         }
 
         private (int Min, int Max) GetWordsLengthRange()

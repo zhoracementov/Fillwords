@@ -13,6 +13,6 @@ namespace FillwordWPF.Infrastructure
             this.difficulty = difficulty;
         }
 
-        public abstract FillwordTable Build();
+        public abstract Fillword Build();
     }
 }

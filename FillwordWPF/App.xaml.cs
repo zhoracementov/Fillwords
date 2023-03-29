@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -12,22 +13,31 @@ namespace FillwordWPF
     {
         public static bool IsDesignMode { get; set; } = true;
 
-        private static App app;
+        private static readonly object syncRoot = new object();
+        private static volatile App instance;
+
+        public string RecordsFilePath => ConfigurationManager.AppSettings["recordsFilePath"];
 
         public static App Instance
         {
             get
             {
-                if (app == null)
+                if (instance == null)
                 {
-                    app = new App();
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new App();
+                        }
+                    }
                 }
 
-                return app;
+                return instance;
             }
         }
 
-        protected App() : base()
+        private App() : base()
         {
             //...
         }
