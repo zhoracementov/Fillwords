@@ -10,9 +10,9 @@ namespace FillwordWPF.Services
 
         public override T Deserialize<T>(string fileName)
         {
-            using (var fStream = new FileStream(fileName,
-                FileMode.Open, FileAccess.Read, FileShare.None))
-                return (T)new XmlSerializer(typeof(T)).Deserialize(fStream);
+            using var fStream = new FileStream(GetFileName(fileName),
+                FileMode.Open, FileAccess.Read, FileShare.None);
+                    return (T)new XmlSerializer(typeof(T)).Deserialize(fStream);
         }
 
         public override async Task<T> DeserializeAsync<T>(string fileName)
@@ -22,9 +22,9 @@ namespace FillwordWPF.Services
 
         public override void Serialize<T>(T obj, string fileName)
         {
-            using (var fStream = new FileStream(GetFileName(fileName),
-                FileMode.Create, FileAccess.Write, FileShare.None))
-                new XmlSerializer(typeof(T)).Serialize(fStream, obj);
+            using var fStream = new FileStream(GetFileName(fileName),
+                FileMode.Create, FileAccess.Write, FileShare.None);
+                    new XmlSerializer(typeof(T)).Serialize(fStream, obj);
         }
 
         public override async Task SerializeAsync<T>(T obj, string fileName)

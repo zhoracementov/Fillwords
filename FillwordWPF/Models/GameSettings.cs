@@ -2,33 +2,22 @@
 using FillwordWPF.Services;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
-using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.Unicode;
 
 namespace FillwordWPF.Models
 {
     internal class GameSettings
     {
-        private static readonly JsonObjectSerializer json = new JsonObjectSerializer(new JsonSerializerOptions
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true,
-        });
-
-        public static string SettingsFileName => ConfigurationManager.AppSettings["recordsFilePath"];
+        public static ObjectSerializer Serializer { get; set; }
 
         private readonly Dictionary<string, string> settings;
+        private readonly string fileName;
 
         private void SetValue(string field, string value)
         {
             settings[field] = value;
-            json.Serialize(settings, SettingsFileName);
+            Serializer.Serialize(settings, App.SettingsFileName);
         }
 
         public Difficulty Difficulty
@@ -51,21 +40,28 @@ namespace FillwordWPF.Models
 
         public GameSettings()
         {
-            settings = new Dictionary<string, string>
+            Serializer = new JsonObjectSerializer(new JsonSerializerOptions
             {
-                { "difficulty", "medium" },
-                { "minWordLength", "3" },
-                { "saveDataFileName", "data" },
-            };
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true,
+            });
 
-            var fileInfo = new FileInfo(SettingsFileName);
+            fileName = App.SettingsFileName;
+            var fileInfo = new FileInfo(fileName);
 
             if (!fileInfo.Exists || fileInfo.Length == 0)
             {
-                json.Serialize(settings, fileInfo.FullName);
+                settings = new Dictionary<string, string>
+                {
+                    { "difficulty", "easy" },
+                    { "minWordLength", "3" },
+                    { "saveDataFileName", "data" },
+                };
+
+                Serializer.Serialize(settings, fileName);
             }
 
-            settings = json.Deserialize<Dictionary<string, string>>(fileInfo.FullName);
+            settings = Serializer.Deserialize<Dictionary<string, string>>(fileName);
         }
     }
 }

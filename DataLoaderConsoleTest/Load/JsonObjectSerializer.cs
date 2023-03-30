@@ -17,14 +17,14 @@ namespace DataLoaderConsoleTest.Load
 
         public override T Deserialize<T>(string fileName)
         {
-            using var fStream = new FileStream(fileName,
+            using var fStream = new FileStream(GetFileName(fileName),
                 FileMode.Open, FileAccess.Read, FileShare.None);
             return JsonSerializer.Deserialize<T>(fStream, jsonSerializerOptions);
         }
 
         public override async Task<T> DeserializeAsync<T>(string fileName)
         {
-            using var fStream = new FileStream(fileName,
+            using var fStream = new FileStream(GetFileName(fileName),
                 FileMode.Open, FileAccess.Read, FileShare.None);
             return await JsonSerializer.DeserializeAsync<T>(fStream, jsonSerializerOptions);
         }

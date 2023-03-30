@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D8C4F4A9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLoaderConsoleTest", "DataLoaderConsoleTest\DataLoaderConsoleTest.csproj", "{7B97E4D5-7C78-4C69-A796-4F98A65D735E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FillwordWPF", "FillwordWPF\FillwordWPF.csproj", "{3ADC9C11-8839-4FB6-9141-8FEF9D93F004}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FillwordWPF", "FillwordWPF\FillwordWPF.csproj", "{3ADC9C11-8839-4FB6-9141-8FEF9D93F004}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

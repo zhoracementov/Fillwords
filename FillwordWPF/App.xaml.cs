@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -31,6 +32,7 @@ namespace FillwordWPF
             }
         }
 
+        public static string SettingsFileName => Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["recordsFilePath"] ?? "records");
         public static bool IsDesignMode { get; set; } = true;
 
         private App() : base()
