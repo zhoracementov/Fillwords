@@ -21,7 +21,7 @@ namespace FillwordWPF.ViewModels
 
         private void CloseApplication()
         {
-            App.Instance.Shutdown();
+            Application.Current.Shutdown();
         }
 
         private void ShowMetaInfo()

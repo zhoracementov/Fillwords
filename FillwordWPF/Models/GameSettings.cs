@@ -9,7 +9,12 @@ namespace FillwordWPF.Models
 {
     internal class GameSettings
     {
-        public static ObjectSerializer Serializer { get; set; }
+        public static readonly Dictionary<string, string> DefaultSettings = new Dictionary<string, string>
+        {
+            { "difficulty", "easy" },
+            { "minWordLength", "3" },
+            { "saveDataFileName", "data" },
+        };
 
         private readonly Dictionary<string, string> settings;
         private readonly string fileName;
@@ -17,7 +22,7 @@ namespace FillwordWPF.Models
         private void SetValue(string field, string value)
         {
             settings[field] = value;
-            Serializer.Serialize(settings, App.SettingsFileName);
+            Serializer.Serialize(settings, fileName);
         }
 
         public Difficulty Difficulty
@@ -37,6 +42,7 @@ namespace FillwordWPF.Models
             get => settings["saveDataFileName"];
             set => SetValue("saveDataFileName", value);
         }
+        public ObjectSerializer Serializer { get; set; }
 
         public GameSettings()
         {
@@ -49,15 +55,9 @@ namespace FillwordWPF.Models
             fileName = App.SettingsFileName;
             var fileInfo = new FileInfo(fileName);
 
-            if (!fileInfo.Exists || fileInfo.Length == 0)
+            if (!fileInfo.Exists || fileInfo.Length == 0 || App.IsDesignMode)
             {
-                settings = new Dictionary<string, string>
-                {
-                    { "difficulty", "easy" },
-                    { "minWordLength", "3" },
-                    { "saveDataFileName", "data" },
-                };
-
+                settings = DefaultSettings;
                 Serializer.Serialize(settings, fileName);
             }
 

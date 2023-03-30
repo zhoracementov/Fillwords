@@ -11,34 +11,8 @@ namespace FillwordWPF
     /// </summary>
     public partial class App : Application
     {
-        private static readonly object syncRoot = new object();
-        private static volatile App instance;
-        public static App Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (instance == null)
-                        {
-                            instance = new App();
-                        }
-                    }
-                }
-
-                return instance;
-            }
-        }
-
         public static string SettingsFileName => Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["recordsFilePath"] ?? "records");
         public static bool IsDesignMode { get; set; } = true;
-
-        private App() : base()
-        {
-            //...
-        }
 
         protected override void OnStartup(StartupEventArgs e)
         {

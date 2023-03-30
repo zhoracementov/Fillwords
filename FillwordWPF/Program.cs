@@ -7,7 +7,7 @@ namespace FillwordWPF
         [STAThread]
         public static void Main()
         {
-            _ = App.Instance.Run();
+            _ = new App().Run();
         }
     }
 }
