@@ -28,20 +28,17 @@ namespace FillwordWPF
         //};
 
         public static bool IsDesignMode { get; set; } = true;
-        public static GameSettings GameSettings { get; private set; }
         public static Task LoadingTask { get; private set; }
-
+        public static GameSettings GameSettings { get; private set; } = new GameSettings(SettingsFileName);
         protected override void OnStartup(StartupEventArgs e)
         {
-            GameSettings = new GameSettings(SettingsFileName);
+            IsDesignMode = false;
 
             base.OnStartup(e);
 
             //using var manager = new DownloadManager(URL, SaveDataFileName);
             //LoadingTask = manager.StartDownload();
             //LoadingTask.Wait();
-
-            IsDesignMode = false;
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -50,7 +47,7 @@ namespace FillwordWPF
         }
 
         public static string SaveDataFileName =>
-            Path.Combine(CurrentDirectory, GameSettings?.SaveDataFileName ?? "data");
+            Path.Combine(CurrentDirectory, GameSettings.SaveDataFileName ?? "data");
 
         public static string SettingsFileName =>
             Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["recordsFilePath"] ?? "records");

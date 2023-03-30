@@ -9,11 +9,11 @@ namespace FillwordWPF.Models
 {
     public class GameSettings
     {
-        public static readonly Dictionary<string, string> DefaultSettings = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> defaultGameSettings = new Dictionary<string, string>
         {
-            { "difficulty", "easy" },
-            { "minWordLength", "3" },
-            { "saveDataFileName", "data" },
+            { "Difficulty", "Easy" },
+            { "MinWordLength", "3" },
+            { "SaveDataFileName", "Data.json" },
         };
 
         private readonly Dictionary<string, string> settings;
@@ -28,20 +28,25 @@ namespace FillwordWPF.Models
 
         public Difficulty Difficulty
         {
-            get => Enum.Parse<Difficulty>(settings["difficulty"], true);
-            set => SetValue("difficulty", value.ToString().ToLower());
+            get => Enum.Parse<Difficulty>(settings[nameof(Difficulty)], true);
+            set => SetValue(nameof(Difficulty), value.ToString().ToLower());
         }
 
         public int MinWordLength
         {
-            get => int.Parse(settings["minWordLength"]);
-            set => SetValue("minWordLength", value.ToString());
+            get => int.Parse(settings[nameof(MinWordLength)]);
+            set => SetValue(nameof(MinWordLength), value.ToString());
         }
 
         public string SaveDataFileName
         {
-            get => settings["saveDataFileName"];
-            set => SetValue("saveDataFileName", value);
+            get => settings[nameof(SaveDataFileName)];
+            set
+            {
+                var textInfo = new System.Globalization.CultureInfo("en-EN").TextInfo;
+                var val = textInfo.ToTitleCase(textInfo.ToLower(value));
+                SetValue(nameof(SaveDataFileName), val);
+            }
         }
 
         public GameSettings(string fileName)
@@ -52,13 +57,12 @@ namespace FillwordWPF.Models
                 WriteIndented = true,
             });
 
-
             this.fileName = serializer.GetFileName(fileName);
             var fileInfo = new FileInfo(fileName);
 
             if (!fileInfo.Exists || fileInfo.Length == 0)
             {
-                settings = DefaultSettings;
+                settings = defaultGameSettings;
                 _ = serializer.SerializeAsync(settings, fileName);
             }
             else

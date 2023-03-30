@@ -1,5 +1,5 @@
 {
-  "difficulty": "easy",
-  "minWordLength": "-163",
-  "saveDataFileName": "data"
+  "Difficulty": "Easy",
+  "MinWordLength": "3",
+  "SaveDataFileName": "Data.json"
 }

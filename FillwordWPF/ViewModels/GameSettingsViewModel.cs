@@ -39,9 +39,7 @@ namespace FillwordWPF.ViewModels
 
         public GameSettingsViewModel()
         {
-            gameSettings = App.IsDesignMode
-                ? new GameSettings(App.SettingsFileName)
-                : App.GameSettings;
+            gameSettings = App.GameSettings;
         }
     }
 }

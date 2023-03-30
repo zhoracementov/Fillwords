@@ -8,7 +8,6 @@ namespace FillwordWPF.Infrastructure
 {
     internal class FillwordTableRandomBuilder : FillwordTableBuilder
     {
-        private readonly int MinWordLength = 3;
         private readonly Random rnd = new Random(Environment.TickCount);
 
         private readonly Node<Point>[,] table;
@@ -17,16 +16,16 @@ namespace FillwordWPF.Infrastructure
         private readonly int max;
         private readonly int size;
 
-        public FillwordTableRandomBuilder(WordsData words, Difficulty difficulty)
-            : base(words, difficulty)
+        public FillwordTableRandomBuilder(WordsData words, GameSettings gameSettings)
+            : base(words, gameSettings)
         {
-            size = (int)difficulty * 3;
+            size = (int)gameSettings.Difficulty * 3;
 
             this.table = new Node<Point>[size, size];
 
             var (min, max) = GetWordsLengthRange();
 
-            this.min = Math.Min(Math.Max(MinWordLength, min), size * size);
+            this.min = Math.Min(Math.Max(minWordLength, min), size * size);
             this.max = Math.Min(max - 1, size * size / 2);
 
             //TODO: create max len change by difficulty
