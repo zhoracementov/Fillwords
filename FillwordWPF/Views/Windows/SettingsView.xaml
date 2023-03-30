@@ -12,9 +12,23 @@
         <vm:GameSettingsViewModel/>
     </UserControl.DataContext>
     <Grid Background="Wheat">
-        <TextBlock Text="{Binding Difficulty}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   FontSize="36"/>
+        <Grid Margin="300, 0">
+            <DockPanel>
+                <Grid DockPanel.Dock="Top" Margin="0, 35"/>
+                <Grid DockPanel.Dock="Bottom" Margin="0, 35"/>
+                <TextBox DockPanel.Dock="Top" Text="{Binding Difficulty}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    FontSize="36"/>
+                <TextBox DockPanel.Dock="Bottom" Text="{Binding SaveDataFileName}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    FontSize="36"/>
+                <TextBox DockPanel.Dock="Bottom" Text="{Binding MinWordLength}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    FontSize="36"/>
+            </DockPanel>
+        </Grid>
     </Grid>
 </UserControl>

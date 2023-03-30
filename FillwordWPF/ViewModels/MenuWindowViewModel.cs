@@ -1,5 +1,6 @@
 ﻿using FillwordWPF.Commands;
 using FillwordWPF.Services;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
@@ -26,7 +27,9 @@ namespace FillwordWPF.ViewModels
 
         private void ShowMetaInfo()
         {
-            MessageBox.Show(new JsonObjectSerializer().Deserialize<string>("gameinfo.json"));
+            var fileName = Path.Combine(App.CurrentDirectory, "meta.json");
+            if (File.Exists(fileName))
+                MessageBox.Show(new JsonObjectSerializer().Deserialize<string>(fileName));
         }
     }
 }

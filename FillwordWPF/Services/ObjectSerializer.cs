@@ -11,13 +11,7 @@ namespace FillwordWPF.Services
         public abstract void Serialize<T>(T obj, string fileName);
         public abstract Task SerializeAsync<T>(T obj, string fileName);
 
-        protected virtual string GetFileName(string fileName)
-        {
-            var len = fileName.IndexOf('.');
-
-            return !fileName.Contains(FileFormat)
-                ? fileName.Substring(0, len > 0 ? len
-                : fileName.Length) + FileFormat : fileName;
-        }
+        public virtual string GetFileName(string fileName) =>
+            !fileName.Contains(FileFormat) ? fileName + FileFormat : fileName;
     }
 }

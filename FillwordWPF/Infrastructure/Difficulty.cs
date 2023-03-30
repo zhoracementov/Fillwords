@@ -1,6 +1,6 @@
 ﻿namespace FillwordWPF.Infrastructure
 {
-    internal enum Difficulty
+    public enum Difficulty
     {
         Easy = 1,
         Medium = 2,

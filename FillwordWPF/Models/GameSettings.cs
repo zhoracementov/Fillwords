@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace FillwordWPF.Models
 {
-    internal class GameSettings
+    public class GameSettings
     {
         public static readonly Dictionary<string, string> DefaultSettings = new Dictionary<string, string>
         {
@@ -18,11 +18,12 @@ namespace FillwordWPF.Models
 
         private readonly Dictionary<string, string> settings;
         private readonly string fileName;
+        private readonly ObjectSerializer serializer;
 
         private void SetValue(string field, string value)
         {
             settings[field] = value;
-            Serializer.Serialize(settings, fileName);
+            serializer.Serialize(settings, fileName);
         }
 
         public Difficulty Difficulty
@@ -42,26 +43,28 @@ namespace FillwordWPF.Models
             get => settings["saveDataFileName"];
             set => SetValue("saveDataFileName", value);
         }
-        public ObjectSerializer Serializer { get; set; }
 
-        public GameSettings()
+        public GameSettings(string fileName)
         {
-            Serializer = new JsonObjectSerializer(new JsonSerializerOptions
+            serializer = new JsonObjectSerializer(new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
                 WriteIndented = true,
             });
 
-            fileName = App.SettingsFileName;
+
+            this.fileName = serializer.GetFileName(fileName);
             var fileInfo = new FileInfo(fileName);
 
-            if (!fileInfo.Exists || fileInfo.Length == 0 || App.IsDesignMode)
+            if (!fileInfo.Exists || fileInfo.Length == 0)
             {
                 settings = DefaultSettings;
-                Serializer.Serialize(settings, fileName);
+                _ = serializer.SerializeAsync(settings, fileName);
             }
-
-            settings = Serializer.Deserialize<Dictionary<string, string>>(fileName);
+            else
+            {
+                settings = serializer.Deserialize<Dictionary<string, string>>(fileName);
+            }
         }
     }
 }
