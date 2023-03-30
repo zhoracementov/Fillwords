@@ -19,28 +19,28 @@ namespace FillwordWPF.Services
         {
             using var fStream = new FileStream(GetFileName(fileName),
                 FileMode.Open, FileAccess.Read, FileShare.None);
-            return JsonSerializer.Deserialize<T>(fStream, jsonSerializerOptions);
+                    return JsonSerializer.Deserialize<T>(fStream, jsonSerializerOptions);
         }
 
         public override async Task<T> DeserializeAsync<T>(string fileName)
         {
             using var fStream = new FileStream(GetFileName(fileName),
                 FileMode.Open, FileAccess.Read, FileShare.None);
-            return await JsonSerializer.DeserializeAsync<T>(fStream, jsonSerializerOptions);
+                    return await JsonSerializer.DeserializeAsync<T>(fStream, jsonSerializerOptions);
         }
 
         public override void Serialize<T>(T obj, string fileName)
         {
             using var fStream = new FileStream(GetFileName(fileName),
                 FileMode.Create, FileAccess.Write, FileShare.None);
-            JsonSerializer.Serialize(fStream, obj, jsonSerializerOptions);
+                    JsonSerializer.Serialize(fStream, obj, jsonSerializerOptions);
         }
 
         public override async Task SerializeAsync<T>(T obj, string fileName)
         {
             using var fStream = new FileStream(GetFileName(fileName),
                 FileMode.Create, FileAccess.Write, FileShare.None);
-            await JsonSerializer.SerializeAsync(fStream, obj, jsonSerializerOptions);
+                    await JsonSerializer.SerializeAsync(fStream, obj, jsonSerializerOptions);
         }
     }
 }
