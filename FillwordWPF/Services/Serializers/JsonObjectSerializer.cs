@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace FillwordWPF.Services
+namespace FillwordWPF.Services.Serializers
 {
     internal class JsonObjectSerializer : ObjectSerializer
     {

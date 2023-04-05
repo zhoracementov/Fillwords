@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace FillwordWPF.Services
+namespace FillwordWPF.Services.Serializers
 {
     internal class XmlObjectSerializer : ObjectSerializer
     {

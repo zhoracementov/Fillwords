@@ -1,6 +1,6 @@
 ﻿using FillwordWPF.ViewModels;
 
-namespace FillwordWPF.Services
+namespace FillwordWPF.Services.Navigation
 {
     internal interface INavigationService
     {

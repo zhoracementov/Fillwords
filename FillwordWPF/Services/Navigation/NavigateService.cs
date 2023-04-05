@@ -1,7 +1,7 @@
 ﻿using FillwordWPF.ViewModels;
 using System;
 
-namespace FillwordWPF.Services
+namespace FillwordWPF.Services.Navigation
 {
     internal class NavigationService : ViewModel, INavigationService
     {

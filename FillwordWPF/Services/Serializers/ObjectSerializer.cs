@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace FillwordWPF.Services
+namespace FillwordWPF.Services.Serializers
 {
     internal abstract class ObjectSerializer
     {
