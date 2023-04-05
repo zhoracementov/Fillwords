@@ -1,6 +1,7 @@
 ﻿using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.ViewModels;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Configuration;
 using System.IO;
@@ -20,6 +21,9 @@ namespace FillwordWPF
         public static GameSettings GameSettings { get; set; } = new GameSettings(SettingsFileName);
         public static DownloadManager DownloadManager { get; set; } = new DownloadManager(URL, SaveDataFileName);
 
+        private static IHost host;
+        public static IHost Host => host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+
         protected override async void OnStartup(StartupEventArgs e)
         {
             await DownloadManager.StartDownload();
@@ -27,11 +31,17 @@ namespace FillwordWPF
             IsDesignMode = false;
 
             base.OnStartup(e);
+
+            await Host.StartAsync().ConfigureAwait(false);
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        protected override async void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
+            var host = Host;
+            await host.StopAsync().ConfigureAwait(false);
+            host.Dispose();
+            host = null;
         }
 
         public static string Version =>
