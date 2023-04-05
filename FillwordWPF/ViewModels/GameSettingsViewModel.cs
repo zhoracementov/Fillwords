@@ -7,7 +7,7 @@ namespace FillwordWPF.ViewModels
 {
     internal class GameSettingsViewModel : ViewModel
     {
-        private readonly GameSettings gameSettings;
+        private readonly GameSettingsService gameSettings;
 
         public Difficulty Difficulty
         {

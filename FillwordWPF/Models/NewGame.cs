@@ -13,8 +13,8 @@ namespace FillwordWPF.Models
 
     internal class NewGame
     {
-        public DownloadManager DownloadManager { get; }
-        public GameSettings GameSettings { get; }
+        public DownloadDataService DownloadManager { get; }
+        public GameSettingsService GameSettings { get; }
         public ObjectSerializer ObjectSerializer { get; }
 
         public FillwordItem[,] Fillword { get; private set; }

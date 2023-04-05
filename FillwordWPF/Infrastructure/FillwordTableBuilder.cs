@@ -10,7 +10,7 @@ namespace FillwordWPF.Infrastructure
         protected readonly Difficulty difficulty;
         protected readonly int minWordLength;
 
-        public FillwordTableBuilder(WordsData words, GameSettings gameSettings)
+        public FillwordTableBuilder(WordsData words, GameSettingsService gameSettings)
         {
             this.words = words;
             this.difficulty = gameSettings.Difficulty;

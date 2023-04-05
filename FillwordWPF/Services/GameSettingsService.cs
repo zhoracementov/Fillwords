@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace FillwordWPF.Models
 {
-    public class GameSettings
+    public class GameSettingsService
     {
         private static readonly Dictionary<string, string> defaultGameSettings = new Dictionary<string, string>
         {
@@ -52,7 +52,7 @@ namespace FillwordWPF.Models
             }
         }
 
-        public GameSettings(string fileName)
+        public GameSettingsService(string fileName)
         {
             serializer = new JsonObjectSerializer(new JsonSerializerOptions
             {

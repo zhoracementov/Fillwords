@@ -1,15 +1,12 @@
 ﻿using FillwordWPF.Models;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FillwordWPF.Services
 {
     internal class ServicesLocator
     {
-        public DownloadManager MainWindowViewModel => GetViewModel<DownloadManager>();
-        public GameSettings MenuWindowViewModel => GetViewModel<GameSettings>();
+        public DownloadDataService MainWindowViewModel => GetViewModel<DownloadDataService>();
+        public GameSettingsService MenuWindowViewModel => GetViewModel<GameSettingsService>();
 
         public TService GetViewModel<TService>()
         {

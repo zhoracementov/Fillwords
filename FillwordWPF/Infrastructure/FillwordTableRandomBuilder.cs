@@ -16,7 +16,7 @@ namespace FillwordWPF.Infrastructure
         private readonly int max;
         private readonly int size;
 
-        public FillwordTableRandomBuilder(WordsData words, GameSettings gameSettings)
+        public FillwordTableRandomBuilder(WordsData words, GameSettingsService gameSettings)
             : base(words, gameSettings)
         {
             size = (int)gameSettings.Difficulty * 3;

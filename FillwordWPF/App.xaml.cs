@@ -19,8 +19,8 @@ namespace FillwordWPF
         public const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
 
         public static bool IsDesignMode { get; set; } = true;
-        public static GameSettings GameSettings { get; set; } = new GameSettings(SettingsFileName);
-        public static DownloadManager DownloadManager { get; set; } = new DownloadManager(URL, SaveDataFileName);
+        public static GameSettingsService GameSettings { get; set; } = new GameSettingsService(SettingsFileName);
+        public static DownloadDataService DownloadManager { get; set; } = new DownloadDataService(URL, SaveDataFileName);
 
         private static IHost host;
         public static IHost Host => host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();

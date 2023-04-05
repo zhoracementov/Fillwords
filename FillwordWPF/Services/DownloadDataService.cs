@@ -8,7 +8,7 @@ namespace FillwordWPF.Services
 {
     public delegate void ProgressChangedHandler(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage);
 
-    public class DownloadManager : IDisposable
+    public class DownloadDataService : IDisposable
     {
         private const int bufferSize = 8192;
 
@@ -26,7 +26,7 @@ namespace FillwordWPF.Services
         public event ProgressChangedHandler ProgressChanged;
         public event EventHandler SuccessfullyDownloaded;
 
-        public DownloadManager(string url, string outputFilePath)
+        public DownloadDataService(string url, string outputFilePath)
             => (URL, OutputFilePath, httpClient)
             =  (url, outputFilePath, new HttpClient());
 
