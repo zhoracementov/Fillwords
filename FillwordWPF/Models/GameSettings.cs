@@ -20,22 +20,24 @@ namespace FillwordWPF.Models
         private readonly string fileName;
         private readonly ObjectSerializer serializer;
 
-        private void SetValue(string field, string value)
-        {
-            settings[field] = value;
-            serializer.Serialize(settings, fileName);
-        }
+        //private void SetKeyValue(string field, string value)
+        //{
+        //    settings[field] = value;
+        //    //serializer.Serialize(settings, fileName);
+        //}
 
         public Difficulty Difficulty
         {
             get => Enum.Parse<Difficulty>(settings[nameof(Difficulty)], true);
-            set => SetValue(nameof(Difficulty), value.ToString().ToLower());
+            //set => SetKeyValue(nameof(Difficulty), value.ToString().ToLower());
+            set => settings[nameof(Difficulty)] = value.ToString().ToLower();
         }
 
         public int MinWordLength
         {
             get => int.Parse(settings[nameof(MinWordLength)]);
-            set => SetValue(nameof(MinWordLength), value.ToString());
+            //set => SetKeyValue(nameof(MinWordLength), value.ToString());
+            set => settings[nameof(MinWordLength)] = value.ToString();
         }
 
         public string SaveDataFileName
@@ -45,7 +47,8 @@ namespace FillwordWPF.Models
             {
                 var textInfo = new System.Globalization.CultureInfo("en-EN").TextInfo;
                 var val = textInfo.ToTitleCase(textInfo.ToLower(value));
-                SetValue(nameof(SaveDataFileName), val);
+                //SetKeyValue(nameof(SaveDataFileName), val);
+                settings[nameof(SaveDataFileName)] = val;
             }
         }
 
@@ -69,6 +72,11 @@ namespace FillwordWPF.Models
             {
                 settings = serializer.Deserialize<Dictionary<string, string>>(fileName);
             }
+        }
+
+        public void Save()
+        {
+            serializer.Serialize(settings, fileName);
         }
     }
 }

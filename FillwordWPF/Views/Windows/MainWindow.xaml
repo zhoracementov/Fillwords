@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FillwordWPF"
         xmlns:vm="clr-namespace:FillwordWPF.ViewModels"
-        xmlns:v="clr-namespace:FillwordWPF.Views.Windows"
+        xmlns:v="clr-namespace:FillwordWPF.Views"
         xmlns:w="clr-namespace:FillwordWPF.Models"
         mc:Ignorable="d"
         Title="{Binding Title}"
@@ -15,7 +15,4 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <Grid>
-        <v:SettingsView/>
-    </Grid>
 </Window>

@@ -17,6 +17,6 @@ namespace FillwordWPF.Infrastructure
             this.minWordLength = gameSettings.MinWordLength;
         }
 
-        public abstract Fillword Build();
+        public abstract FillwordItem[,] Build();
     }
 }

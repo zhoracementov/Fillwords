@@ -1,5 +1,7 @@
-﻿using FillwordWPF.Infrastructure;
+﻿using FillwordWPF.Commands;
+using FillwordWPF.Infrastructure;
 using FillwordWPF.Models;
+using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
 {
@@ -12,8 +14,11 @@ namespace FillwordWPF.ViewModels
             get => gameSettings.Difficulty;
             set
             {
-                gameSettings.Difficulty = value;
-                OnPropertyChanged(nameof(Difficulty));
+                if (value >= Difficulty.Easy && value <= Difficulty.Hard)
+                {
+                    gameSettings.Difficulty = value;
+                    OnPropertyChanged(nameof(Difficulty));
+                }
             }
         }
 
@@ -22,8 +27,11 @@ namespace FillwordWPF.ViewModels
             get => gameSettings.MinWordLength;
             set
             {
-                gameSettings.MinWordLength = value;
-                OnPropertyChanged(nameof(MinWordLength));
+                if (value >= FillwordTableBuilder.MinWordLength)
+                {
+                    gameSettings.MinWordLength = value;
+                    OnPropertyChanged(nameof(MinWordLength));
+                }
             }
         }
 
@@ -37,9 +45,14 @@ namespace FillwordWPF.ViewModels
             }
         }
 
+        public ICommand BackToMenuCommand { get; }
+        public ICommand SaveChanges { get; }
+        public ICommand ResetChanges { get; }
+
         public GameSettingsViewModel()
         {
             gameSettings = App.GameSettings;
+            SaveChanges = new RelayCommand(x => gameSettings.Save());
         }
     }
 }

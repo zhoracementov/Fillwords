@@ -31,7 +31,7 @@ namespace FillwordWPF.Infrastructure
             //TODO: create max len change by difficulty
         }
 
-        public override Fillword Build()
+        public override FillwordItem[,] Build()
         {
             while (TryGetRandomPoint(table, out var currPoint, rnd, pnt => pnt == null))
             {
@@ -134,7 +134,7 @@ namespace FillwordWPF.Infrastructure
                 }
             }
 
-            return new Fillword(wordsTable);
+            return wordsTable;
         }
 
         private (int Min, int Max) GetWordsLengthRange()

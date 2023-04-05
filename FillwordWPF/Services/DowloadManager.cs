@@ -6,26 +6,29 @@ using System.Threading.Tasks;
 
 namespace FillwordWPF.Services
 {
+    public delegate void ProgressChangedHandler(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage);
+
     public class DownloadManager : IDisposable
     {
-        private readonly HttpClient httpClient;
+        private const int bufferSize = 8192;
 
-        private readonly string downloadUrl;
-        private readonly string destinationFilePath;
+        private readonly HttpClient httpClient;
         private long fileSize;
         private long? totalFileSize;
         private bool isExist;
-        private const int bufferSize = 8192;
 
         private int connections;
 
-        public delegate void ProgressChangedHandler(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage);
-        public event ProgressChangedHandler ProgressChanged;
+        public string URL { get; }
+        public string OutputFilePath { get; }
+        public bool IsLoaded { get; private set; }
 
-        public DownloadManager(string downloadUrl, string destinationFilePath)
-        {
-            (this.downloadUrl, this.destinationFilePath, httpClient) = (downloadUrl, destinationFilePath, new HttpClient());
-        }
+        public event ProgressChangedHandler ProgressChanged;
+        public event EventHandler SuccessfullyDownloaded;
+
+        public DownloadManager(string url, string outputFilePath)
+            => (URL, OutputFilePath, httpClient)
+            =  (url, outputFilePath, new HttpClient());
 
         public async Task StartDownload()
         {
@@ -34,7 +37,7 @@ namespace FillwordWPF.Services
             {
                 try
                 {
-                    using var sizeRequest = await httpClient.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
+                    using var sizeRequest = await httpClient.GetAsync(URL, HttpCompletionOption.ResponseHeadersRead);
                     totalFileSize = sizeRequest.Content.Headers.ContentLength;
                     isConnect = true;
                     connections = 0;
@@ -45,15 +48,14 @@ namespace FillwordWPF.Services
                     connections++;
                     await Task.Delay(TimeSpan.FromSeconds(5));
                 }
-
             } while (!isConnect && connections <= 15);
 
             if (!isConnect) return;
 
-            isExist = File.Exists(destinationFilePath);
+            isExist = File.Exists(OutputFilePath);
             fileSize = GetFileSize();
 
-            var request = new HttpRequestMessage { RequestUri = new Uri(downloadUrl) };
+            var request = new HttpRequestMessage { RequestUri = new Uri(URL) };
             request.Headers.Range = new RangeHeaderValue(fileSize, null);
             using var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             await DownloadFileFromHttpResponseMessage(response);
@@ -82,7 +84,7 @@ namespace FillwordWPF.Services
             var isMoreToRead = true;
             var readCount = 0L;
 
-            using (var fileStream = new FileStream(destinationFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, true))
+            using (var fileStream = new FileStream(OutputFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, true))
             {
                 fileStream.Seek(fileSize, SeekOrigin.Begin);
 
@@ -137,6 +139,13 @@ namespace FillwordWPF.Services
                 progressPercentage = Math.Round((double)totalBytesRead / totalDownloadSize.Value * 100, 2);
 
             ProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
+
+            if (progressPercentage.HasValue && progressPercentage.Value == 100)
+            {
+                SuccessfullyDownloaded(this, new EventArgs());
+                IsLoaded = true;
+                Dispose();
+            }
         }
 
         private long GetFileSize()
@@ -144,7 +153,7 @@ namespace FillwordWPF.Services
             long? fileSize = null;
             if (isExist)
             {
-                fileSize = new FileInfo(destinationFilePath)?.Length;
+                fileSize = new FileInfo(OutputFilePath)?.Length;
 
                 var tail = fileSize % bufferSize;
                 if (tail != 0) fileSize -= bufferSize;
