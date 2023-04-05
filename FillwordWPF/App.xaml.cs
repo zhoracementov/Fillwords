@@ -1,6 +1,7 @@
 ﻿using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Configuration;
@@ -38,10 +39,15 @@ namespace FillwordWPF
         protected override async void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
+
             var host = Host;
             await host.StopAsync().ConfigureAwait(false);
             host.Dispose();
-            host = null;
+        }
+
+        public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
+        {
+            services.AddSingleton<MainWindowViewModel>();
         }
 
         public static string Version =>

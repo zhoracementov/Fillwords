@@ -1,6 +1,4 @@
-﻿using FillwordWPF.ViewModels;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 
@@ -11,7 +9,9 @@ namespace FillwordWPF
         [STAThread]
         public static void Main()
         {
-            _ = new App().Run(new MainWindow());
+            var app = new App();
+            app.InitializeComponent();
+            app.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] agrs)
@@ -20,14 +20,9 @@ namespace FillwordWPF
                 .UseContentRoot(App.CurrentDirectory)
                 .ConfigureAppConfiguration((host, cfg) => cfg
                 .SetBasePath(App.CurrentDirectory).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true))
-                .ConfigureServices(ConfigurateServices);
+                .ConfigureServices(App.ConfigurateServices);
 
             return host_builder;
-        }
-
-        private static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
-        {
-            services.AddSingleton<MainWindowViewModel>();
         }
     }
 }

@@ -8,11 +8,9 @@
         xmlns:v="clr-namespace:FillwordWPF.Views"
         xmlns:w="clr-namespace:FillwordWPF.Models"
         mc:Ignorable="d"
+        DataContext="{Binding MainWindowViewModel, Source={StaticResource ViewModelsLocator}}"
         Title="{Binding Title}"
         WindowStartupLocation="CenterScreen"
         Height="720"
         Width="1080">
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
 </Window>
