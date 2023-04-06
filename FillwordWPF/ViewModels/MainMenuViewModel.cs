@@ -1,5 +1,6 @@
 ﻿using FillwordWPF.Commands;
 using FillwordWPF.Services;
+using FillwordWPF.Services.Navigation;
 using FillwordWPF.Services.Serializers;
 using System.IO;
 using System.Windows;
@@ -7,7 +8,7 @@ using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
 {
-    internal class MenuWindowViewModel : ViewModel
+    internal class MainMenuViewModel : ViewModel
     {
         public const string MetaInfoFileName = "meta.json";
 
@@ -16,10 +17,20 @@ namespace FillwordWPF.ViewModels
         public ICommand OpenSettingsCommand { get; }
         public ICommand CloseAppCommand { get; }
 
-        public MenuWindowViewModel()
+
+        private INavigationService navigationService;
+        public INavigationService NavigationService
         {
+            get => navigationService;
+            set => Set(ref navigationService, value);
+        }
+
+        public MainMenuViewModel(INavigationService navigationService)
+        {
+            NavigationService = navigationService;
             ShowMetaInfoCommand = new RelayCommand(x => ShowMetaInfo());
             CloseAppCommand = new RelayCommand(x => CloseApplication());
+            OpenSettingsCommand = new RelayCommand(x => NavigationService.NavigateTo<SettingsViewModel>());
         }
 
         private void CloseApplication()

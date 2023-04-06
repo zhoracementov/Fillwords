@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
 {
-    internal class NewGamePageViewModel : ViewModel
+    internal class NewGameViewModel : ViewModel
     {
         public ICommand BackToMenuCommand { get; }
     }

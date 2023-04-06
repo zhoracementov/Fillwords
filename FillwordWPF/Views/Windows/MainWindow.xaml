@@ -3,14 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FillwordWPF"
-        xmlns:vm="clr-namespace:FillwordWPF.ViewModels"
-        xmlns:v="clr-namespace:FillwordWPF.Views"
-        xmlns:w="clr-namespace:FillwordWPF.Models"
         mc:Ignorable="d"
         DataContext="{Binding MainWindowViewModel, Source={StaticResource ViewModelsLocator}}"
         Title="{Binding Title}"
         WindowStartupLocation="CenterScreen"
         Height="720"
         Width="1080">
+    <Grid>
+        <ContentControl Content="{Binding NavigationService.CurrentViewModel}"> 
+            
+        </ContentControl>
+    </Grid>
 </Window>

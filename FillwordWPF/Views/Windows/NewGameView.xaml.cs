@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FillwordWPF.Views
+namespace FillwordWPF.Views.Windows
 {
     /// <summary>
-    /// Логика взаимодействия для NewGamePageView.xaml
+    /// Логика взаимодействия для NewGameView.xaml
     /// </summary>
-    public partial class NewGamePageView : Page
+    public partial class NewGameView : UserControl
     {
-        public NewGamePageView()
+        public NewGameView()
         {
             InitializeComponent();
         }

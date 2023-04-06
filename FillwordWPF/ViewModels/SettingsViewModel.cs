@@ -1,11 +1,12 @@
 ﻿using FillwordWPF.Commands;
 using FillwordWPF.Infrastructure;
 using FillwordWPF.Models;
+using FillwordWPF.Services.Navigation;
 using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
 {
-    internal class GameSettingsViewModel : ViewModel
+    internal class SettingsViewModel : ViewModel
     {
         private readonly GameSettingsService gameSettings;
 
@@ -45,14 +46,15 @@ namespace FillwordWPF.ViewModels
             }
         }
 
-        public ICommand BackToMenuCommand { get; }
-        public ICommand SaveChanges { get; }
-        public ICommand ResetChanges { get; }
+        public ICommand NavigateToMenuCommand { get; }
+        public ICommand SaveChangesCommand { get; }
+        public ICommand ResetChangesCommand { get; }
 
-        public GameSettingsViewModel()
+        public SettingsViewModel(INavigationService navigateService)
         {
             gameSettings = App.GameSettings;
-            SaveChanges = new RelayCommand(x => gameSettings.Save());
+            SaveChangesCommand = new RelayCommand(x => gameSettings.Save());
+            NavigateToMenuCommand = new RelayCommand(x => navigateService.NavigateTo<MainMenuViewModel>());
         }
     }
 }

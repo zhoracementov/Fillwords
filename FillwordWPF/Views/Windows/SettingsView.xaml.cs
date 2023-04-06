@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FillwordWPF.Views
+namespace FillwordWPF.Views.Windows
 {
     /// <summary>
-    /// Логика взаимодействия для SettingsPageView.xaml
+    /// Логика взаимодействия для SettingsView.xaml
     /// </summary>
-    public partial class SettingsPageView : Page
+    public partial class SettingsView : UserControl
     {
-        public SettingsPageView()
+        public SettingsView()
         {
             InitializeComponent();
         }

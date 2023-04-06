@@ -1,32 +1,27 @@
-﻿<Page x:Class="FillwordWPF.Views.SettingsPageView"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:FillwordWPF.Views"
-      xmlns:vm="clr-namespace:FillwordWPF.ViewModels"
-                 
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="SettingsPageView">
-    <Page.DataContext>
-        <vm:GameSettingsViewModel/>
-    </Page.DataContext>
+﻿<UserControl x:Class="FillwordWPF.Views.Windows.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FillwordWPF.Views.Windows"
+             mc:Ignorable="d" 
+             DataContext="{Binding GameSettingsViewModel, Source={StaticResource ViewModelsLocator}}"
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="Wheat">
         <DockPanel>
             <Grid DockPanel.Dock="Bottom" Margin="0, 35"/>
             <Button DockPanel.Dock="Top"
-                    Command="{Binding BackToMenuCommand}"
-                    FontSize="36"
-                    Content="Back"/>
-            <Button DockPanel.Dock="Top"
-                    Command="{Binding SaveChanges}"
+                    Command="{Binding SaveChangesCommand}"
                     FontSize="36"
                     Content="Save Changes"/>
             <Button DockPanel.Dock="Top"
-                    Command="{Binding ResetChanges}"
+                    Command="{Binding ResetChangesCommand}"
                     FontSize="36"
                     Content="Reset Changes"/>
+            <Button DockPanel.Dock="Top"
+                    Command="{Binding NavigateToMenuCommand}"
+                    FontSize="36"
+                    Content="Back"/>
             <Grid DockPanel.Dock="Top" Margin="0, 35"/>
             <TextBox DockPanel.Dock="Top" Text="{Binding Difficulty}"
                     VerticalAlignment="Center"
@@ -42,4 +37,4 @@
                     FontSize="36"/>
         </DockPanel>
     </Grid>
-</Page>
+</UserControl>

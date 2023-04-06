@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FillwordWPF.Views
+namespace FillwordWPF.Views.Windows
 {
     /// <summary>
-    /// Логика взаимодействия для GamePageView.xaml
+    /// Логика взаимодействия для MainMenuView.xaml
     /// </summary>
-    public partial class GamePageView : Page
+    public partial class MainMenuView : UserControl
     {
-        public GamePageView()
+        public MainMenuView()
         {
             InitializeComponent();
         }

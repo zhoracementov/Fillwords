@@ -25,8 +25,6 @@ namespace FillwordWPF.Services.Navigation
         public void NavigateTo<TViewModel>() where TViewModel : ViewModel
         {
             CurrentViewModel = viewModelFactory.Invoke(typeof(TViewModel));
-
-            throw new NotImplementedException();
         }
     }
 }

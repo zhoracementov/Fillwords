@@ -45,11 +45,6 @@ namespace FillwordWPF
             host.Dispose();
         }
 
-        public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
-        {
-            services.AddSingleton<MainWindowViewModel>();
-        }
-
         public static string Version =>
             ConfigurationManager.AppSettings["version"] ?? "Demo version";
 

@@ -5,9 +5,9 @@ namespace FillwordWPF.ViewModels
     internal class ViewModelsLocator
     {
         public MainWindowViewModel MainWindowViewModel => GetViewModel<MainWindowViewModel>();
-        public MenuWindowViewModel MenuWindowViewModel => GetViewModel<MenuWindowViewModel>();
-        public NewGamePageViewModel NewGamePageViewModel => GetViewModel<NewGamePageViewModel>();
-        public GameSettingsViewModel GameSettingsViewModel => GetViewModel<GameSettingsViewModel>();
+        public MainMenuViewModel MenuWindowViewModel => GetViewModel<MainMenuViewModel>();
+        public NewGameViewModel NewGamePageViewModel => GetViewModel<NewGameViewModel>();
+        public SettingsViewModel GameSettingsViewModel => GetViewModel<SettingsViewModel>();
 
         public TViewModel GetViewModel<TViewModel>() where TViewModel : ViewModel
         {
