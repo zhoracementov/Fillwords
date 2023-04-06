@@ -1,6 +1,6 @@
 ﻿using FillwordWPF.Models;
 
-namespace FillwordWPF.Infrastructure
+namespace FillwordWPF.Game
 {
     internal abstract class FillwordTableBuilder
     {

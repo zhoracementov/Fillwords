@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FillwordWPF.Infrastructure
+namespace FillwordWPF.Game
 {
     internal class Point
     {

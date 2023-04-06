@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace FillwordWPF.Infrastructure
+namespace FillwordWPF.Game
 {
     internal class WordInfoDefinitionConverter
     {

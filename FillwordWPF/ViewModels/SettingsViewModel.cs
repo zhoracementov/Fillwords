@@ -1,5 +1,5 @@
 ﻿using FillwordWPF.Commands;
-using FillwordWPF.Infrastructure;
+using FillwordWPF.Game;
 using FillwordWPF.Models;
 using FillwordWPF.Services.Navigation;
 using System.Windows.Input;

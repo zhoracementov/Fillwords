@@ -1,4 +1,4 @@
-﻿namespace FillwordWPF.Infrastructure.Extenstions
+﻿namespace FillwordWPF.Game.Extenstions
 {
     internal static class DifficultyExtention
     {

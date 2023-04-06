@@ -1,10 +1,10 @@
-﻿using FillwordWPF.Infrastructure.Extenstions;
+﻿using FillwordWPF.Game.Extenstions;
 using FillwordWPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FillwordWPF.Infrastructure
+namespace FillwordWPF.Game
 {
     internal class FillwordTableRandomBuilder : FillwordTableBuilder
     {

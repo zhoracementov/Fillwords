@@ -1,4 +1,4 @@
-﻿using FillwordWPF.Infrastructure;
+﻿using FillwordWPF.Game;
 using FillwordWPF.Models;
 
 namespace FillwordWPF.ViewModels

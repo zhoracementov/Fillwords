@@ -1,4 +1,4 @@
-﻿using FillwordWPF.Infrastructure;
+﻿using FillwordWPF.Game;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Serializers;
 using System;

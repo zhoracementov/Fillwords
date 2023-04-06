@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FillwordWPF.Infrastructure.Extenstions
+namespace FillwordWPF.Game.Extenstions
 {
     internal static class MatrixExtension
     {

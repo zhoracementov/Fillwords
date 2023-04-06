@@ -1,4 +1,4 @@
-﻿namespace FillwordWPF.Infrastructure
+﻿namespace FillwordWPF.Game
 {
     public enum Difficulty
     {

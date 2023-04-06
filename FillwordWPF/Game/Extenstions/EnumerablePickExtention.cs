@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FillwordWPF.Infrastructure.Extenstions
+namespace FillwordWPF.Game.Extenstions
 {
     internal static class EnumerablePickExtention
     {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace FillwordWPF.Infrastructure
+namespace FillwordWPF.Game
 {
     internal class WordInfo
     {

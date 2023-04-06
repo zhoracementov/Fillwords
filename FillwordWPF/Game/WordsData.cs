@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace FillwordWPF.Infrastructure
+namespace FillwordWPF.Game
 {
     internal class WordsData : Dictionary<string, WordInfo>
     {
