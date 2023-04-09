@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         DataContext="{Binding MainWindowViewModel, Source={StaticResource ViewModelsLocator}}"
-        Title="{Binding Version, Source={StaticResource Settings}}"
+        Title="{Binding Title}"
         WindowStartupLocation="CenterScreen"
         Height="720"
         Width="1080">

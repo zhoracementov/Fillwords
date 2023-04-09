@@ -9,7 +9,6 @@
     <Application.Resources>
         <ResourceDictionary>
             <vm:ViewModelsLocator x:Key="ViewModelsLocator"/>
-            <s:AppSettings x:Key="Settings"/>
             <!--<DataTemplate DataType="{x:Type TypeName=vm:MainWindowViewModel}">
                 <m:MainWindow/>
             </DataTemplate>-->

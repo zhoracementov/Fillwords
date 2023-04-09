@@ -8,6 +8,7 @@ namespace FillwordWPF.Services.Navigation
     internal class NavigationService : INavigationService, INotifyPropertyChanged
     {
         private readonly Func<Type, ViewModel> viewModelFactory;
+
         private ViewModel currentViewModel;
         public ViewModel CurrentViewModel
         {

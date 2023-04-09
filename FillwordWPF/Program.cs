@@ -1,4 +1,5 @@
-﻿using FillwordWPF.Services.Navigation;
+﻿using FillwordWPF.Services;
+using FillwordWPF.Services.Navigation;
 using FillwordWPF.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,19 +19,18 @@ namespace FillwordWPF
         }
 
         public static IConfigurationRoot Configuration { get; set; }
-        public static ServiceProvider ServiceProvider { get; set; }
 
         public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
         {
             services
+                .Configure<AppSettings>(Configuration.GetSection(nameof(AppSettings)))
                 .AddSingleton<MainWindowViewModel>()
                 .AddSingleton<MainMenuViewModel>()
                 .AddSingleton<SettingsViewModel>()
                 .AddSingleton<NewGameViewModel>()
                 .AddSingleton<INavigationService, NavigationService>()
-                .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt));
-
-            ServiceProvider = services.BuildServiceProvider();
+                .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
+                .BuildServiceProvider();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] agrs)
@@ -40,7 +40,7 @@ namespace FillwordWPF
                 .ConfigureAppConfiguration((host, cfg) =>
                 {
                     cfg = cfg.SetBasePath(App.CurrentDirectory)
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
                     Configuration = cfg.Build();
                 })
                 .ConfigureServices(ConfigurateServices);
