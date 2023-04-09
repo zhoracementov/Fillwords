@@ -5,16 +5,6 @@ namespace FillwordWPF.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
-        private static readonly string _title = "Fillwords " + App.Version;
-
-        private string title = _title;
-
-        public string Title
-        {
-            get => title;
-            private set => Set(ref title, value);
-        }
-
         private INavigationService navigationService;
         public INavigationService NavigationService
         {

@@ -17,18 +17,18 @@ namespace FillwordWPF
             app.Run();
         }
 
-        public static IConfiguration Configuration { get; set; }
+        public static IConfigurationRoot Configuration { get; set; }
         public static ServiceProvider ServiceProvider { get; set; }
 
         public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
         {
-            services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<MainMenuViewModel>();
-            services.AddSingleton<SettingsViewModel>();
-            services.AddSingleton<NewGameViewModel>();
-
-            services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt));
+            services
+                .AddSingleton<MainWindowViewModel>()
+                .AddSingleton<MainMenuViewModel>()
+                .AddSingleton<SettingsViewModel>()
+                .AddSingleton<NewGameViewModel>()
+                .AddSingleton<INavigationService, NavigationService>()
+                .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt));
 
             ServiceProvider = services.BuildServiceProvider();
         }

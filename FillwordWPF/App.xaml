@@ -4,13 +4,15 @@
              xmlns:vm="clr-namespace:FillwordWPF.ViewModels"
              xmlns:v="clr-namespace:FillwordWPF.Views.Windows"
              xmlns:m="clr-namespace:FillwordWPF"
+             xmlns:s="clr-namespace:FillwordWPF.Services"
              StartupUri="Views\Windows\MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <vm:ViewModelsLocator x:Key="ViewModelsLocator"/>
-            <DataTemplate DataType="{x:Type TypeName=vm:MainWindowViewModel}">
+            <s:AppSettings x:Key="Settings"/>
+            <!--<DataTemplate DataType="{x:Type TypeName=vm:MainWindowViewModel}">
                 <m:MainWindow/>
-            </DataTemplate>
+            </DataTemplate>-->
             <DataTemplate DataType="{x:Type TypeName=vm:MainMenuViewModel}">
                 <v:MainMenuView/>
             </DataTemplate>
