@@ -10,7 +10,6 @@ namespace FillwordWPF.ViewModels
     internal class NewGameViewModel : ViewModel
     {
         private readonly IWritableOptions<GameSettings> gameOptions;
-
         private readonly IDictionary<string, object> tempChanges;
 
         public int Size
@@ -20,9 +19,7 @@ namespace FillwordWPF.ViewModels
                 : gameOptions.Value.Size;
             set
             {
-                //gameOptions.Update(x => x.Size = value);
                 tempChanges[nameof(Size)] = value;
-
                 OnPropertyChanged();
             }
         }

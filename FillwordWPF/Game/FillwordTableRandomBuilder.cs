@@ -6,22 +6,22 @@ using System.Linq;
 
 namespace FillwordWPF.Game
 {
-    internal class FillwordTableRandomBuilder : FillwordTableBuilder
+    internal class FillwordTableRandomBuilder : IFillwordTableBuilder
     {
-        private readonly Random rnd = new Random(Environment.TickCount);
+        public const int MinWordLength = 2;
 
-        private readonly Node<Point>[,] table;
+        private static readonly Random rnd = new Random(Environment.TickCount);
+
+        private readonly WordsData words;
+        private readonly int minWordLength;
 
         private readonly int min;
         private readonly int max;
         private readonly int size;
 
-        public FillwordTableRandomBuilder(WordsData words, GameSettingsService gameSettings)
-            : base(words, gameSettings)
+        public FillwordTableRandomBuilder(WordsData words, int size)
         {
-            size = (int)gameSettings.Difficulty * 3;
-
-            this.table = new Node<Point>[size, size];
+            this.size = size;
 
             var (min, max) = GetWordsLengthRange();
 
@@ -31,8 +31,9 @@ namespace FillwordWPF.Game
             //TODO: create max len change by difficulty
         }
 
-        public override FillwordItem[,] Build()
+        public FillwordItem[,] Build()
         {
+            var table = new Node<Point>[size, size];
             while (TryGetRandomPoint(table, out var currPoint, rnd, pnt => pnt == null))
             {
                 var currNode = new Node<Point> { Value = currPoint };
