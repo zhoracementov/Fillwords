@@ -8,6 +8,30 @@
              DataContext="{Binding NewGamePageViewModel, Source={StaticResource ViewModelsLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="RosyBrown">
-        <Button Content="Back" Command = "{Binding BackToMenuCommand}" Margin="150, 150"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <TextBox DockPanel.Dock="Top" Text="{Binding Size}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    FontSize="36"/>
+        </Grid>
+        <Grid Grid.Column="3">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="2">
+                <Button Content="Start" Command = "{Binding NavigateToNewGameCommand}" Margin="50, 25"/>
+            </Grid>
+            <Grid Grid.Row="3">
+                <Button Content="Back" Command = "{Binding NavigateToMenuCommand}" Margin="50, 25"/>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

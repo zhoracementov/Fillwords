@@ -17,20 +17,16 @@ namespace FillwordWPF.ViewModels
         public ICommand OpenSettingsCommand { get; }
         public ICommand CloseAppCommand { get; }
 
-
-        private INavigationService navigationService;
-        public INavigationService NavigationService
-        {
-            get => navigationService;
-            set => Set(ref navigationService, value);
-        }
-
         public MainMenuViewModel(INavigationService navigationService)
         {
-            NavigationService = navigationService;
-            ShowMetaInfoCommand = new RelayCommand(x => ShowMetaInfo());
+            ShowMetaInfoCommand = new RelayCommand(x =>ShowMetaInfo());
             CloseAppCommand = new RelayCommand(x => CloseApplication());
-            OpenSettingsCommand = new RelayCommand(x => NavigationService.NavigateTo<SettingsViewModel>());
+
+            OpenSettingsCommand = new RelayCommand(x =>
+            navigationService.NavigateTo<SettingsViewModel>());
+
+            StartNewGameCommand = new RelayCommand(x =>
+            navigationService.NavigateTo<NewGameViewModel>());
         }
 
         private void CloseApplication()

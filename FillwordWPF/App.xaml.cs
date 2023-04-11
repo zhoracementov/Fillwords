@@ -16,18 +16,15 @@ namespace FillwordWPF
     /// </summary>
     public partial class App : Application
     {
-        public const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
-
+        //public const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
         public static bool IsDesignMode { get; set; } = true;
-        public static GameSettingsService GameSettings { get; set; } = new GameSettingsService(SettingsFileName);
-        public static DownloadDataService DownloadManager { get; set; } = new DownloadDataService(URL, SaveDataFileName);
 
         private static IHost host;
         public static IHost Host => host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            await DownloadManager.StartDownload();
+            //await DownloadManager.StartDownload();
 
             IsDesignMode = false;
 
@@ -48,11 +45,8 @@ namespace FillwordWPF
         public static string Version =>
             ConfigurationManager.AppSettings["version"] ?? "Demo version";
 
-        public static string SaveDataFileName =>
-            Path.Combine(CurrentDirectory, GameSettings.SaveDataFileName);
-
         public static string SettingsFileName =>
-            Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["recordsFilePath"] ?? "Records.json");
+            Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["recordsFilePath"]);
 
         public static string CurrentDirectory => IsDesignMode
                 ? Path.GetDirectoryName(GetSourceCodePath())

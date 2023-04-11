@@ -1,19 +1,11 @@
-﻿using FillwordWPF.Services;
-using FillwordWPF.Services.Navigation;
-using Microsoft.Extensions.Options;
-using System;
+﻿using FillwordWPF.Services.Navigation;
 
 namespace FillwordWPF.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
-        private string title = "Error";
-        public string Title
-        {
-            get => title;
-            set => Set(ref title, value);
-        }
-        
+        public string Title => App.Version;
+
         private INavigationService navigationService;
         public INavigationService NavigationService
         {
@@ -21,26 +13,10 @@ namespace FillwordWPF.ViewModels
             set => Set(ref navigationService, value);
         }
 
-        public MainWindowViewModel(INavigationService navigationService, IOptions<AppSettings> options)
+        public MainWindowViewModel(INavigationService navigationService)
         {
             NavigationService = navigationService;
-
-            Title = options.Value.Version;
-
-            //App.DownloadManager.ProgressChanged += DownloadManager_ProgressChanged;
-            //App.DownloadManager.SuccessfullyDownloaded += DownloadManager_SuccessfullyDownloaded;
-
             NavigationService.NavigateTo<MainMenuViewModel>();
         }
-
-        //private void DownloadManager_SuccessfullyDownloaded(object sender, EventArgs args)
-        //{
-        //    Title = _title;
-        //}
-
-        //private void DownloadManager_ProgressChanged(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage)
-        //{
-        //    Title = string.Format("[{0}/{1}]/{2}%", totalFileSize, totalFileSize, progressPercentage);
-        //}
     }
 }

@@ -8,33 +8,31 @@
              DataContext="{Binding GameSettingsViewModel, Source={StaticResource ViewModelsLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="Wheat">
-        <DockPanel>
-            <Grid DockPanel.Dock="Bottom" Margin="0, 35"/>
-            <Button DockPanel.Dock="Top"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="4">
+                <DockPanel Margin="5, 20">
+                    <Button DockPanel.Dock="Left" Margin="0, 15"
                     Command="{Binding SaveChangesCommand}"
-                    FontSize="36"
                     Content="Save Changes"/>
-            <Button DockPanel.Dock="Top"
+                    <Button DockPanel.Dock="Left" Margin="0, 15"
                     Command="{Binding ResetChangesCommand}"
-                    FontSize="36"
                     Content="Reset Changes"/>
-            <Button DockPanel.Dock="Top"
+                    <Button DockPanel.Dock="Left" Margin="0, 15"
                     Command="{Binding NavigateToMenuCommand}"
-                    FontSize="36"
                     Content="Back"/>
-            <Grid DockPanel.Dock="Top" Margin="0, 35"/>
-            <TextBox DockPanel.Dock="Top" Text="{Binding Difficulty}"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    FontSize="36"/>
-            <TextBox DockPanel.Dock="Bottom" Text="{Binding SaveDataFileName}"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    FontSize="36"/>
-            <TextBox DockPanel.Dock="Bottom" Text="{Binding MinWordLength}"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    FontSize="36"/>
-        </DockPanel>
+                </DockPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

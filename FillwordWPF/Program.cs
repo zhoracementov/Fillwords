@@ -1,5 +1,6 @@
 ﻿using FillwordWPF.Services;
 using FillwordWPF.Services.Navigation;
+using FillwordWPF.Services.WriteableOptions;
 using FillwordWPF.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,34 +19,35 @@ namespace FillwordWPF
             app.Run();
         }
 
-        public static IConfigurationRoot Configuration { get; set; }
-
-        public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
-        {
-            services
-                .Configure<AppSettings>(Configuration.GetSection(nameof(AppSettings)))
-                .AddSingleton<MainWindowViewModel>()
-                .AddSingleton<MainMenuViewModel>()
-                .AddSingleton<SettingsViewModel>()
-                .AddSingleton<NewGameViewModel>()
-                .AddSingleton<INavigationService, NavigationService>()
-                .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
-                .BuildServiceProvider();
-        }
-
         public static IHostBuilder CreateHostBuilder(string[] agrs)
         {
             var host_builder = Host.CreateDefaultBuilder(agrs)
                 .UseContentRoot(App.CurrentDirectory)
-                .ConfigureAppConfiguration((host, cfg) =>
-                {
-                    cfg = cfg.SetBasePath(App.CurrentDirectory)
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                    Configuration = cfg.Build();
-                })
+                .ConfigureAppConfiguration(ConfigureAppConfiguration)
                 .ConfigureServices(ConfigurateServices);
 
             return host_builder;
+        }
+
+        public static void ConfigureAppConfiguration(HostBuilderContext host, IConfigurationBuilder cfg)
+        {
+            cfg
+                .AddEnvironmentVariables()
+                .SetBasePath(App.CurrentDirectory)
+                .AddJsonFile("GameSettings.json", optional: false, reloadOnChange: true);
+        }
+
+        public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
+        {
+            services
+                .AddSingleton<MainWindowViewModel>()
+                .AddSingleton<MainMenuViewModel>()
+                .AddTransient<SettingsViewModel>()
+                .AddTransient<NewGameViewModel>()
+                .AddSingleton<GameViewModel>()
+                .AddSingleton<INavigationService, NavigationService>()
+                .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
+                .ConfigureWritable<GameSettings>(host.Configuration.GetSection(nameof(GameSettings)), "GameSettings.json");
         }
     }
 }

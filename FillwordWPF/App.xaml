@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:FillwordWPF.ViewModels"
              xmlns:v="clr-namespace:FillwordWPF.Views.Windows"
-             xmlns:m="clr-namespace:FillwordWPF"
-             xmlns:s="clr-namespace:FillwordWPF.Services"
              StartupUri="Views\Windows\MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -19,7 +17,10 @@
                 <v:SettingsView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type TypeName=vm:NewGameViewModel}">
-                <v:SettingsView/>
+                <v:NewGameView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type TypeName=vm:GameViewModel}">
+                <v:GameView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

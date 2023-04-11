@@ -1,10 +1,7 @@
-﻿using FillwordWPF.Game;
-
-namespace FillwordWPF.Services
+﻿namespace FillwordWPF.Services
 {
     internal class GameSettings
     {
-        public Difficulty Difficulty { get; set; }
-        public int MinWordLength { get; set; }
+        public int Size { get; set; }
     }
 }

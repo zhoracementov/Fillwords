@@ -8,8 +8,9 @@ namespace FillwordWPF.ViewModels
         public MainMenuViewModel MenuWindowViewModel => GetViewModel<MainMenuViewModel>();
         public NewGameViewModel NewGamePageViewModel => GetViewModel<NewGameViewModel>();
         public SettingsViewModel GameSettingsViewModel => GetViewModel<SettingsViewModel>();
+        public GameViewModel GameViewModel => GetViewModel<GameViewModel>();
 
-        public TViewModel GetViewModel<TViewModel>() where TViewModel : ViewModel
+        private TViewModel GetViewModel<TViewModel>() where TViewModel : ViewModel
         {
             return App.Host.Services.GetRequiredService<TViewModel>();
         }

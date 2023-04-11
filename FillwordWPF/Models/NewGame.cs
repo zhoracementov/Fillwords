@@ -28,8 +28,8 @@ namespace FillwordWPF.Models
         {
             ObjectSerializer = serializer;
 
-            GameSettings = App.GameSettings;
-            DownloadManager = App.DownloadManager;
+            //GameSettings = App.GameSettings;
+            //DownloadManager = App.DownloadManager;
 
             DownloadManager.SuccessfullyDownloaded += DownloadManager_SuccessfullyDownloaded;
         }
