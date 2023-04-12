@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              DataContext="{Binding MenuWindowViewModel, Source={StaticResource ViewModelsLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="DimGray">
+    <Grid>
         <Grid HorizontalAlignment="Right" Margin="50, 50" Width="250">
             <Grid.RowDefinitions>
                 <RowDefinition/>

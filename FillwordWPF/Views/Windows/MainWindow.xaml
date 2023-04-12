@@ -9,9 +9,10 @@
         WindowStartupLocation="CenterScreen"
         Height="720"
         Width="1080">
-    <Grid>
-        <ContentControl Content="{Binding NavigationService.CurrentViewModel}"> 
-            
-        </ContentControl>
-    </Grid>
+    <Border>
+        <Border.Background>
+            <ImageBrush ImageSource="/Data/Images/background.png"/>
+        </Border.Background>
+        <ContentControl Content="{Binding NavigationService.CurrentViewModel}"/>
+    </Border>
 </Window>
