@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              DataContext="{Binding GameSettingsViewModel, Source={StaticResource ViewModelsLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="Wheat">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>

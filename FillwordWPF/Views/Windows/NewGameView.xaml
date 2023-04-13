@@ -7,18 +7,282 @@
              mc:Ignorable="d" 
              DataContext="{Binding NewGamePageViewModel, Source={StaticResource ViewModelsLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="RosyBrown">
+    <UserControl.Resources>
+
+        <Style x:Key="ScrollBarLineTopButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Height="17" x:Name="down" CornerRadius="5" Margin="2">
+                            <Image Source="/Data/Images/arrow-top.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="17" Height="17"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="down" Value="DarkGoldenrod"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ScrollBarLineLeftButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Height="17" x:Name="down" CornerRadius="5" Margin="2">
+                            <Image Source="/Data/Images/arrow-left.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="17" Height="17"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="down" Value="DarkGoldenrod"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ScrollBarLineRightButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Height="17" x:Name="down" CornerRadius="5" Margin="2">
+                            <Image Source="/Data/Images/arrow-right.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="17" Height="17"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="down" Value="DarkGoldenrod"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ScrollBarLineBottomButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border Height="17" x:Name="down" CornerRadius="5" Margin="2">
+                            <!--<Polygon Fill="#3e3e40" Points="3,3 9,15 15,3"></Polygon>-->
+                            <Image Source="/Data/Images/arrow-down.png" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Width="17" Height="17"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="down" Value="DarkGoldenrod"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ScrollBarPageButtonStyle" TargetType="{x:Type RepeatButton}">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border BorderBrush="#4a4948"
+                                BorderThickness="1"
+                                CornerRadius="1"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Margin" Value="0,0,0,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="clickableTr" Margin="3,3,3,3" Background="#4a4948" CornerRadius="5"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="clickableTr" Value="DarkGoldenrod"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition MaxHeight="18"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition MaxHeight="18"/>
+                </Grid.RowDefinitions>
+
+                <RepeatButton Grid.Row="0" Height="18"
+                          Style="{StaticResource ScrollBarLineTopButtonStyle}"
+                          Command="ScrollBar.LineUpCommand" >
+                </RepeatButton>
+                <Track Name="PART_Track" Grid.Row="1"
+                   IsDirectionReversed="True">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Command="ScrollBar.PageUpCommand" Style="{StaticResource ScrollBarPageButtonStyle}" Width="2">
+                        </RepeatButton>
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumbStyle}">
+                        </Thumb>
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Command="ScrollBar.PageDownCommand" Style="{StaticResource ScrollBarPageButtonStyle}" Width="2">
+                        </RepeatButton>
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton Grid.Row="2" Height="18"
+                          Style="{StaticResource ScrollBarLineBottomButtonStyle}"
+                          Command="ScrollBar.LineDownCommand">
+                </RepeatButton>
+            </Grid>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="HorizontalScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="18"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MaxWidth="18"/>
+                </Grid.ColumnDefinitions>
+
+                <RepeatButton Grid.Column="0" Width="18"
+                          Style="{StaticResource ScrollBarLineLeftButtonStyle}"
+                          Command="ScrollBar.LineUpCommand" >
+                </RepeatButton>
+                <Track Name="PART_Track" Grid.Column="1"
+                   IsDirectionReversed="False">
+                    <Track.DecreaseRepeatButton>
+                        <RepeatButton Command="ScrollBar.PageUpCommand" Style="{StaticResource ScrollBarPageButtonStyle}" Height="2">
+                        </RepeatButton>
+                    </Track.DecreaseRepeatButton>
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumbStyle}">
+                        </Thumb>
+                    </Track.Thumb>
+                    <Track.IncreaseRepeatButton>
+                        <RepeatButton Command="ScrollBar.PageDownCommand" Style="{StaticResource ScrollBarPageButtonStyle}" Height="2">
+                        </RepeatButton>
+                    </Track.IncreaseRepeatButton>
+                </Track>
+                <RepeatButton Grid.Column="2" Width="18"
+                          Style="{StaticResource ScrollBarLineRightButtonStyle}"
+                          Command="ScrollBar.LineDownCommand">
+                </RepeatButton>
+            </Grid>
+        </ControlTemplate>
+        
+        <ControlTemplate x:Key="ScrollViewerControlTemplate1" TargetType="{x:Type ScrollViewer}">
+            <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Rectangle x:Name="Corner"
+                           Grid.Column="1"
+                           Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                           Grid.Row="1"/>
+                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                        CanContentScroll="{TemplateBinding CanContentScroll}"
+                                        CanHorizontallyScroll="False"
+                                        CanVerticallyScroll="False"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        Content="{TemplateBinding Content}"
+                                        Grid.Column="0"
+                                        Margin="{TemplateBinding Padding}"
+                                        Grid.Row="0"/>
+                <ScrollBar x:Name="PART_VerticalScrollBar"
+                           Template="{StaticResource VerticalScrollBar}"
+                           AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow"
+                           Grid.Column="1"
+                           Maximum="{TemplateBinding ScrollableHeight}"
+                           Minimum="0"
+                           Grid.Row="0"
+                           Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                           Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                           ViewportSize="{TemplateBinding ViewportHeight}"/>
+            </Grid>
+        </ControlTemplate>
+    </UserControl.Resources>
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
-            <TextBox DockPanel.Dock="Top" Text="{Binding Size}"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    FontSize="36"/>
+            <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate1}">
+                <StackPanel Orientation="Vertical">
+                    <TextBox Text="{Binding Size}"
+                             FontSize="256"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Background="Transparent"
+                             Foreground="DimGray"/>
+                    <TextBox Text="{Binding Size}"
+                             FontSize="256"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Background="Transparent"
+                             Foreground="DimGray"/>
+                    <TextBox Text="{Binding Size}"
+                             FontSize="256"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Background="Transparent"
+                             Foreground="DimGray"/>
+                    <TextBox Text="{Binding Size}"
+                             FontSize="256"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Background="Transparent"
+                             Foreground="DimGray"/>
+                    <TextBox Text="{Binding Size}"
+                             FontSize="256"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Background="Transparent"
+                             Foreground="DimGray"/>
+                    <TextBox Text="{Binding Size}"
+                             FontSize="256"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Background="Transparent"
+                             Foreground="DimGray"/>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
+        <!--<Grid Grid.ColumnSpan="3">
+            <ScrollBar Orientation="Horizontal"
+                       Template="{StaticResource HorizontalScrollBar}"
+                       Width="1in"
+                       Height="21"
+                       Minimum="0"
+                       Maximum="8">
+            </ScrollBar>
+        </Grid>-->
         <Grid Grid.Column="3">
             <Grid.RowDefinitions>
                 <RowDefinition/>
