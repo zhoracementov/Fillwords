@@ -1,4 +1,6 @@
-﻿using FillwordWPF.Services.Navigation;
+﻿using FillwordWPF.Commands;
+using FillwordWPF.Services.Navigation;
+using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
 {
@@ -13,10 +15,13 @@ namespace FillwordWPF.ViewModels
             set => Set(ref navigationService, value);
         }
 
+        public ICommand NavigateToMenuCommand { get; }
+
         public MainWindowViewModel(INavigationService navigationService)
         {
             NavigationService = navigationService;
             NavigationService.NavigateTo<MainMenuViewModel>();
+            NavigateToMenuCommand = new RelayCommand(x => NavigationService.NavigateTo<MainMenuViewModel>());
         }
     }
 }

@@ -9,6 +9,9 @@
         WindowStartupLocation="CenterScreen"
         Height="720"
         Width="1080">
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{Binding NavigateToMenuCommand}"/>
+    </Window.InputBindings>
     <Grid>
         <ContentControl Content="{Binding NavigationService.CurrentViewModel}"> 
             
