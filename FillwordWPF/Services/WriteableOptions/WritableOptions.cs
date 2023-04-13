@@ -33,20 +33,22 @@ namespace FillwordWPF.Services.WriteableOptions
         public T Value => options.CurrentValue;
         public T Get(string name) => options.Get(name);
 
-        public void Update(Action<T> applyChanges)
+        public async void Update(Action<T> applyChanges)
         {
             var fileProvider = environment.ContentRootFileProvider;
             var fileInfo = fileProvider.GetFileInfo(file);
             var physicalPath = fileInfo.PhysicalPath;
 
-            var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(physicalPath));
+            var fileText = await File.ReadAllTextAsync(physicalPath);
+
+            var jObject = JsonConvert.DeserializeObject<JObject>(fileText);
             var sectionObject = jObject.TryGetValue(this.section, out JToken section) ?
                 JsonConvert.DeserializeObject<T>(section.ToString()) : (Value ?? new T());
 
             applyChanges(sectionObject);
 
             jObject[this.section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
-            File.WriteAllText(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
+            await File.WriteAllTextAsync(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
             configuration.Reload();
         }
     }

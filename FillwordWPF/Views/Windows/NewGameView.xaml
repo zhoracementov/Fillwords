@@ -228,9 +228,9 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate1}">
@@ -273,6 +273,18 @@
                              Foreground="DimGray"/>
                 </StackPanel>
             </ScrollViewer>
+        </Grid>
+        <Grid Grid.Column="1">
+            <DockPanel>
+                <Grid Margin="0, 20" DockPanel.Dock="Bottom"/>
+                <ProgressBar DockPanel.Dock="Bottom" Value="{Binding DownloadProgressLevel}" Height="30"/>
+                <TextBlock DockPanel.Dock="Bottom"
+                           Text="{Binding DownloadProgressLevel}"
+                           Foreground="Wheat"
+                           FontSize="36"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+            </DockPanel>
         </Grid>
         <!--<Grid Grid.ColumnSpan="3">
             <ScrollBar Orientation="Horizontal"

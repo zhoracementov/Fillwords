@@ -12,8 +12,7 @@ namespace FillwordWPF.ViewModels
 
         public SettingsViewModel(INavigationService navigateService)
         {
-            NavigateToMenuCommand = new RelayCommand(x =>
-            navigateService.NavigateTo<MainMenuViewModel>());
+            NavigateToMenuCommand = new RelayCommand(x => navigateService.NavigateTo<MainMenuViewModel>());
         }
     }
 }

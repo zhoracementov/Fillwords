@@ -1,8 +1,12 @@
 ﻿using FillwordWPF.Commands;
+using FillwordWPF.Game;
+using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Navigation;
+using FillwordWPF.Services.Serializers;
 using FillwordWPF.Services.WriteableOptions;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
@@ -11,6 +15,14 @@ namespace FillwordWPF.ViewModels
     {
         private readonly IWritableOptions<GameSettings> gameOptions;
         private readonly IDictionary<string, object> tempChanges;
+
+        private FillwordItem[,] fillwordItems;
+
+        public FillwordItem[,] FillwordItems
+        {
+            get => fillwordItems;
+            set => Set(ref fillwordItems, value);
+        }
 
         public int Size
         {
@@ -24,6 +36,13 @@ namespace FillwordWPF.ViewModels
             }
         }
 
+        private double downloadProgressLevel;
+        public double DownloadProgressLevel
+        {
+            get => downloadProgressLevel;
+            set => Set(ref downloadProgressLevel, value);
+        }
+
         public ICommand NavigateToMenuCommand { get; }
         public ICommand NavigateToNewGameCommand { get; }
         public ICommand ResetChangesCommand { get; }
@@ -33,20 +52,49 @@ namespace FillwordWPF.ViewModels
             this.gameOptions = gameOptions;
             tempChanges = new Dictionary<string, object>();
 
-            NavigateToMenuCommand = new RelayCommand(x =>
-            navigationService.NavigateTo<MainMenuViewModel>());
-
+            NavigateToMenuCommand = new RelayCommand(x => navigationService.NavigateTo<MainMenuViewModel>());
             NavigateToNewGameCommand = new RelayCommand(x =>
-            Start(navigationService));
+            {
+                SaveChanges();
+                navigationService.NavigateTo<GameViewModel>();
+            });
 
-            ResetChangesCommand = new RelayCommand(x =>
-            ResetChanges());
+            ResetChangesCommand = new RelayCommand(x => ResetChanges());
+
+            if (!App.IsDesignMode)
+            {
+                DataDownload().ContinueWith(x => CreateFillword());
+            }
         }
 
-        public void Start(INavigationService navigationService)
+        private async Task CreateFillword()
         {
-            SaveChanges();
-            navigationService.NavigateTo<GameViewModel>();
+            FillwordItems = new FillwordTableRandomBuilder(
+                data ??= await new JsonObjectSerializer()
+                .DeserializeAsync<WordsData>(App.LoadedDataFileName), Size)
+                .Build();
+        }
+
+        private WordsData data;
+
+        private async Task DataDownload()
+        {
+            using (var manager = new DownloadDataService(App.URL, App.LoadedDataFileName))
+            {
+                manager.ProgressChanged += Manager_ProgressChanged;
+                await manager.StartDownload();
+            }
+        }
+
+        private async Task<T> DataParse<T>(T data) where T : IDictionary<string, WordInfo>
+        {
+            var json = new JsonObjectSerializer();
+            return await json.DeserializeAsync<T>(App.LoadedDataFileName);
+        }
+
+        private void Manager_ProgressChanged(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage)
+        {
+            DownloadProgressLevel = progressPercentage.Value;
         }
 
         public void SaveChanges()

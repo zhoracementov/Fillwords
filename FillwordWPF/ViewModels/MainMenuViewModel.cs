@@ -10,7 +10,7 @@ namespace FillwordWPF.ViewModels
 {
     internal class MainMenuViewModel : ViewModel
     {
-        public const string MetaInfoFileName = "meta.json";
+        public const string MetaInfoFileName = "Meta.json";
 
         public ICommand ShowMetaInfoCommand { get; }
         public ICommand StartNewGameCommand { get; }
@@ -19,14 +19,10 @@ namespace FillwordWPF.ViewModels
 
         public MainMenuViewModel(INavigationService navigationService)
         {
-            ShowMetaInfoCommand = new RelayCommand(x =>ShowMetaInfo());
+            ShowMetaInfoCommand = new RelayCommand(x => ShowMetaInfo());
             CloseAppCommand = new RelayCommand(x => CloseApplication());
-
-            OpenSettingsCommand = new RelayCommand(x =>
-            navigationService.NavigateTo<SettingsViewModel>());
-
-            StartNewGameCommand = new RelayCommand(x =>
-            navigationService.NavigateTo<NewGameViewModel>());
+            OpenSettingsCommand = new RelayCommand(x => navigationService.NavigateTo<SettingsViewModel>());
+            StartNewGameCommand = new RelayCommand(x => navigationService.NavigateTo<NewGameViewModel>());
         }
 
         private void CloseApplication()

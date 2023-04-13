@@ -33,7 +33,7 @@ namespace FillwordWPF
         {
             cfg
                 .SetBasePath(App.CurrentDirectory)
-                .AddJsonFile("GameSettings.json", optional: false, reloadOnChange: true);
+                .AddJsonFile(App.SettingsFileName, optional: false, reloadOnChange: true);
         }
 
         public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
@@ -41,12 +41,12 @@ namespace FillwordWPF
             services
                 .AddSingleton<MainWindowViewModel>()
                 .AddSingleton<MainMenuViewModel>()
-                .AddTransient<SettingsViewModel>()
+                .AddSingleton<SettingsViewModel>()
                 .AddTransient<NewGameViewModel>()
                 .AddSingleton<GameViewModel>()
                 .AddSingleton<INavigationService, NavigationService>()
                 .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
-                .ConfigureWritable<GameSettings>(host.Configuration.GetSection(nameof(GameSettings)), "GameSettings.json");
+                .ConfigureWritable<GameSettings>(host.Configuration.GetSection(nameof(GameSettings)), App.SettingsFileName);
         }
     }
 }

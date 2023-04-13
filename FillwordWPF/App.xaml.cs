@@ -16,7 +16,8 @@ namespace FillwordWPF
     /// </summary>
     public partial class App : Application
     {
-        //public const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
+        public const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
+        
         public static bool IsDesignMode { get; set; } = true;
 
         private static IHost host;
@@ -45,8 +46,14 @@ namespace FillwordWPF
         public static string Version =>
             ConfigurationManager.AppSettings["version"] ?? "Demo version";
 
+        public static string LoadedDataFileName =>
+            Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["loadedDataFileName"] ?? "Data.json");
+
+        public static string SettingsFileFullName =>
+            Path.Combine(CurrentDirectory, SettingsFileName);
+
         public static string SettingsFileName =>
-            Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["recordsFilePath"]);
+            ConfigurationManager.AppSettings["recordsFilePath"] ?? "GameSettings.json";
 
         public static string CurrentDirectory => IsDesignMode
                 ? Path.GetDirectoryName(GetSourceCodePath())

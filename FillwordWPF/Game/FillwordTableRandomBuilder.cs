@@ -21,6 +21,7 @@ namespace FillwordWPF.Game
 
         public FillwordTableRandomBuilder(WordsData words, int size)
         {
+            this.words = words;
             this.size = size;
 
             var (min, max) = GetWordsLengthRange();

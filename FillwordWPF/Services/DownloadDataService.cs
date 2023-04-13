@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace FillwordWPF.Services
 {
-    public delegate void ProgressChangedHandler(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage);
-
     public class DownloadDataService : IDisposable
     {
         private const int bufferSize = 8192;
@@ -23,6 +21,7 @@ namespace FillwordWPF.Services
         public string OutputFilePath { get; }
         public bool IsLoaded { get; private set; }
 
+        public delegate void ProgressChangedHandler(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage);
         public event ProgressChangedHandler ProgressChanged;
         public event EventHandler SuccessfullyDownloaded;
 
@@ -138,13 +137,13 @@ namespace FillwordWPF.Services
             if (totalDownloadSize.HasValue)
                 progressPercentage = Math.Round((double)totalBytesRead / totalDownloadSize.Value * 100, 2);
 
-            ProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
+            ProgressChanged?.Invoke(totalDownloadSize, totalBytesRead, progressPercentage);
 
             if (progressPercentage.HasValue && progressPercentage.Value == 100)
             {
-                SuccessfullyDownloaded(this, new EventArgs());
+                SuccessfullyDownloaded?.Invoke(this, new EventArgs());
                 IsLoaded = true;
-                Dispose();
+                //Dispose();
             }
         }
 
