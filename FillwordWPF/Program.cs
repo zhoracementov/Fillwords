@@ -32,7 +32,6 @@ namespace FillwordWPF
         public static void ConfigureAppConfiguration(HostBuilderContext host, IConfigurationBuilder cfg)
         {
             cfg
-                .AddEnvironmentVariables()
                 .SetBasePath(App.CurrentDirectory)
                 .AddJsonFile("GameSettings.json", optional: false, reloadOnChange: true);
         }
