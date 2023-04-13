@@ -290,8 +290,11 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="1">
                 <Button Content="Start" Command = "{Binding NavigateToNewGameCommand}" Margin="50, 25"/>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Button Content="Reset" Command = "{Binding ResetChangesCommand}" Margin="50, 25"/>
             </Grid>
             <Grid Grid.Row="3">
                 <Button Content="Back" Command = "{Binding NavigateToMenuCommand}" Margin="50, 25"/>
