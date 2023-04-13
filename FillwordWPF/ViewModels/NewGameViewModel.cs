@@ -25,7 +25,6 @@ namespace FillwordWPF.ViewModels
         }
 
         public ICommand NavigateToMenuCommand { get; }
-        public ICommand ResetSettingsCommand { get; }
         public ICommand NavigateToNewGameCommand { get; }
 
         public NewGameViewModel(INavigationService navigationService, IWritableOptions<GameSettings> gameOptions)
@@ -38,8 +37,6 @@ namespace FillwordWPF.ViewModels
 
             NavigateToNewGameCommand = new RelayCommand(x =>
             Start(navigationService));
-
-            ResetSettingsCommand = new RelayCommand(x => ResetChanges());
         }
 
         public void Start(INavigationService navigationService)
@@ -55,16 +52,6 @@ namespace FillwordWPF.ViewModels
             {
                 var property = type.GetProperty(item.Key);
                 gameOptions.Update(x => property.SetValue(x, item.Value));
-            }
-        }
-
-        public void ResetChanges()
-        {
-            tempChanges.Clear();
-            var properties = GetType().GetProperties();
-            foreach (var property in properties)
-            {
-                OnPropertyChanged(property.Name);
             }
         }
     }
