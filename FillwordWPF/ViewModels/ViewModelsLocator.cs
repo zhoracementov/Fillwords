@@ -9,6 +9,7 @@ namespace FillwordWPF.ViewModels
         public NewGameViewModel NewGamePageViewModel => GetViewModel<NewGameViewModel>();
         public SettingsViewModel GameSettingsViewModel => GetViewModel<SettingsViewModel>();
         public GameViewModel GameViewModel => GetViewModel<GameViewModel>();
+        public FillwordViewModel FillwordViewModel => GetViewModel<FillwordViewModel>();
 
         private TViewModel GetViewModel<TViewModel>() where TViewModel : ViewModel
         {

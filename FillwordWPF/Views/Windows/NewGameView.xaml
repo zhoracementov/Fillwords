@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:FillwordWPF.Views.Windows"
+             xmlns:v="clr-namespace:FillwordWPF.Views.Windows"
              mc:Ignorable="d" 
              DataContext="{Binding NewGamePageViewModel, Source={StaticResource ViewModelsLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -20,7 +20,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" TargetName="down" Value="DarkGoldenrod"/>
+                                <Setter Property="Background" TargetName="down" Value="#d2a123"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -39,7 +39,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" TargetName="down" Value="DarkGoldenrod"/>
+                                <Setter Property="Background" TargetName="down" Value="#d2a123"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -58,7 +58,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" TargetName="down" Value="DarkGoldenrod"/>
+                                <Setter Property="Background" TargetName="down" Value="#d2a123"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -78,7 +78,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" TargetName="down" Value="DarkGoldenrod"/>
+                                <Setter Property="Background" TargetName="down" Value="#d2a123"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -114,7 +114,7 @@
                         <Border x:Name="clickableTr" Margin="3,3,3,3" Background="#4a4948" CornerRadius="5"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" TargetName="clickableTr" Value="DarkGoldenrod"/>
+                                <Setter Property="Background" TargetName="clickableTr" Value="#d2a123"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -276,14 +276,8 @@
         </Grid>
         <Grid Grid.Column="1">
             <DockPanel>
-                <Grid Margin="0, 20" DockPanel.Dock="Bottom"/>
                 <ProgressBar DockPanel.Dock="Bottom" Value="{Binding DownloadProgressLevel}" Height="30"/>
-                <TextBlock DockPanel.Dock="Bottom"
-                           Text="{Binding DownloadProgressLevel}"
-                           Foreground="Wheat"
-                           FontSize="36"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Center"/>
+                <v:FillwordView DockPanel.Dock="Bottom"/>
             </DockPanel>
         </Grid>
         <!--<Grid Grid.ColumnSpan="3">
@@ -302,8 +296,11 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="0">
                 <Button Content="Start" Command = "{Binding NavigateToNewGameCommand}" Margin="50, 25"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Button Content="Reload" Command = "{Binding ReloadFillwordCommand}" Margin="50, 25"/>
             </Grid>
             <Grid Grid.Row="2">
                 <Button Content="Reset" Command = "{Binding ResetChangesCommand}" Margin="50, 25"/>

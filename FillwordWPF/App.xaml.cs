@@ -16,8 +16,6 @@ namespace FillwordWPF
     /// </summary>
     public partial class App : Application
     {
-        public const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
-        
         public static bool IsDesignMode { get; set; } = true;
 
         private static IHost host;
@@ -25,10 +23,7 @@ namespace FillwordWPF
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            //await DownloadManager.StartDownload();
-
             IsDesignMode = false;
-
             base.OnStartup(e);
 
             await Host.StartAsync().ConfigureAwait(false);
@@ -43,17 +38,20 @@ namespace FillwordWPF
             host.Dispose();
         }
 
+        public static string URL =>
+            ConfigurationManager.AppSettings["url"];
+
         public static string Version =>
             ConfigurationManager.AppSettings["version"] ?? "Demo version";
 
         public static string LoadedDataFileName =>
-            Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["loadedDataFileName"] ?? "Data.json");
+            Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["loadedDataFileName"]);
 
         public static string SettingsFileFullName =>
             Path.Combine(CurrentDirectory, SettingsFileName);
 
         public static string SettingsFileName =>
-            ConfigurationManager.AppSettings["recordsFilePath"] ?? "GameSettings.json";
+            ConfigurationManager.AppSettings["recordsFilePath"];
 
         public static string CurrentDirectory => IsDesignMode
                 ? Path.GetDirectoryName(GetSourceCodePath())

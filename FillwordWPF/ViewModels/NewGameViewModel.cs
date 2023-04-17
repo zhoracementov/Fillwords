@@ -14,15 +14,8 @@ namespace FillwordWPF.ViewModels
     internal class NewGameViewModel : ViewModel
     {
         private readonly IWritableOptions<GameSettings> gameOptions;
+        private readonly DownloadDataService downloadDataService;
         private readonly IDictionary<string, object> tempChanges;
-
-        private FillwordItem[,] fillwordItems;
-
-        public FillwordItem[,] FillwordItems
-        {
-            get => fillwordItems;
-            set => Set(ref fillwordItems, value);
-        }
 
         public int Size
         {
@@ -44,12 +37,15 @@ namespace FillwordWPF.ViewModels
         }
 
         public ICommand NavigateToMenuCommand { get; }
+        public ICommand ReloadFillwordCommand { get; }
         public ICommand NavigateToNewGameCommand { get; }
         public ICommand ResetChangesCommand { get; }
 
-        public NewGameViewModel(INavigationService navigationService, IWritableOptions<GameSettings> gameOptions)
+        public NewGameViewModel(INavigationService navigationService, IWritableOptions<GameSettings> gameOptions, DownloadDataService downloadDataService)
         {
             this.gameOptions = gameOptions;
+            this.downloadDataService = downloadDataService;
+
             tempChanges = new Dictionary<string, object>();
 
             NavigateToMenuCommand = new RelayCommand(x => navigationService.NavigateTo<MainMenuViewModel>());
@@ -61,38 +57,10 @@ namespace FillwordWPF.ViewModels
 
             ResetChangesCommand = new RelayCommand(x => ResetChanges());
 
-            if (!App.IsDesignMode)
-            {
-                DataDownload().ContinueWith(x => CreateFillword());
-            }
+            downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
         }
 
-        private async Task CreateFillword()
-        {
-            FillwordItems = new FillwordTableRandomBuilder(
-                data ??= await new JsonObjectSerializer()
-                .DeserializeAsync<WordsData>(App.LoadedDataFileName), Size)
-                .Build();
-        }
-
-        private WordsData data;
-
-        private async Task DataDownload()
-        {
-            using (var manager = new DownloadDataService(App.URL, App.LoadedDataFileName))
-            {
-                manager.ProgressChanged += Manager_ProgressChanged;
-                await manager.StartDownload();
-            }
-        }
-
-        private async Task<T> DataParse<T>(T data) where T : IDictionary<string, WordInfo>
-        {
-            var json = new JsonObjectSerializer();
-            return await json.DeserializeAsync<T>(App.LoadedDataFileName);
-        }
-
-        private void Manager_ProgressChanged(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage)
+        private void DownloadDataService_ProgressChanged(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage)
         {
             DownloadProgressLevel = progressPercentage.Value;
         }

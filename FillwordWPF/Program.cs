@@ -19,34 +19,27 @@ namespace FillwordWPF
             app.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] agrs)
-        {
-            var host_builder = Host.CreateDefaultBuilder(agrs)
+        public static IHostBuilder CreateHostBuilder(string[] agrs) => Host
+                .CreateDefaultBuilder(agrs)
                 .UseContentRoot(App.CurrentDirectory)
                 .ConfigureAppConfiguration(ConfigureAppConfiguration)
                 .ConfigureServices(ConfigurateServices);
 
-            return host_builder;
-        }
-
-        public static void ConfigureAppConfiguration(HostBuilderContext host, IConfigurationBuilder cfg)
-        {
-            cfg
+        public static void ConfigureAppConfiguration(HostBuilderContext host, IConfigurationBuilder cfg) => cfg
                 .SetBasePath(App.CurrentDirectory)
                 .AddJsonFile(App.SettingsFileName, optional: false, reloadOnChange: true);
-        }
 
-        public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services)
-        {
-            services
+        public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services) => services
                 .AddSingleton<MainWindowViewModel>()
                 .AddSingleton<MainMenuViewModel>()
                 .AddSingleton<SettingsViewModel>()
-                .AddTransient<NewGameViewModel>()
+                .AddSingleton<NewGameViewModel>()
                 .AddSingleton<GameViewModel>()
+                .AddTransient<FillwordViewModel>()
                 .AddSingleton<INavigationService, NavigationService>()
+                .AddSingleton<DownloadDataInfo>()
+                .AddSingleton<DownloadDataService>()
                 .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
                 .ConfigureWritable<GameSettings>(host.Configuration.GetSection(nameof(GameSettings)), App.SettingsFileName);
-        }
     }
 }

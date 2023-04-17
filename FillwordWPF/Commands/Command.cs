@@ -11,7 +11,7 @@ namespace FillwordWPF.Commands
             remove => CommandManager.RequerySuggested -= value;
         }
 
-        public virtual bool CanExecute(object parameter) => true;
+        public abstract bool CanExecute(object parameter);
         public abstract void Execute(object parameter);
     }
 }

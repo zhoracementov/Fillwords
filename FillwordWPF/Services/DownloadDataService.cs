@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace FillwordWPF.Services
 {
-    public class DownloadDataService : IDisposable
+    public delegate void ProgressChangedHandler(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage);
+
+    internal class DownloadDataService : IDisposable
     {
         private const int bufferSize = 8192;
 
@@ -18,16 +20,16 @@ namespace FillwordWPF.Services
         private int connections;
 
         public string URL { get; }
-        public string OutputFilePath { get; }
+        public string LoadedDataFileName { get; }
         public bool IsLoaded { get; private set; }
+        public bool IsDisposed { get; private set; }
 
-        public delegate void ProgressChangedHandler(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage);
         public event ProgressChangedHandler ProgressChanged;
         public event EventHandler SuccessfullyDownloaded;
 
-        public DownloadDataService(string url, string outputFilePath)
-            => (URL, OutputFilePath, httpClient)
-            =  (url, outputFilePath, new HttpClient());
+        public DownloadDataService(DownloadDataInfo downloadDataInfo)
+            => (URL, LoadedDataFileName, httpClient)
+            =  (downloadDataInfo.URL, downloadDataInfo.LoadedDataFileName, new HttpClient());
 
         public async Task StartDownload()
         {
@@ -51,7 +53,7 @@ namespace FillwordWPF.Services
 
             if (!isConnect) return;
 
-            isExist = File.Exists(OutputFilePath);
+            isExist = File.Exists(LoadedDataFileName);
             fileSize = GetFileSize();
 
             var request = new HttpRequestMessage { RequestUri = new Uri(URL) };
@@ -83,7 +85,7 @@ namespace FillwordWPF.Services
             var isMoreToRead = true;
             var readCount = 0L;
 
-            using (var fileStream = new FileStream(OutputFilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, true))
+            using (var fileStream = new FileStream(LoadedDataFileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, true))
             {
                 fileStream.Seek(fileSize, SeekOrigin.Begin);
 
@@ -147,12 +149,12 @@ namespace FillwordWPF.Services
             }
         }
 
-        private long GetFileSize()
+        public long GetFileSize()
         {
             long? fileSize = null;
             if (isExist)
             {
-                fileSize = new FileInfo(OutputFilePath)?.Length;
+                fileSize = new FileInfo(LoadedDataFileName)?.Length;
 
                 var tail = fileSize % bufferSize;
                 if (tail != 0) fileSize -= bufferSize;
@@ -163,6 +165,10 @@ namespace FillwordWPF.Services
 
         public void Dispose()
         {
+            if (IsDisposed)
+                return;
+
+            IsDisposed = true;
             httpClient?.Dispose();
         }
     }
