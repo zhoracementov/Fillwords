@@ -25,7 +25,7 @@ namespace FillwordWPF.Services
         public bool IsDisposed { get; private set; }
 
         public event ProgressChangedHandler ProgressChanged;
-        public event EventHandler SuccessfullyDownloaded;
+        public event ProgressChangedHandler SuccessfullyDownloaded;
 
         public DownloadDataService(DownloadDataInfo downloadDataInfo)
             => (URL, LoadedDataFileName, httpClient)
@@ -143,9 +143,8 @@ namespace FillwordWPF.Services
 
             if (progressPercentage.HasValue && progressPercentage.Value == 100)
             {
-                SuccessfullyDownloaded?.Invoke(this, new EventArgs());
+                SuccessfullyDownloaded?.Invoke(totalDownloadSize, totalBytesRead, progressPercentage);
                 IsLoaded = true;
-                //Dispose();
             }
         }
 

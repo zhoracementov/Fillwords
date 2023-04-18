@@ -16,7 +16,7 @@
                 <DataTemplate>
                     <DockPanel>
                         <TextBlock Text="{Binding Word}" DockPanel.Dock="Bottom" FontSize="14" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <Button Content="{Binding Letter}" DockPanel.Dock="Top" FontSize="20">
+                        <Button Content="{Binding Letter}" DockPanel.Dock="Top" FontSize="24">
                         </Button>
                     </DockPanel>
                 </DataTemplate>

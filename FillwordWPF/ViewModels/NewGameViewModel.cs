@@ -59,6 +59,7 @@ namespace FillwordWPF.ViewModels
             });
 
             ResetChangesCommand = new RelayCommand(x => ResetChanges());
+            ReloadFillwordCommand = new RelayCommand(x => fillwordViewModel.ReloadFillwordCommand.Execute(null));
 
             downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
         }

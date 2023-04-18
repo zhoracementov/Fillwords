@@ -1,4 +1,5 @@
-﻿using FillwordWPF.Game;
+﻿using FillwordWPF.Commands;
+using FillwordWPF.Game;
 using FillwordWPF.Game.Extenstions;
 using FillwordWPF.Models;
 using FillwordWPF.Services;
@@ -10,13 +11,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
 {
     internal class FillwordViewModel : ViewModel
     {
         private readonly IWritableOptions<GameSettings> options;
-        private readonly DownloadDataService downloadDataService;
         private WordsData data;
 
         private int size;
@@ -37,30 +38,39 @@ namespace FillwordWPF.ViewModels
             set => Set(ref fillwordItemsLinear, value);
         }
 
+
+        public ICommand ReloadFillwordCommand { get; }
+        
         public FillwordViewModel(IWritableOptions<GameSettings> options, DownloadDataService downloadDataService)
         {
             this.options = options;
-            this.downloadDataService = downloadDataService;
             this.Size = options.Value.Size;
 
             if (!App.IsDesignMode)
             {
-                DataDownloadAsync().ContinueWith(x => CreateFillwordAsync());
+                StartService(downloadDataService);
             }
+            ReloadFillwordCommand = new RelayCommand(x => CreateFillwordAsync());
         }
 
-        public async Task CreateFillwordAsync()
+        public async void StartService(DownloadDataService downloadDataService)
         {
-            var fillwordItems = new FillwordTableRandomBuilder(
+            await DataDownloadAsync(downloadDataService);
+            downloadDataService.SuccessfullyDownloaded += (a, b, c) => CreateFillwordAsync();
+        }
+
+        public async void CreateFillwordAsync()
+        {
+            var fillwordItems = await Task.Run(async () =>
+                new FillwordTableRandomBuilder(
                 data ??= await new JsonObjectSerializer()
                 .DeserializeAsync<WordsData>(App.LoadedDataFileName), Size)
-                .Build()
-                .AsLinear();
+                .Build());
 
-            FillwordItemsLinear = new ObservableCollection<FillwordItem>(fillwordItems);
+            FillwordItemsLinear = new ObservableCollection<FillwordItem>(fillwordItems.AsLinear());
         }
 
-        public async Task DataDownloadAsync()
+        public async Task DataDownloadAsync(DownloadDataService downloadDataService)
         {
             if (downloadDataService.IsDisposed)
                 return;
