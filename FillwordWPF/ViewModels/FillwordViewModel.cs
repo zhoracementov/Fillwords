@@ -26,8 +26,10 @@ namespace FillwordWPF.ViewModels
             get => size;
             set
             {
-                Set(ref size, value);
-                CreateFillwordAsync();
+                if (Set(ref size, value) && (data != null))
+                {
+                    CreateFillwordAsync();
+                }
             }
         }
 
@@ -38,25 +40,36 @@ namespace FillwordWPF.ViewModels
             set => Set(ref fillwordItemsLinear, value);
         }
 
-
-        public ICommand ReloadFillwordCommand { get; }
-        
         public FillwordViewModel(IWritableOptions<GameSettings> options, DownloadDataService downloadDataService)
         {
-            this.options = options;
-            this.Size = options.Value.Size;
+            FillwordItemsLinear = new ObservableCollection<FillwordItem>();
 
             if (!App.IsDesignMode)
             {
                 StartService(downloadDataService);
+                this.options = options;
+                this.Size = options.Value.Size;
             }
-            ReloadFillwordCommand = new RelayCommand(x => CreateFillwordAsync());
+            else
+            {
+                this.Size = 4;
+                var words = new string[] { "test1, test2, test3, test4, test5" };
+                var items = (WordsData)words.ToDictionary(k => k, v => (WordInfo)null);
+
+                var fillwordItems = new FillwordTableRandomBuilder(
+                    data ??= new JsonObjectSerializer()
+                    .Deserialize<WordsData>(App.LoadedDataFileName), Size)
+                    .Build()
+    .               AsLinear();
+
+                FillwordItemsLinear = new ObservableCollection<FillwordItem>(fillwordItems);
+            }
         }
 
         public async void StartService(DownloadDataService downloadDataService)
         {
-            await DataDownloadAsync(downloadDataService);
             downloadDataService.SuccessfullyDownloaded += (a, b, c) => CreateFillwordAsync();
+            await DataDownloadAsync(downloadDataService);
         }
 
         public async void CreateFillwordAsync()
@@ -65,9 +78,10 @@ namespace FillwordWPF.ViewModels
                 new FillwordTableRandomBuilder(
                 data ??= await new JsonObjectSerializer()
                 .DeserializeAsync<WordsData>(App.LoadedDataFileName), Size)
-                .Build());
+                .Build()
+                .AsLinear());
 
-            FillwordItemsLinear = new ObservableCollection<FillwordItem>(fillwordItems.AsLinear());
+            FillwordItemsLinear = new ObservableCollection<FillwordItem>(fillwordItems);
         }
 
         public async Task DataDownloadAsync(DownloadDataService downloadDataService)

@@ -11,23 +11,24 @@ namespace FillwordWPF.Services
     internal class DownloadDataService : IDisposable
     {
         private const int bufferSize = 8192;
+        private const int ConnectionAttemps = 15;
+        private const int ConnectionWaitSeconds = 5;
 
         private readonly HttpClient httpClient;
-        private long fileSize;
-        private long? totalFileSize;
-        private bool isExist;
 
+        private long fileSize;
+        private bool isExist;
         private int connections;
 
         public string URL { get; }
         public string LoadedDataFileName { get; }
-        public bool IsLoaded { get; private set; }
         public bool IsDisposed { get; private set; }
+        public long? TotalFileSize { get; private set; }
 
         public event ProgressChangedHandler ProgressChanged;
         public event ProgressChangedHandler SuccessfullyDownloaded;
 
-        public DownloadDataService(DownloadDataInfo downloadDataInfo)
+        public DownloadDataService(DownloadDataInput downloadDataInfo)
             => (URL, LoadedDataFileName, httpClient)
             =  (downloadDataInfo.URL, downloadDataInfo.LoadedDataFileName, new HttpClient());
 
@@ -39,22 +40,24 @@ namespace FillwordWPF.Services
                 try
                 {
                     using var sizeRequest = await httpClient.GetAsync(URL, HttpCompletionOption.ResponseHeadersRead);
-                    totalFileSize = sizeRequest.Content.Headers.ContentLength;
+                    TotalFileSize = sizeRequest.Content.Headers.ContentLength;
                     isConnect = true;
                     connections = 0;
                 }
                 catch (Exception e)
                 {
-                    //Console.WriteLine(e.Message);
                     connections++;
-                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(ConnectionWaitSeconds));
                 }
-            } while (!isConnect && connections <= 15);
+            } while (!isConnect && connections <= ConnectionAttemps);
 
             if (!isConnect) return;
 
             isExist = File.Exists(LoadedDataFileName);
             fileSize = GetFileSize();
+
+            if (fileSize == TotalFileSize)
+                return;
 
             var request = new HttpRequestMessage { RequestUri = new Uri(URL) };
             request.Headers.Range = new RangeHeaderValue(fileSize, null);
@@ -69,11 +72,11 @@ namespace FillwordWPF.Services
             if (response.IsSuccessStatusCode)
             {
                 using var contentStream = await response.Content.ReadAsStreamAsync();
-                await ProcessContentStream(totalFileSize, contentStream);
+                await ProcessContentStream(TotalFileSize, contentStream);
             }
             else
             {
-                if (fileSize != totalFileSize)
+                if (fileSize != TotalFileSize)
                     response.EnsureSuccessStatusCode();
             }
         }
@@ -144,11 +147,10 @@ namespace FillwordWPF.Services
             if (progressPercentage.HasValue && progressPercentage.Value == 100)
             {
                 SuccessfullyDownloaded?.Invoke(totalDownloadSize, totalBytesRead, progressPercentage);
-                IsLoaded = true;
             }
         }
 
-        public long GetFileSize()
+        private long GetFileSize()
         {
             long? fileSize = null;
             if (isExist)

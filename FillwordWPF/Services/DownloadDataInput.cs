@@ -4,17 +4,17 @@ using System.Text;
 
 namespace FillwordWPF.Services
 {
-    internal class DownloadDataInfo
+    internal class DownloadDataInput
     {
         public string URL { get; set; }
         public string LoadedDataFileName { get; set; }
 
-        public DownloadDataInfo() : this(App.URL, App.LoadedDataFileName)
+        public DownloadDataInput() : this(App.URL, App.LoadedDataFileName)
         {
             //...
         }
 
-        public DownloadDataInfo(string url, string loadedDataFileName)
+        public DownloadDataInput(string url, string loadedDataFileName)
         {
             URL = url;
             LoadedDataFileName = loadedDataFileName;

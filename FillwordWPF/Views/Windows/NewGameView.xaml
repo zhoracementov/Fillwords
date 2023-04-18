@@ -8,7 +8,7 @@
              DataContext="{Binding NewGamePageViewModel, Source={StaticResource ViewModelsLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
         <Style x:Key="ScrollBarLineTopButtonStyle" TargetType="{x:Type RepeatButton}">
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="Cursor" Value="Hand" />
@@ -232,7 +232,7 @@
             <ColumnDefinition Width="6*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
+        <!--<Grid Grid.Column="0">
             <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate1}">
                 <StackPanel Orientation="Vertical">
                     <TextBox Text="{Binding Size}"
@@ -273,10 +273,11 @@
                              Foreground="DimGray"/>
                 </StackPanel>
             </ScrollViewer>
-        </Grid>
+        </Grid>-->
         <Grid Grid.Column="1">
             <DockPanel>
-                <ProgressBar DockPanel.Dock="Bottom" Value="{Binding DownloadProgressLevel}" Height="30"/>
+                <ProgressBar DockPanel.Dock="Bottom" Value="{Binding DownloadProgressLevel}" Height="30" Visibility="{Binding Path=IsInLoading, Converter={StaticResource BoolToVisConverter} }"/>
+                <Slider DockPanel.Dock="Bottom" Value="{Binding Size}" Minimum="3" Maximum="16" Visibility="{Binding Path=IsShowSlider, Converter={StaticResource BoolToVisConverter}}"/>
                 <v:FillwordView DockPanel.Dock="Bottom"/>
             </DockPanel>
         </Grid>

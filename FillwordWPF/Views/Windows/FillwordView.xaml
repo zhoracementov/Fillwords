@@ -9,14 +9,14 @@
         <ItemsControl ItemsSource="{Binding FillwordItemsLinear}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns="{Binding FillwordViewModel.Size, Source={StaticResource ViewModelsLocator}}"/>
+                    <UniformGrid DataContext ="{Binding FillwordViewModel, Source={StaticResource ViewModelsLocator}}" Columns="{Binding Size}" Rows="{Binding Size}"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
                         <TextBlock Text="{Binding Word}" DockPanel.Dock="Bottom" FontSize="14" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <Button Content="{Binding Letter}" DockPanel.Dock="Top" FontSize="24">
+                        <Button Content="{Binding}" DockPanel.Dock="Top" FontSize="24">
                         </Button>
                     </DockPanel>
                 </DataTemplate>

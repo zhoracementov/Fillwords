@@ -32,11 +32,25 @@ namespace FillwordWPF.ViewModels
         }
 
         private double downloadProgressLevel;
+
         public double DownloadProgressLevel
         {
             get => downloadProgressLevel;
             set => Set(ref downloadProgressLevel, value);
         }
+
+        private bool isInLoading = true;
+        public bool IsInLoading
+        {
+            get => isInLoading;
+            set
+            {
+                if (Set(ref isInLoading, value))
+                    OnPropertyChanged(nameof(IsShowSlider));
+            }
+        }
+
+        public bool IsShowSlider => !IsInLoading;
 
         public ICommand NavigateToMenuCommand { get; }
         public ICommand ReloadFillwordCommand { get; }
@@ -58,15 +72,26 @@ namespace FillwordWPF.ViewModels
                 navigationService.NavigateTo<GameViewModel>();
             });
 
-            ResetChangesCommand = new RelayCommand(x => ResetChanges());
-            ReloadFillwordCommand = new RelayCommand(x => fillwordViewModel.ReloadFillwordCommand.Execute(null));
+            ResetChangesCommand = new RelayCommand(x =>
+            {
+                ResetChanges();
+                fillwordViewModel.Size = Size;
+            });
+
+            ReloadFillwordCommand = new RelayCommand(x => fillwordViewModel.CreateFillwordAsync());
 
             downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
         }
 
-        private void DownloadDataService_ProgressChanged(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage)
+        private async void DownloadDataService_ProgressChanged(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage)
         {
             DownloadProgressLevel = progressPercentage.Value;
+
+            if (totalFileSize == totalBytesDownloaded)
+            {
+                await Task.Delay(100);
+                IsInLoading = false;
+            }
         }
 
         public void SaveChanges()

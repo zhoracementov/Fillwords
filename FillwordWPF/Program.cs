@@ -37,7 +37,7 @@ namespace FillwordWPF
                 .AddSingleton<GameViewModel>()
                 .AddSingleton<FillwordViewModel>()
                 .AddSingleton<INavigationService, NavigationService>()
-                .AddSingleton<DownloadDataInfo>()
+                .AddSingleton<DownloadDataInput>()
                 .AddSingleton<DownloadDataService>()
                 .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
                 .ConfigureWritable<GameSettings>(host.Configuration.GetSection(nameof(GameSettings)), App.SettingsFileName);

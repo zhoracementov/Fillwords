@@ -129,7 +129,7 @@ namespace FillwordWPF.Game
                     wordsTable[point.X, point.Y] = new FillwordItem
                     {
                         Point = point,
-                        Letter = rndWord[i],
+                        Index = i,
                         Word = rndWord,
                         Info = words[rndWord]
                     };
