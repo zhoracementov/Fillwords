@@ -35,7 +35,7 @@ namespace FillwordWPF
                 .AddSingleton<SettingsViewModel>()
                 .AddSingleton<NewGameViewModel>()
                 .AddSingleton<GameViewModel>()
-                .AddTransient<FillwordViewModel>()
+                .AddSingleton<FillwordViewModel>()
                 .AddSingleton<INavigationService, NavigationService>()
                 .AddSingleton<DownloadDataInfo>()
                 .AddSingleton<DownloadDataService>()

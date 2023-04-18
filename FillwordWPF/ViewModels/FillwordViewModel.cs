@@ -53,7 +53,7 @@ namespace FillwordWPF.ViewModels
         {
             var fillwordItems = new FillwordTableRandomBuilder(
                 data ??= await new JsonObjectSerializer()
-                .DeserializeAsync<WordsData>(App.LoadedDataFileName), options.Value.Size)
+                .DeserializeAsync<WordsData>(App.LoadedDataFileName), Size)
                 .Build()
                 .AsLinear();
 

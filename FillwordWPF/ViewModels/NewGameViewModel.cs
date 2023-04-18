@@ -15,6 +15,7 @@ namespace FillwordWPF.ViewModels
     {
         private readonly IWritableOptions<GameSettings> gameOptions;
         private readonly DownloadDataService downloadDataService;
+        private readonly FillwordViewModel fillwordViewModel;
         private readonly IDictionary<string, object> tempChanges;
 
         public int Size
@@ -25,6 +26,7 @@ namespace FillwordWPF.ViewModels
             set
             {
                 tempChanges[nameof(Size)] = value;
+                fillwordViewModel.Size = value;
                 OnPropertyChanged();
             }
         }
@@ -41,10 +43,11 @@ namespace FillwordWPF.ViewModels
         public ICommand NavigateToNewGameCommand { get; }
         public ICommand ResetChangesCommand { get; }
 
-        public NewGameViewModel(INavigationService navigationService, IWritableOptions<GameSettings> gameOptions, DownloadDataService downloadDataService)
+        public NewGameViewModel(INavigationService navigationService, IWritableOptions<GameSettings> gameOptions, DownloadDataService downloadDataService, FillwordViewModel fillwordViewModel)
         {
             this.gameOptions = gameOptions;
             this.downloadDataService = downloadDataService;
+            this.fillwordViewModel = fillwordViewModel;
 
             tempChanges = new Dictionary<string, object>();
 
