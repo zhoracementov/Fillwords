@@ -16,7 +16,7 @@ namespace FillwordWPF.ViewModels
         private readonly IWritableOptions<GameSettings> gameOptions;
         private readonly DownloadDataService downloadDataService;
         private readonly FillwordViewModel fillwordViewModel;
-        private readonly IDictionary<string, object> tempChanges;
+        private readonly Dictionary<string, object> tempChanges;
 
         public int Size
         {
@@ -39,7 +39,7 @@ namespace FillwordWPF.ViewModels
             set => Set(ref downloadProgressLevel, value);
         }
 
-        private bool isInLoading = true;
+        private bool isInLoading = false;
         public bool IsInLoading
         {
             get => isInLoading;
@@ -89,8 +89,9 @@ namespace FillwordWPF.ViewModels
 
             if (totalFileSize == totalBytesDownloaded)
             {
-                await Task.Delay(100);
+                await Task.Delay(300);
                 IsInLoading = false;
+                downloadDataService.ProgressChanged -= DownloadDataService_ProgressChanged;
             }
         }
 

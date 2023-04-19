@@ -44,25 +44,12 @@ namespace FillwordWPF.ViewModels
         {
             FillwordItemsLinear = new ObservableCollection<FillwordItem>();
 
+            this.options = options;
+            this.Size = options.Value.Size;
+
             if (!App.IsDesignMode)
             {
                 StartService(downloadDataService);
-                this.options = options;
-                this.Size = options.Value.Size;
-            }
-            else
-            {
-                this.Size = 4;
-                var words = new string[] { "test1, test2, test3, test4, test5" };
-                var items = (WordsData)words.ToDictionary(k => k, v => (WordInfo)null);
-
-                var fillwordItems = new FillwordTableRandomBuilder(
-                    data ??= new JsonObjectSerializer()
-                    .Deserialize<WordsData>(App.LoadedDataFileName), Size)
-                    .Build()
-    .               AsLinear();
-
-                FillwordItemsLinear = new ObservableCollection<FillwordItem>(fillwordItems);
             }
         }
 

@@ -11,7 +11,7 @@ namespace FillwordWPF.Services
     internal class DownloadDataService : IDisposable
     {
         private const int bufferSize = 8192;
-        private const int ConnectionAttemps = 15;
+        private const int ConnectionWaitAttempts = 15;
         private const int ConnectionWaitSeconds = 5;
 
         private readonly HttpClient httpClient;
@@ -49,7 +49,7 @@ namespace FillwordWPF.Services
                     connections++;
                     await Task.Delay(TimeSpan.FromSeconds(ConnectionWaitSeconds));
                 }
-            } while (!isConnect && connections <= ConnectionAttemps);
+            } while (!isConnect && connections <= ConnectionWaitAttempts);
 
             if (!isConnect) return;
 
@@ -115,7 +115,7 @@ namespace FillwordWPF.Services
                     if (bytesRead == 0)
                     {
                         isMoreToRead = false;
-                        TriggerProgressChanged(totalDownloadSize, totalBytesRead);
+                        OnProgressChanged(totalDownloadSize, totalBytesRead);
                         continue;
                     }
 
@@ -125,7 +125,7 @@ namespace FillwordWPF.Services
                     readCount += 1;
 
                     if (readCount % 100 == 0)
-                        TriggerProgressChanged(totalDownloadSize, totalBytesRead);
+                        OnProgressChanged(totalDownloadSize, totalBytesRead);
                 }
                 while (isMoreToRead);
             }
@@ -133,7 +133,7 @@ namespace FillwordWPF.Services
             //Console.WriteLine(_destinationFilePath.GetMD5());
         }
 
-        private void TriggerProgressChanged(long? totalDownloadSize, long totalBytesRead)
+        private void OnProgressChanged(long? totalDownloadSize, long totalBytesRead)
         {
             if (ProgressChanged == null)
                 return;

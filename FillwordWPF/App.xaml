@@ -6,6 +6,11 @@
              StartupUri="Views\Windows\MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/ScrollBarStyle.xaml"/>
+                <ResourceDictionary Source="Styles/SliderStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
             <vm:ViewModelsLocator x:Key="ViewModelsLocator"/>
             <!--<DataTemplate DataType="{x:Type TypeName=vm:MainWindowViewModel}">
                 <m:MainWindow/>
