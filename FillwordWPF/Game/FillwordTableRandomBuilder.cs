@@ -1,4 +1,4 @@
-﻿using FillwordWPF.Game.Extenstions;
+﻿using FillwordWPF.Extenstions;
 using FillwordWPF.Models;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,7 @@
 ﻿using FillwordWPF.Commands;
+using FillwordWPF.Extenstions;
 using FillwordWPF.Game;
-using FillwordWPF.Game.Extenstions;
+using FillwordWPF.Extenstions;
 using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Serializers;

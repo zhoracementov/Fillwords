@@ -1,4 +1,5 @@
-﻿using FillwordWPF.Game;
+﻿using FillwordWPF.Extenstions;
+using FillwordWPF.Game;
 using FillwordWPF.Models;
 using FillwordWPF.Services.WriteableOptions;
 using System;
@@ -42,6 +43,11 @@ namespace FillwordWPF.Services
                 SuccessfullySolved?.Invoke(null, new EventArgs());
             }
             return res;
+        }
+
+        public bool CheckSolvedMap()
+        {
+            return SolvedMap.All(x => x);
         }
 
         public bool IsSolvedWord()
