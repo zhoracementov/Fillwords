@@ -1,4 +1,4 @@
-﻿namespace FillwordWPF.Services
+﻿namespace FillwordWPF.Models
 {
     internal class GameSettings
     {

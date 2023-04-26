@@ -17,7 +17,7 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
-            <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate1}">
+            <!--<ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate1}">
                 <StackPanel Orientation="Vertical">
                     <TextBox Text="{Binding Size}"
                              FontSize="256"
@@ -56,15 +56,15 @@
                              Background="Transparent"
                              Foreground="DimGray"/>
                 </StackPanel>
-            </ScrollViewer>
+            </ScrollViewer>-->
         </Grid>
         <Grid Grid.Column="1">
             <DockPanel>
-                <Grid DockPanel.Dock="Bottom" Height="10"/>
-                <!--<ProgressBar DockPanel.Dock="Bottom" Value="{Binding DownloadProgressLevel}" Height="30" Visibility="{Binding Path=IsInLoading, Converter={StaticResource BoolToVisConverter} }"/>-->
+                <Grid DockPanel.Dock="Bottom" Height="5"/>
+                <ProgressBar DockPanel.Dock="Bottom" Value="{Binding DownloadProgressLevel}" Height="30" Visibility="{Binding Path=IsInLoading, Converter={StaticResource BoolToVisConverter} }"/>
                 <Slider Template="{DynamicResource SliderStyle}" DockPanel.Dock="Bottom" Value="{Binding Size}" Minimum="3" Maximum="16" Visibility="{Binding Path=IsShowSlider, Converter={StaticResource BoolToVisConverter}}"/>
-                <Grid DockPanel.Dock="Bottom" Height="10"/>
-                <v:FillwordView DockPanel.Dock="Bottom"/>
+                <Grid DockPanel.Dock="Bottom" Height="5"/>
+                <v:FillwordView DockPanel.Dock="Bottom" Margin="25"/>
             </DockPanel>
         </Grid>
         <!--<Grid Grid.ColumnSpan="3">

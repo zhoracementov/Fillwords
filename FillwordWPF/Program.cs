@@ -1,4 +1,5 @@
-﻿using FillwordWPF.Services;
+﻿using FillwordWPF.Models;
+using FillwordWPF.Services;
 using FillwordWPF.Services.Navigation;
 using FillwordWPF.Services.WriteableOptions;
 using FillwordWPF.ViewModels;
@@ -39,6 +40,7 @@ namespace FillwordWPF
                 .AddSingleton<INavigationService, NavigationService>()
                 .AddSingleton<DownloadDataInput>()
                 .AddSingleton<DownloadDataService>()
+                .AddSingleton<GameProcessService>()
                 .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
                 .ConfigureWritable<GameSettings>(host.Configuration.GetSection(nameof(GameSettings)), App.SettingsFileName);
     }

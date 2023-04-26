@@ -9,10 +9,5 @@ namespace FillwordWPF.Models
         public Point Point { get; set; }
         public string Word { get; set; }
         public WordInfo Info { get; set; }
-
-        public override string ToString()
-        {
-            return Letter.ToString();
-        }
     }
 }

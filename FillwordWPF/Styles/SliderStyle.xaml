@@ -9,10 +9,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
-                    <Border x:Name="clickableTr" Background="#4a4948" Width="60" Height="15" CornerRadius="4" Margin="10, 10, 10, 10"/>
+                    <Border x:Name="clickableTr" Background="#4a4948" Width="70" Height="15" CornerRadius="4" Margin="5, 5, 5, 5"/>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" TargetName="clickableTr" Value="#d2a123"/>
+                            <Setter Property="Background" TargetName="clickableTr" Value="#d69420"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -22,9 +22,18 @@
     
     <ControlTemplate x:Key="SliderStyle" TargetType="Slider">
         <Grid>
-            <Track Name="PART_Track">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MaxWidth="18"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition MaxWidth="18"/>
+            </Grid.ColumnDefinitions>
+            <RepeatButton Grid.Column="0" Width="18"
+                          Style="{StaticResource ScrollBarLineLeftButtonStyle}"
+                          Command="Slider.DecreaseLarge">
+            </RepeatButton>
+            <Track Name="PART_Track" Grid.Column="1">
                 <Track.DecreaseRepeatButton>
-                    <RepeatButton Command="Slider.DecreaseLarge" Style="{StaticResource ScrollBarPageButtonStyle}" Height="2">
+                    <RepeatButton Command="Slider.DecreaseLarge" Style="{StaticResource ScrollBarPageButtonStyle}" Height="3">
                     </RepeatButton>
                 </Track.DecreaseRepeatButton>
                 <Track.Thumb>
@@ -32,10 +41,14 @@
                     </Thumb>
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
-                    <RepeatButton Command="Slider.IncreaseLarge" Style="{StaticResource ScrollBarPageButtonStyle}" Height="2">
+                    <RepeatButton Command="Slider.IncreaseLarge" Style="{StaticResource ScrollBarPageButtonStyle}" Height="3">
                     </RepeatButton>
                 </Track.IncreaseRepeatButton>
             </Track>
+            <RepeatButton Grid.Column="2" Width="18"
+                          Style="{StaticResource ScrollBarLineRightButtonStyle}"
+                          Command="Slider.IncreaseLarge">
+            </RepeatButton>
         </Grid>
     </ControlTemplate>
 </ResourceDictionary>

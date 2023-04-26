@@ -39,7 +39,7 @@ namespace FillwordWPF.ViewModels
             set => Set(ref downloadProgressLevel, value);
         }
 
-        private bool isInLoading = false;
+        private bool isInLoading = !App.IsDesignMode;
         public bool IsInLoading
         {
             get => isInLoading;

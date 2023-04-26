@@ -18,6 +18,7 @@ namespace FillwordWPF.ViewModels
     internal class FillwordViewModel : ViewModel
     {
         private readonly IWritableOptions<GameSettings> options;
+        private readonly GameProcessService gameProcessService;
         private WordsData data;
 
         private int size;
@@ -40,17 +41,28 @@ namespace FillwordWPF.ViewModels
             set => Set(ref fillwordItemsLinear, value);
         }
 
-        public FillwordViewModel(IWritableOptions<GameSettings> options, DownloadDataService downloadDataService)
+        public ICommand ClickCommand { get; }
+
+        public FillwordViewModel(IWritableOptions<GameSettings> options, DownloadDataService downloadDataService, GameProcessService gameProcessService)
         {
             FillwordItemsLinear = new ObservableCollection<FillwordItem>();
 
             this.options = options;
+            this.gameProcessService = gameProcessService;
             this.Size = options.Value.Size;
+
+            ClickCommand = new RelayCommand(OnClick);
 
             if (!App.IsDesignMode)
             {
                 StartService(downloadDataService);
             }
+        }
+
+        public void OnClick(object parameter)
+        {
+            if (gameProcessService.Add((FillwordItem)parameter))
+                throw new NotImplementedException();
         }
 
         public async void StartService(DownloadDataService downloadDataService)

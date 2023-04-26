@@ -16,9 +16,17 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <!--<TextBlock Text="{Binding Word}" DockPanel.Dock="Bottom" FontSize="14" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>-->
-                        <Button Content="{Binding}" DockPanel.Dock="Top" FontSize="24">
-                        </Button>
+                        <TextBlock DockPanel.Dock="Bottom"
+                                   Text="{Binding Word}"
+                                   FontSize="14"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                        <Button DockPanel.Dock="Top"
+                                Content="{Binding Letter}"
+                                Command ="{Binding FillwordViewModel.ClickCommand, Source={StaticResource ViewModelsLocator}}"
+                                CommandParameter="{Binding}"
+                                FontSize="24"/>
                     </DockPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
