@@ -14,16 +14,24 @@ namespace FillwordWPF.Services
         private readonly IWritableOptions<GameSettings> settings;
         private readonly LinkedList<FillwordItem> selectedList;
         private bool[,] solvedMap;
-        private bool isGameActive;
 
         public bool IsEnter { get; set; }
+
+        private bool isGameActive;
         public bool IsGameActive
         {
             get => isGameActive;
             set
             {
-                isGameActive = value;
-                OnRestart();
+                if (value)
+                {
+                    isGameActive = value;
+                    OnRestart();
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
 
@@ -43,24 +51,24 @@ namespace FillwordWPF.Services
             Add(fillwordItem);
         }
 
-        public void OnEndSelecting()
+        public bool OnEndSelecting()
         {
             if (!IsGameActive)
-                return;
+                return false;
 
             IsEnter = false;
 
-            if (CheckSolvedWord())
+            var ans = CheckSolvedWord() && !CheckSolvedBefore();
+
+            if (ans)
             {
                 OnSolve();
-                var win = CheckSolvedMap();
-
-                if (win)
-                {
-                    //...
-                    var b = 1;
-                }
+                return CheckSolvedMap();
             }
+
+            selectedList.Clear();
+
+            return ans;
         }
 
         public void OnSelectNextItem(FillwordItem fillwordItem)
@@ -82,6 +90,11 @@ namespace FillwordWPF.Services
             selectedList.AddLast(fillwordItem);
         }
 
+        private bool CheckSolvedBefore()
+        {
+            return selectedList.Select(x => x.Point).Any(pt => solvedMap[pt.X, pt.Y]);
+        }
+
         private void OnSolve()
         {
             foreach (var result in selectedList)
@@ -89,8 +102,6 @@ namespace FillwordWPF.Services
                 var point = result.Point;
                 solvedMap[point.X, point.Y] = true;
             }
-
-            selectedList.Clear();
         }
 
         private bool CheckSolvedMap()
@@ -106,7 +117,9 @@ namespace FillwordWPF.Services
             if (selectedList.Count != firstLen)
                 return false;
 
-            return selectedList.All(x => x.Word == first.Word);
+            var seq = Enumerable.Range(0, firstLen);
+
+            return selectedList.All(x => x.Word == first.Word) && selectedList.Select(x => x.Index).SequenceEqual(seq);
         }
 
         private void OnRestart()

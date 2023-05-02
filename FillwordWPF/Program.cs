@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Windows;
 
 namespace FillwordWPF
 {
@@ -19,7 +20,6 @@ namespace FillwordWPF
             app.InitializeComponent();
             app.Run();
         }
-
         public static IHostBuilder CreateHostBuilder(string[] agrs) => Host
                 .CreateDefaultBuilder(agrs)
                 .UseContentRoot(App.CurrentDirectory)

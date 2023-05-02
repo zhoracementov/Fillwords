@@ -29,9 +29,7 @@ namespace FillwordWPF.ViewModels
             set
             {
                 if (Set(ref size, value) && (data != null))
-                {
                     CreateFillwordAsync();
-                }
             }
         }
 
@@ -71,7 +69,10 @@ namespace FillwordWPF.ViewModels
 
         public void OnEndSelectCommand(object parameter)
         {
-            gameProcessService.OnEndSelecting();
+            if (gameProcessService.OnEndSelecting())
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public void OnStartSelectCommand(object parameter)
