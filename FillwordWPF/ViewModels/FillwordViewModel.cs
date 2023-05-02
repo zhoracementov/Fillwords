@@ -42,7 +42,9 @@ namespace FillwordWPF.ViewModels
             set => Set(ref fillwordItemsLinear, value);
         }
 
-        public ICommand ClickCommand { get; }
+        public ICommand SelectNextItemCommand { get; }
+        public ICommand StartSelectCommand { get; }
+        public ICommand EndSelectCommand { get; }
 
         public FillwordViewModel(IWritableOptions<GameSettings> options, DownloadDataService downloadDataService, GameProcessService gameProcessService)
         {
@@ -52,7 +54,9 @@ namespace FillwordWPF.ViewModels
             this.gameProcessService = gameProcessService;
             this.Size = options.Value.Size;
 
-            ClickCommand = new RelayCommand(OnClick);
+            SelectNextItemCommand = new RelayCommand(OnSelectNextItem);
+            StartSelectCommand = new RelayCommand(OnStartSelectCommand);
+            EndSelectCommand = new RelayCommand(OnEndSelectCommand);
 
             if (!App.IsDesignMode)
             {
@@ -60,10 +64,19 @@ namespace FillwordWPF.ViewModels
             }
         }
 
-        public void OnClick(object parameter)
+        public void OnSelectNextItem(object parameter)
         {
-            if (gameProcessService.Add((FillwordItem)parameter))
-                throw new NotImplementedException();
+            gameProcessService.OnSelectNextItem((FillwordItem)parameter);
+        }
+
+        public void OnEndSelectCommand(object parameter)
+        {
+            gameProcessService.OnEndSelecting();
+        }
+
+        public void OnStartSelectCommand(object parameter)
+        {
+            gameProcessService.OnStartSelecting((FillwordItem)parameter);
         }
 
         public async void StartService(DownloadDataService downloadDataService)

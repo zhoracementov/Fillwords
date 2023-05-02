@@ -12,60 +12,106 @@ namespace FillwordWPF.Services
     internal class GameProcessService
     {
         private readonly IWritableOptions<GameSettings> settings;
+        private readonly LinkedList<FillwordItem> selectedList;
+        private bool[,] solvedMap;
+        private bool isGameActive;
 
-        public event EventHandler SuccessfullySolved;
-        public List<FillwordItem> SelectedList { get; set; }
-        public bool[,] SolvedMap { get; set; }
+        public bool IsEnter { get; set; }
+        public bool IsGameActive
+        {
+            get => isGameActive;
+            set
+            {
+                isGameActive = value;
+                OnRestart();
+            }
+        }
 
         public GameProcessService(IWritableOptions<GameSettings> settings)
         {
-            SelectedList = new List<FillwordItem>();
+            selectedList = new LinkedList<FillwordItem>();
             this.settings = settings;
-            SolvedMap = new bool[settings.Value.Size, settings.Value.Size];
         }
 
-        public bool Add(FillwordItem fillwordItem)
+        public void OnStartSelecting(FillwordItem fillwordItem)
         {
-            SelectedList.Add(fillwordItem);
+            if (!IsGameActive)
+                return;
 
-            var res = IsSolvedWord();
+            IsEnter = true;
 
-            if (res)
+            Add(fillwordItem);
+        }
+
+        public void OnEndSelecting()
+        {
+            if (!IsGameActive)
+                return;
+
+            IsEnter = false;
+
+            if (CheckSolvedWord())
             {
-                foreach (var result in SelectedList)
+                OnSolve();
+                var win = CheckSolvedMap();
+
+                if (win)
                 {
-                    var point = result.Point;
-                    SolvedMap[point.X, point.Y] = true;
+                    //...
+                    var b = 1;
                 }
-
-                SelectedList.Clear();
-
-                SuccessfullySolved?.Invoke(null, new EventArgs());
             }
-            return res;
         }
 
-        public bool CheckSolvedMap()
+        public void OnSelectNextItem(FillwordItem fillwordItem)
         {
-            return SolvedMap.All(x => x);
+            if (!IsGameActive)
+                return;
+
+            Add(fillwordItem);
         }
 
-        public bool IsSolvedWord()
+        private void Add(FillwordItem fillwordItem)
         {
-            var first = SelectedList.First();
+            if (!IsEnter)
+                return;
+
+            if (selectedList.Count > 0 && selectedList.Last.Value == fillwordItem)
+                return;
+
+            selectedList.AddLast(fillwordItem);
+        }
+
+        private void OnSolve()
+        {
+            foreach (var result in selectedList)
+            {
+                var point = result.Point;
+                solvedMap[point.X, point.Y] = true;
+            }
+
+            selectedList.Clear();
+        }
+
+        private bool CheckSolvedMap()
+        {
+            return solvedMap.AsLinear().All(x => x);
+        }
+
+        private bool CheckSolvedWord()
+        {
+            var first = selectedList.First.Value;
             var firstLen = first.Word.Length;
 
-            if (SelectedList.Count != firstLen)
+            if (selectedList.Count != firstLen)
                 return false;
 
-            for (int i = 1; i < firstLen; i++)
-            {
-                if (SelectedList[i].Word != first.Word)
-                    return false;
-            }
+            return selectedList.All(x => x.Word == first.Word);
+        }
 
-            return true;
-
+        private void OnRestart()
+        {
+            solvedMap = new bool[settings.Value.Size, settings.Value.Size];
         }
     }
 }

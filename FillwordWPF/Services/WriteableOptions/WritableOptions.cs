@@ -33,7 +33,6 @@ namespace FillwordWPF.Services.WriteableOptions
         }
 
         public T Value => options.CurrentValue;
-        public T Get(string name) => options.Get(name);
 
         public async void Update(Action<T> applyChanges)
         {

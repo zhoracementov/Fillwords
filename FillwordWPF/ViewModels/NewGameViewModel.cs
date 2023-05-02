@@ -57,7 +57,11 @@ namespace FillwordWPF.ViewModels
         public ICommand NavigateToNewGameCommand { get; }
         public ICommand ResetChangesCommand { get; }
 
-        public NewGameViewModel(INavigationService navigationService, IWritableOptions<GameSettings> gameOptions, DownloadDataService downloadDataService, FillwordViewModel fillwordViewModel)
+        public NewGameViewModel(INavigationService navigationService,
+            IWritableOptions<GameSettings> gameOptions,
+            DownloadDataService downloadDataService,
+            FillwordViewModel fillwordViewModel,
+            GameProcessService gameProcessService)
         {
             this.gameOptions = gameOptions;
             this.downloadDataService = downloadDataService;
@@ -65,10 +69,15 @@ namespace FillwordWPF.ViewModels
 
             tempChanges = new Dictionary<string, object>();
 
-            NavigateToMenuCommand = new RelayCommand(x => navigationService.NavigateTo<MainMenuViewModel>());
+            NavigateToMenuCommand = new RelayCommand(x =>
+            {
+                navigationService.NavigateTo<MainMenuViewModel>();
+            });
+
             NavigateToNewGameCommand = new RelayCommand(x =>
             {
                 SaveChanges();
+                gameProcessService.IsGameActive = true;
                 navigationService.NavigateTo<GameViewModel>();
             });
 

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              DataContext="{Binding FillwordViewModel, Source={StaticResource ViewModelsLocator}}">
     <Grid>
         <ItemsControl ItemsSource="{Binding FillwordItemsLinear}">
@@ -22,11 +23,31 @@
                                    Foreground="White"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
-                        <Button DockPanel.Dock="Top"
-                                Content="{Binding Letter}"
-                                Command ="{Binding FillwordViewModel.ClickCommand, Source={StaticResource ViewModelsLocator}}"
-                                CommandParameter="{Binding}"
-                                FontSize="24"/>
+                        <Grid DockPanel.Dock="Top">
+                            <Border>
+                                <TextBlock Text="{Binding Letter}"
+                                       FontSize="24"
+                                       Background="WhiteSmoke"
+                                       TextAlignment="Center"
+                                       Padding="5"/>
+                            </Border>
+                            <behaviors:Interaction.Triggers>
+                                <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviors:InvokeCommandAction 
+                                        Command="{Binding FillwordViewModel.StartSelectCommand, Source={StaticResource ViewModelsLocator}}"
+                                        CommandParameter="{Binding}"/>
+                                </behaviors:EventTrigger>
+                                <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                                    <behaviors:InvokeCommandAction 
+                                        Command="{Binding FillwordViewModel.EndSelectCommand, Source={StaticResource ViewModelsLocator}}"/>
+                                </behaviors:EventTrigger>
+                                <behaviors:EventTrigger EventName="MouseEnter">
+                                    <behaviors:InvokeCommandAction 
+                                        Command="{Binding FillwordViewModel.SelectNextItemCommand, Source={StaticResource ViewModelsLocator}}"
+                                        CommandParameter="{Binding}"/>
+                                </behaviors:EventTrigger>
+                            </behaviors:Interaction.Triggers>
+                        </Grid>
                     </DockPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

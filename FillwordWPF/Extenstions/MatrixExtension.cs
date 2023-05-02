@@ -31,21 +31,6 @@ namespace FillwordWPF.Extenstions
             }
         }
 
-        public static bool All<T>(this T[,] matrix, Func<T, bool> predicate)
-        {
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                {
-                    var item = matrix[i, j];
-                    
-                    if (!predicate(item))
-                        return false;
-                }
-            }
-            return true;
-        }
-
         public static T GetAt<T>(this T[,] matrix, Point point)
         {
             return matrix[point.X, point.Y];
