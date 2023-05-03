@@ -26,8 +26,11 @@ namespace FillwordWPF.Game
             {
                 var item = data.ElementAt(i);
 
+                if (!item.Value.HasValue)
+                    continue;
+
                 var matches = regexCurrDefinition
-                    .Matches(item.Value.Definition)
+                    .Matches(item.Value.Value.Definition)
                     .OfType<Match>();
 
                 foreach (var match in matches)
@@ -56,7 +59,7 @@ namespace FillwordWPF.Game
 
                     var valueOld = data[keyLinked];
                     var valueMatches = regexSplitLinkedDefinition
-                        .Matches(valueOld.Definition)
+                        .Matches(valueOld.Value.Definition)
                         .OfType<Match>()
                         .ToArray();
 
@@ -67,9 +70,9 @@ namespace FillwordWPF.Game
                     }
 
                     var valueFound = valueMatches[indexInSplit - 1].Value;
-                    var valueNew = valueOld.Definition.Replace($"({indexInSplit}*)", valueFound);
+                    var valueNew = valueOld.Value.Definition.Replace($"({indexInSplit}*)", valueFound);
 
-                    data[keyLinked] = new WordInfo(valueNew, valueOld.AnswerIsProbablyNotNoun, valueOld.AnswerNeedToIncludePlural);
+                    data[keyLinked] = new WordInfo(valueNew, valueOld.Value.AnswerIsProbablyNotNoun, valueOld.Value.AnswerNeedToIncludePlural);
 
                     //Console.WriteLine(valueFound);
                     //Console.WriteLine(valueNew);

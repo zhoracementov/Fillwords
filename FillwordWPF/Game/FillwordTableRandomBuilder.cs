@@ -28,18 +28,21 @@ namespace FillwordWPF.Game
 
             this.min = Math.Min(Math.Max(minWordLength, min), size * size);
             this.max = Math.Min(max - 1, size * size / 2);
-
-            //TODO: create max len change by difficulty
         }
 
         public FillwordItem[,] Build()
         {
             var table = new Node<Point>[size, size];
+            var headList = new List<Node<Point>>();
+
             while (TryGetRandomPoint(table, out var currPoint, rnd, pnt => pnt == null))
             {
                 var currNode = new Node<Point> { Value = currPoint };
 
+                headList.Add(currNode);
+
                 table[currPoint.X, currPoint.Y] = currNode;
+
                 var nextLength = rnd.Next(min, max);
                 var itLength = nextLength;
 
@@ -69,6 +72,8 @@ namespace FillwordWPF.Game
                 foreach (var rev in invertList)
                 {
                     table.SetAt(rev.Value, null);
+                    if (rev.IsHead && !headList.Remove(rev))
+                        throw new InvalidOperationException();
                 }
 
                 foreach (var rev in invertList)
@@ -84,6 +89,11 @@ namespace FillwordWPF.Game
                         {
                             connNode = connNode.Previous;
                         }
+
+                        if (!connNode.IsHead)
+                            throw new InvalidOperationException();
+                        else
+                            headList.Remove(connNode);
 
                         while (connNode != null)
                         {
@@ -101,11 +111,11 @@ namespace FillwordWPF.Game
             //Print();
 
             var wordsTable = new FillwordItem[size, size];
-            var wordsPlaces = table
-                .AsLinear()
-                .Where(x => x.IsHead)
-                .Select(x => x.TraceAllValues().ToArray())
-                /*.ToArray()*/;
+
+            var wordsPlaces = headList
+                .Select(x => x
+                .TraceAllValues()
+                .ToArray());
 
             var selectedWords = new List<string>();
 
@@ -125,14 +135,7 @@ namespace FillwordWPF.Game
                 for (int i = 0; i < place.Length; i++)
                 {
                     var point = place[i];
-
-                    wordsTable[point.X, point.Y] = new FillwordItem
-                    {
-                        Point = point,
-                        Index = i,
-                        Word = rndWord,
-                        Info = words[rndWord]
-                    };
+                    wordsTable[point.X, point.Y] = new FillwordItem(i, words[rndWord].Value, point, rndWord);
                 }
             }
 
@@ -149,7 +152,7 @@ namespace FillwordWPF.Game
         {
             var freePoints = table.WhereAt(predicate).ToArray();
             var tryPick = freePoints.Length > 0;
-            output = tryPick ? freePoints.PickRandom(random) : null;
+            output = tryPick ? freePoints.PickRandom(random) : default;
             return tryPick;
         }
 
@@ -167,11 +170,7 @@ namespace FillwordWPF.Game
             };
 
             return offset
-                .Select(offsetCoord => new Point
-                {
-                    X = point.X + offsetCoord.X,
-                    Y = point.Y + offsetCoord.Y
-                })
+                .Select(offsetCoord => new Point(point.X + offsetCoord.X, point.Y + offsetCoord.Y))
                 .Where(predicate)
                 .ToArray();
         }

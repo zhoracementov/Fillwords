@@ -26,7 +26,7 @@ namespace FillwordWPF.Extenstions
                     var item = matrix[i, j];
 
                     if (predicate(item))
-                        yield return new Point { X = i, Y = j };
+                        yield return new Point(i, j);
                 }
             }
         }

@@ -2,7 +2,7 @@
 
 namespace FillwordWPF.Game
 {
-    internal class WordInfo
+    internal readonly struct WordInfo
     {
         public string Definition { get; }
         public string AnswerIsProbablyNotNoun { get; }
@@ -15,12 +15,12 @@ namespace FillwordWPF.Game
             AnswerIsProbablyNotNoun = answerIsProbablyNotNoun;
         }
 
-        public override string ToString()
-        {
-            return string
-                .Join(", ", GetType().GetProperties()
-                .Select(x => x.GetValue(this))
-                .Where(str => str != null));
-        }
+        //public override string ToString()
+        //{
+        //    return string
+        //        .Join(", ", GetType().GetProperties()
+        //        .Select(x => x.GetValue(this))
+        //        .Where(str => str != null));
+        //}
     }
 }
