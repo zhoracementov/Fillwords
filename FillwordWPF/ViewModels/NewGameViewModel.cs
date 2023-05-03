@@ -32,7 +32,6 @@ namespace FillwordWPF.ViewModels
         }
 
         private double downloadProgressLevel;
-
         public double DownloadProgressLevel
         {
             get => downloadProgressLevel;
@@ -57,7 +56,8 @@ namespace FillwordWPF.ViewModels
         public ICommand NavigateToNewGameCommand { get; }
         public ICommand ResetChangesCommand { get; }
 
-        public NewGameViewModel(INavigationService navigationService,
+        public NewGameViewModel(
+            INavigationService navigationService,
             IWritableOptions<GameSettings> gameOptions,
             DownloadDataService downloadDataService,
             FillwordViewModel fillwordViewModel,

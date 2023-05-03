@@ -44,7 +44,10 @@ namespace FillwordWPF.ViewModels
         public ICommand StartSelectCommand { get; }
         public ICommand EndSelectCommand { get; }
 
-        public FillwordViewModel(IWritableOptions<GameSettings> options, DownloadDataService downloadDataService, GameProcessService gameProcessService)
+        public FillwordViewModel(
+            IWritableOptions<GameSettings> options,
+            DownloadDataService downloadDataService,
+            GameProcessService gameProcessService)
         {
             FillwordItemsLinear = new ObservableCollection<FillwordItem>();
 
@@ -88,10 +91,10 @@ namespace FillwordWPF.ViewModels
 
         public async void CreateFillwordAsync()
         {
-            var fillwordItems = await Task.Run(async () =>
+            var fillwordItems = await Task.Run(() =>
                 new FillwordTableRandomBuilder(
-                data ??= await new JsonObjectSerializer()
-                .DeserializeAsync<WordsData>(App.LoadedDataFileName), Size)
+                data ??= new JsonObjectSerializer()
+                .Deserialize<WordsData>(App.LoadedDataFileName), Size)
                 .Build()
                 .AsLinear());
 

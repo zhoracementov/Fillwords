@@ -44,7 +44,7 @@ namespace FillwordWPF.Services
                     isConnect = true;
                     connections = 0;
                 }
-                catch (Exception e)
+                catch (HttpRequestException e)
                 {
                     connections++;
                     await Task.Delay(TimeSpan.FromSeconds(ConnectionWaitSeconds));

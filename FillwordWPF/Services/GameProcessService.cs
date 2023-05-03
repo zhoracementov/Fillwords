@@ -63,7 +63,7 @@ namespace FillwordWPF.Services
             if (ans)
             {
                 OnSolve();
-                return CheckSolvedMap();
+                ans = CheckSolvedMap();
             }
 
             selectedList.Clear();
