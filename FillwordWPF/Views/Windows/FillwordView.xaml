@@ -20,7 +20,6 @@
                         <TextBlock DockPanel.Dock="Bottom"
                                    Text="{Binding Word}"
                                    FontSize="14"
-                                   Foreground="White"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         <Grid DockPanel.Dock="Top">

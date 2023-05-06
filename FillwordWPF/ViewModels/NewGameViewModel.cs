@@ -4,7 +4,7 @@ using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Navigation;
 using FillwordWPF.Services.Serializers;
-using FillwordWPF.Services.WriteableOptions;
+using FillwordWPF.Services.WritableOptions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;

@@ -10,8 +10,6 @@ namespace FillwordWPF.ViewModels
 {
     internal class MainMenuViewModel : ViewModel
     {
-        public const string MetaInfoFileName = "Meta.json";
-
         public ICommand ShowMetaInfoCommand { get; }
         public ICommand StartNewGameCommand { get; }
         public ICommand OpenSettingsCommand { get; }
@@ -32,7 +30,7 @@ namespace FillwordWPF.ViewModels
 
         private void ShowMetaInfo()
         {
-            var fileName = Path.Combine(App.CurrentDirectory, MetaInfoFileName);
+            var fileName = Path.Combine(App.DataDirectory, App.MetaInfoFileName);
             if (File.Exists(fileName))
                 MessageBox.Show(new JsonObjectSerializer().Deserialize<string>(fileName));
         }

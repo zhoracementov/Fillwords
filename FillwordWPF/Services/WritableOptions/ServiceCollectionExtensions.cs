@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace FillwordWPF.Services.WriteableOptions
+namespace FillwordWPF.Services.WritableOptions
 {
     public static class ServiceCollectionExtensions
     {

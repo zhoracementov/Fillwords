@@ -1,11 +1,13 @@
 ﻿using FillwordWPF.Extenstions;
 using FillwordWPF.Game;
 using FillwordWPF.Models;
-using FillwordWPF.Services.WriteableOptions;
+using FillwordWPF.Services.WritableOptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FillwordWPF.Services
 {
@@ -13,32 +15,40 @@ namespace FillwordWPF.Services
     {
         private readonly IWritableOptions<GameSettings> settings;
         private readonly LinkedList<FillwordItem> selectedList;
-        private bool[,] solvedMap;
-
-        public bool IsEnter { get; set; }
+        private bool isEnter;
 
         private bool isGameActive;
+        [JsonIgnore]
         public bool IsGameActive
         {
             get => isGameActive;
             set
             {
+                isGameActive = value;
+
                 if (value)
-                {
-                    isGameActive = value;
-                    OnRestart();
-                }
+                    OnGameStarts();
                 else
-                {
-                    throw new NotImplementedException();
-                }
+                    OnGameEnds();
             }
         }
+
+        private bool[,] solvedMap;
+        public bool[,] SolvedMap
+        {
+            get => solvedMap;
+            set => solvedMap = value;
+        }
+
+        public event Action GameStartsEvent;
+        public event Action GameEndsEvent;
 
         public GameProcessService(IWritableOptions<GameSettings> settings)
         {
             selectedList = new LinkedList<FillwordItem>();
             this.settings = settings;
+
+            GameStartsEvent += OnRestart;
         }
 
         public void OnStartSelecting(FillwordItem fillwordItem)
@@ -46,53 +56,68 @@ namespace FillwordWPF.Services
             if (!IsGameActive)
                 return;
 
-            IsEnter = true;
+            isEnter = true;
 
             Add(fillwordItem);
         }
 
-        public bool OnEndSelecting()
+        public (bool SolvedThis, bool SolvedAll, IList<Point> Points) OnEndSelecting()
+        {
+            if (!IsGameActive)
+                return (false, false, null);
+
+            isEnter = false;
+
+            var solvedThis = CheckSolvedWord() && !CheckSolvedBefore();
+            var solvedAll = false;
+
+            if (solvedThis)
+            {
+                OnSolve();
+                solvedAll = CheckSolvedMap();
+            }
+
+            var list = selectedList.Select(x => x.Point).ToList();
+
+            selectedList.Clear();
+
+            return (solvedThis, solvedAll, list);
+        }
+
+        public bool OnSelectNextItem(FillwordItem fillwordItem)
         {
             if (!IsGameActive)
                 return false;
 
-            IsEnter = false;
-
-            var ans = CheckSolvedWord() && !CheckSolvedBefore();
-
-            if (ans)
-            {
-                OnSolve();
-                ans = CheckSolvedMap();
-            }
-
-            selectedList.Clear();
-
-            return ans;
+            return Add(fillwordItem);
         }
 
-        public void OnSelectNextItem(FillwordItem fillwordItem)
-        {
-            if (!IsGameActive)
-                return;
+        //public bool OnUnSelectNextItem(FillwordItem fillwordItem)
+        //{
+        //    if (!IsGameActive)
+        //        return false;
 
-            Add(fillwordItem);
-        }
+        //    return Remove(fillwordItem);
+        //}
 
-        private void Add(FillwordItem fillwordItem)
+        //private bool Remove(FillwordItem fillwordItem)
+        //{
+        //    if (!isEnter)
+        //        return false;
+
+        //    return selectedList.Remove(fillwordItem);
+        //}
+
+        private bool Add(FillwordItem fillwordItem)
         {
-            if (!IsEnter)
-                return;
+            if (!isEnter)
+                return false;
 
             if (selectedList.Count > 0 && selectedList.Last.Value == fillwordItem)
-                return;
+                return false;
 
             selectedList.AddLast(fillwordItem);
-        }
-
-        private bool CheckSolvedBefore()
-        {
-            return selectedList.Select(x => x.Point).Any(pt => solvedMap[pt.X, pt.Y]);
+            return true;
         }
 
         private void OnSolve()
@@ -100,13 +125,20 @@ namespace FillwordWPF.Services
             foreach (var result in selectedList)
             {
                 var point = result.Point;
-                solvedMap[point.X, point.Y] = true;
+                SolvedMap[point.X, point.Y] = true;
             }
+        }
+
+        private bool CheckSolvedBefore()
+        {
+            return selectedList
+                .Select(x => x.Point)
+                .Any(pt => SolvedMap[pt.X, pt.Y]);
         }
 
         private bool CheckSolvedMap()
         {
-            return solvedMap.AsLinear().All(x => x);
+            return SolvedMap.AsLinear().All(x => x);
         }
 
         private bool CheckSolvedWord()
@@ -122,9 +154,19 @@ namespace FillwordWPF.Services
             return selectedList.All(x => x.Word == first.Word) && selectedList.Select(x => x.Index).SequenceEqual(seq);
         }
 
+        private void OnGameStarts()
+        {
+            GameStartsEvent?.Invoke();
+        }
+
+        private void OnGameEnds()
+        {
+            GameEndsEvent?.Invoke();
+        }
+
         private void OnRestart()
         {
-            solvedMap = new bool[settings.Value.Size, settings.Value.Size];
+            SolvedMap = new bool[settings.Value.Size, settings.Value.Size];
         }
     }
 }

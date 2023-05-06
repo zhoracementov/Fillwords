@@ -15,9 +15,9 @@
         <KeyBinding Key="Esc" Command="{Binding NavigateToMenuCommand}"/>
     </Window.InputBindings>
     <Border>
-        <Border.Background>
+        <!--<Border.Background>
             <ImageBrush ImageSource="/Data/Images/background.png"/>
-        </Border.Background>
+        </Border.Background>-->
         <ContentControl Content="{Binding NavigationService.CurrentViewModel}"/>
     </Border>
 </Window>

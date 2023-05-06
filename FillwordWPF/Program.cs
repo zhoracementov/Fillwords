@@ -1,7 +1,7 @@
 ﻿using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Navigation;
-using FillwordWPF.Services.WriteableOptions;
+using FillwordWPF.Services.WritableOptions;
 using FillwordWPF.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,12 +22,12 @@ namespace FillwordWPF
         }
         public static IHostBuilder CreateHostBuilder(string[] agrs) => Host
                 .CreateDefaultBuilder(agrs)
-                .UseContentRoot(App.CurrentDirectory)
+                .UseContentRoot(App.DataDirectory)
                 .ConfigureAppConfiguration(ConfigureAppConfiguration)
                 .ConfigureServices(ConfigurateServices);
 
         public static void ConfigureAppConfiguration(HostBuilderContext host, IConfigurationBuilder cfg) => cfg
-                .SetBasePath(App.CurrentDirectory)
+                .SetBasePath(App.DataDirectory)
                 .AddJsonFile(App.SettingsFileName, optional: false, reloadOnChange: true);
 
         public static void ConfigurateServices(HostBuilderContext host, IServiceCollection services) => services
@@ -41,6 +41,7 @@ namespace FillwordWPF
                 .AddSingleton<DownloadDataInput>()
                 .AddSingleton<DownloadDataService>()
                 .AddSingleton<GameProcessService>()
+                .AddSingleton<FillwordSaveLoadService>()
                 .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
                 .ConfigureWritable<GameSettings>(host.Configuration.GetSection(nameof(GameSettings)), App.SettingsFileName);
     }

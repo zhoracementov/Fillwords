@@ -26,11 +26,8 @@ namespace FillwordWPF.Game
             {
                 var item = data.ElementAt(i);
 
-                if (!item.Value.HasValue)
-                    continue;
-
                 var matches = regexCurrDefinition
-                    .Matches(item.Value.Value.Definition)
+                    .Matches(item.Value.Definition)
                     .OfType<Match>();
 
                 foreach (var match in matches)
@@ -51,7 +48,7 @@ namespace FillwordWPF.Game
                         continue;
                     }
 
-                    if (data[keyLinked] == null)
+                    if (!data.ContainsKey(keyLinked))
                     {
                         Errors.Add(keyLinked);
                         continue;
@@ -59,7 +56,7 @@ namespace FillwordWPF.Game
 
                     var valueOld = data[keyLinked];
                     var valueMatches = regexSplitLinkedDefinition
-                        .Matches(valueOld.Value.Definition)
+                        .Matches(valueOld.Definition)
                         .OfType<Match>()
                         .ToArray();
 
@@ -70,9 +67,14 @@ namespace FillwordWPF.Game
                     }
 
                     var valueFound = valueMatches[indexInSplit - 1].Value;
-                    var valueNew = valueOld.Value.Definition.Replace($"({indexInSplit}*)", valueFound);
+                    var valueNew = valueOld.Definition.Replace($"({indexInSplit}*)", valueFound);
 
-                    data[keyLinked] = new WordInfo(valueNew, valueOld.Value.AnswerIsProbablyNotNoun, valueOld.Value.AnswerNeedToIncludePlural);
+                    data[keyLinked] = new WordInfo
+                    {
+                        Definition = valueNew,
+                        AnswerIsProbablyNotNoun = valueOld.AnswerIsProbablyNotNoun,
+                        AnswerNeedToIncludePlural = valueOld.AnswerNeedToIncludePlural,
+                    };
 
                     //Console.WriteLine(valueFound);
                     //Console.WriteLine(valueNew);

@@ -44,14 +44,20 @@ namespace FillwordWPF
         public static string Version =>
             ConfigurationManager.AppSettings["version"] ?? "Demo version";
 
-        public static string LoadedDataFileName =>
-            Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["loadedDataFileName"]);
+        public static string MetaInfoFileName =>
+            ConfigurationManager.AppSettings["metaInfoFileName"];
 
-        public static string SettingsFileFullName =>
-            Path.Combine(CurrentDirectory, SettingsFileName);
+        public static string DataDirectory =>
+            Path.Combine(CurrentDirectory, ConfigurationManager.AppSettings["userDataDirectoryName"]);
+
+        public static string SavesDataDirectory =>
+            Path.Combine(DataDirectory, ConfigurationManager.AppSettings["saveDataDirectoryName"]);
+
+        public static string LoadedDataFileName =>
+            Path.Combine(DataDirectory, ConfigurationManager.AppSettings["loadedDataFileName"]);
 
         public static string SettingsFileName =>
-            ConfigurationManager.AppSettings["recordsFilePath"];
+            ConfigurationManager.AppSettings["settingsFileName"];
 
         public static string CurrentDirectory => IsDesignMode
                 ? Path.GetDirectoryName(GetSourceCodePath())

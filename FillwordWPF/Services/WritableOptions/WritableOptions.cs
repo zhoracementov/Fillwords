@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace FillwordWPF.Services.WriteableOptions
+namespace FillwordWPF.Services.WritableOptions
 {
     public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
     {

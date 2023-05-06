@@ -17,6 +17,19 @@ namespace FillwordWPF.Extenstions
             }
         }
 
+        public static int GetLinearArrayIndex<T>(this Point pnt, T[,] ar)
+        {
+            return pnt.GetLinearArrayIndex(ar.GetLength(0), ar.GetLength(1));
+        }
+
+        public static int GetLinearArrayIndex(this Point pnt, int w, int h)
+        {
+            if (pnt.Y >= h)
+                throw new ArgumentException();
+
+            return w * pnt.X + pnt.Y;
+        }
+
         public static IEnumerable<Point> WhereAt<T>(this T[,] matrix, Func<T, bool> predicate)
         {
             for (int i = 0; i < matrix.GetLength(0); i++)

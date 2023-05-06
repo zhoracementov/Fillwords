@@ -5,6 +5,12 @@ namespace FillwordWPF.Models
 {
     internal readonly struct FillwordItem
     {
+        public int Index { get; }
+        public WordInfo Info { get; }
+        public char Letter => Word[Index];
+        public Point Point { get; }
+        public string Word { get; }
+
         public FillwordItem(int index, WordInfo info, Point point, string word)
         {
             Index = index;
@@ -12,12 +18,6 @@ namespace FillwordWPF.Models
             Point = point;
             Word = word;
         }
-
-        public int Index { get; }
-        public WordInfo Info { get; }
-        public char Letter => Word[Index];
-        public Point Point { get; }
-        public string Word { get; }
 
         public static bool operator ==(FillwordItem l, FillwordItem r)
         {
@@ -33,10 +33,14 @@ namespace FillwordWPF.Models
         {
             return obj is FillwordItem item &&
                    Index == item.Index &&
-                   Letter == item.Letter &&
                    EqualityComparer<Point>.Default.Equals(Point, item.Point) &&
                    Word == item.Word &&
-                   EqualityComparer<WordInfo>.Default.Equals(Info, item.Info);
+                   EqualityComparer<WordInfo?>.Default.Equals(Info, item.Info);
+        }
+
+        public override string ToString()
+        {
+            return Letter.ToString();
         }
     }
 }

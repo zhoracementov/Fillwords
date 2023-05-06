@@ -90,10 +90,8 @@ namespace FillwordWPF.Game
                             connNode = connNode.Previous;
                         }
 
-                        if (!connNode.IsHead)
+                        if (connNode.IsHead && !headList.Remove(connNode))
                             throw new InvalidOperationException();
-                        else
-                            headList.Remove(connNode);
 
                         while (connNode != null)
                         {
@@ -135,7 +133,7 @@ namespace FillwordWPF.Game
                 for (int i = 0; i < place.Length; i++)
                 {
                     var point = place[i];
-                    wordsTable[point.X, point.Y] = new FillwordItem(i, words[rndWord].Value, point, rndWord);
+                    wordsTable[point.X, point.Y] = new FillwordItem(i, words[rndWord], point, rndWord);
                 }
             }
 
@@ -170,7 +168,12 @@ namespace FillwordWPF.Game
             };
 
             return offset
-                .Select(offsetCoord => new Point(point.X + offsetCoord.X, point.Y + offsetCoord.Y))
+                .Select(offsetCoord =>
+                {
+                    var x = point.X + offsetCoord.X;
+                    var y = point.Y + offsetCoord.Y;
+                    return new Point(x, y);
+                })
                 .Where(predicate)
                 .ToArray();
         }

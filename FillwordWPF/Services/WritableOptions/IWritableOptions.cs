@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
 
-namespace FillwordWPF.Services.WriteableOptions
+namespace FillwordWPF.Services.WritableOptions
 {
     public interface IWritableOptions<out T> : IOptions<T> where T : class
     {

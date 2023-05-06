@@ -3,17 +3,17 @@ using System.Runtime.Serialization;
 
 namespace FillwordWPF.Game
 {
-    internal class WordsData : Dictionary<string, WordInfo?>
+    internal class WordsData : Dictionary<string, WordInfo>
     {
         public WordsData() : base()
         {
         }
 
-        public WordsData(IDictionary<string, WordInfo?> dictionary) : base(dictionary)
+        public WordsData(IDictionary<string, WordInfo> dictionary) : base(dictionary)
         {
         }
 
-        public WordsData(IEnumerable<KeyValuePair<string, WordInfo?>> collection) : base(collection)
+        public WordsData(IEnumerable<KeyValuePair<string, WordInfo>> collection) : base(collection)
         {
         }
 
@@ -25,11 +25,11 @@ namespace FillwordWPF.Game
         {
         }
 
-        public WordsData(IDictionary<string, WordInfo?> dictionary, IEqualityComparer<string> comparer) : base(dictionary, comparer)
+        public WordsData(IDictionary<string, WordInfo> dictionary, IEqualityComparer<string> comparer) : base(dictionary, comparer)
         {
         }
 
-        public WordsData(IEnumerable<KeyValuePair<string, WordInfo?>> collection, IEqualityComparer<string> comparer) : base(collection, comparer)
+        public WordsData(IEnumerable<KeyValuePair<string, WordInfo>> collection, IEqualityComparer<string> comparer) : base(collection, comparer)
         {
         }
 
