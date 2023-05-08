@@ -18,7 +18,6 @@ namespace FillwordWPF.Services
         private bool isEnter;
 
         private bool isGameActive;
-        [JsonIgnore]
         public bool IsGameActive
         {
             get => isGameActive;
@@ -41,7 +40,13 @@ namespace FillwordWPF.Services
         }
 
         public event Action GameStartsEvent;
+        public event Action GameProgressChangedEvent;
         public event Action GameEndsEvent;
+
+        public GameProcessService()
+        {
+            //...
+        }
 
         public GameProcessService(IWritableOptions<GameSettings> settings)
         {
@@ -127,6 +132,8 @@ namespace FillwordWPF.Services
                 var point = result.Point;
                 SolvedMap[point.X, point.Y] = true;
             }
+
+            OnGameProgressChanged();
         }
 
         private bool CheckSolvedBefore()
@@ -162,6 +169,11 @@ namespace FillwordWPF.Services
         private void OnGameEnds()
         {
             GameEndsEvent?.Invoke();
+        }
+
+        private void OnGameProgressChanged()
+        {
+            GameProgressChangedEvent?.Invoke();
         }
 
         private void OnRestart()

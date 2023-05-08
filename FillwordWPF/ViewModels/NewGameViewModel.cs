@@ -6,6 +6,7 @@ using FillwordWPF.Services.Navigation;
 using FillwordWPF.Services.Serializers;
 using FillwordWPF.Services.WritableOptions;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -51,6 +52,13 @@ namespace FillwordWPF.ViewModels
 
         public bool IsShowSlider => !IsInLoading;
 
+        private ObservableCollection<Save> savedFillwords;
+        public ObservableCollection<Save> SavedFillwords
+        {
+            get => savedFillwords;
+            set => Set(ref savedFillwords, value);
+        }
+
         public ICommand NavigateToMenuCommand { get; }
         public ICommand ReloadFillwordCommand { get; }
         public ICommand NavigateToNewGameCommand { get; }
@@ -63,6 +71,9 @@ namespace FillwordWPF.ViewModels
             FillwordViewModel fillwordViewModel,
             GameProcessService gameProcessService)
         {
+            GetSaves();
+            gameOptions.OnUpdateEvent += GetSaves;
+
             this.gameOptions = gameOptions;
             this.downloadDataService = downloadDataService;
             this.fillwordViewModel = fillwordViewModel;
@@ -90,6 +101,11 @@ namespace FillwordWPF.ViewModels
             ReloadFillwordCommand = new RelayCommand(x => fillwordViewModel.CreateFillwordAsync());
 
             downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
+        }
+
+        private void GetSaves()
+        {
+            SavedFillwords = new ObservableCollection<Save>(Save.GetSaves());
         }
 
         private async void DownloadDataService_ProgressChanged(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage)

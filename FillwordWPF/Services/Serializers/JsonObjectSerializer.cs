@@ -12,7 +12,6 @@ namespace FillwordWPF.Services.Serializers
     {
         private static JsonSerializerOptions DefaultOptions => new JsonSerializerOptions
         {
-            IncludeFields = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.Never,
             Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
             PropertyNameCaseInsensitive = true,

@@ -18,7 +18,7 @@ namespace FillwordWPF.Services.WritableOptions
                 var configuration = (IConfigurationRoot)provider.GetService<IConfiguration>();
                 var environment = provider.GetService<IHostEnvironment>();
                 var options = provider.GetService<IOptionsMonitor<T>>();
-                return new WritableOptions<T>(environment, options, configuration, section.Key, file);
+                return new JsonWritableOptions<T>(environment, options, configuration, section.Key, file);
             });
         }
     }

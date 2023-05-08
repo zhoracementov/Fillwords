@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace FillwordWPF.Services.WritableOptions
 {
-    public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
+    public class JsonWritableOptions<T> : IWritableOptions<T> where T : class, new()
     {
         private readonly IHostEnvironment environment;
         private readonly IOptionsMonitor<T> options;
@@ -18,7 +18,7 @@ namespace FillwordWPF.Services.WritableOptions
         private readonly string section;
         private readonly string file;
 
-        public WritableOptions(
+        public JsonWritableOptions(
             IHostEnvironment environment,
             IOptionsMonitor<T> options,
             IConfigurationRoot configuration,
@@ -33,6 +33,8 @@ namespace FillwordWPF.Services.WritableOptions
         }
 
         public T Value => options.CurrentValue;
+
+        public event Action OnUpdateEvent;
 
         public async void Update(Action<T> applyChanges)
         {
@@ -51,6 +53,12 @@ namespace FillwordWPF.Services.WritableOptions
             jObject[this.section] = JObject.Parse(JsonConvert.SerializeObject(sectionObject));
             await File.WriteAllTextAsync(physicalPath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
             configuration.Reload();
+            OnUpdate();
+        }
+
+        private void OnUpdate()
+        {
+            OnUpdateEvent?.Invoke();
         }
     }
 }

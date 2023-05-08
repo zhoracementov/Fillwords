@@ -24,9 +24,9 @@ namespace FillwordWPF.ViewModels
         private readonly IWritableOptions<GameSettings> options;
         private readonly INavigationService navigationService;
         private readonly GameProcessService gameProcessService;
-        private readonly FillwordSaveLoadService fillwordSaveLoadService;
+        private Fillword fillwordCurrent;
+        private bool isLoaded;
 
-        private WordsData data;
 
         private int size;
         public int Size
@@ -34,7 +34,7 @@ namespace FillwordWPF.ViewModels
             get => size;
             set
             {
-                if (Set(ref size, value) && (data != null))
+                if (Set(ref size, value) && isLoaded)
                     CreateFillwordAsync();
             }
         }
@@ -54,28 +54,32 @@ namespace FillwordWPF.ViewModels
             IWritableOptions<GameSettings> options,
             INavigationService navigationService,
             DownloadDataService downloadDataService,
-            GameProcessService gameProcessService,
-            FillwordSaveLoadService fillwordSaveLoadService)
+            GameProcessService gameProcessService)
         {
             FillwordItemsLinear = new ObservableCollection<FillwordItem>();
 
             this.options = options;
             this.navigationService = navigationService;
             this.gameProcessService = gameProcessService;
-            this.fillwordSaveLoadService = fillwordSaveLoadService;
-            this.Size = options.Value.Size;
+            this.size = options.Value.Size;
 
             SelectNextItemCommand = new RelayCommand(OnSelectNextItem);
             StartSelectCommand = new RelayCommand(OnStartSelectCommand);
             EndSelectCommand = new RelayCommand(OnEndSelectCommand);
 
-            gameProcessService.GameStartsEvent += fillwordSaveLoadService.Save;
-            gameProcessService.GameEndsEvent += fillwordSaveLoadService.Save;
+            gameProcessService.GameStartsEvent += OnGameProgressChanged;
+            gameProcessService.GameProgressChangedEvent += OnGameProgressChanged;
+            gameProcessService.GameEndsEvent += OnGameProgressChanged;
 
             if (!App.IsDesignMode)
             {
                 StartService(downloadDataService);
             }
+        }
+
+        private async void OnGameProgressChanged()
+        {
+            await fillwordCurrent?.SaveAsync();
         }
 
         public void OnSelectNextItem(object parameter)
@@ -91,7 +95,7 @@ namespace FillwordWPF.ViewModels
             }
         }
 
-        public async void OnEndSelectCommand(object parameter)
+        public void OnEndSelectCommand(object parameter)
         {
             var ans = gameProcessService.OnEndSelecting();
 
@@ -104,8 +108,6 @@ namespace FillwordWPF.ViewModels
 
                 CreateFillwordAsync();
             }
-            else if (ans.SolvedThis)
-                fillwordSaveLoadService.Save();
         }
 
         public void OnStartSelectCommand(object parameter)
@@ -115,23 +117,28 @@ namespace FillwordWPF.ViewModels
 
         public async void StartService(DownloadDataService downloadDataService)
         {
-            downloadDataService.SuccessfullyDownloaded += (a, b, c) => CreateFillwordAsync();
+            downloadDataService.SuccessfullyDownloaded += async (a, b, c) =>
+            {
+                isLoaded = true;
+                await Task.Delay(100);
+                CreateFillwordAsync();
+            };
             await DataDownloadAsync(downloadDataService);
         }
 
         public async void CreateFillwordAsync()
         {
-            var fillwordItems = await Task.Run(() =>
-                new FillwordTableRandomBuilder(
-                data ??= new JsonObjectSerializer()
-                .Deserialize<WordsData>(App.LoadedDataFileName), Size)
-                .Build()
-                .AsLinear());
+            var data = new JsonObjectSerializer().Deserialize<WordsData>(App.LoadedDataFileName);
+            var table = new FillwordTableRandomBuilder(data, Size).Build();
 
-            FillwordItemsLinear = new ObservableCollection<FillwordItem>(fillwordItems);
+            FillwordItemsLinear = new ObservableCollection<FillwordItem>(table.AsLinear());
 
-            fillwordSaveLoadService.FillwordItemsLinear = FillwordItemsLinear;
-            fillwordSaveLoadService.InitTime = DateTime.Now;
+            fillwordCurrent = new Fillword
+            {
+                FillwordItemsLinear = FillwordItemsLinear,
+                GameProcessService = gameProcessService,
+                InitTime = DateTime.Now
+            };
         }
 
         public async Task DataDownloadAsync(DownloadDataService downloadDataService)

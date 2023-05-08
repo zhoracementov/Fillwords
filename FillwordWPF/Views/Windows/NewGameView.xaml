@@ -17,46 +17,9 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
-            <!--<ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate1}">
-                <StackPanel Orientation="Vertical">
-                    <TextBox Text="{Binding Size}"
-                             FontSize="256"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center"
-                             Background="Transparent"
-                             Foreground="DimGray"/>
-                    <TextBox Text="{Binding Size}"
-                             FontSize="256"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center"
-                             Background="Transparent"
-                             Foreground="DimGray"/>
-                    <TextBox Text="{Binding Size}"
-                             FontSize="256"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center"
-                             Background="Transparent"
-                             Foreground="DimGray"/>
-                    <TextBox Text="{Binding Size}"
-                             FontSize="256"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center"
-                             Background="Transparent"
-                             Foreground="DimGray"/>
-                    <TextBox Text="{Binding Size}"
-                             FontSize="256"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center"
-                             Background="Transparent"
-                             Foreground="DimGray"/>
-                    <TextBox Text="{Binding Size}"
-                             FontSize="256"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center"
-                             Background="Transparent"
-                             Foreground="DimGray"/>
-                </StackPanel>
-            </ScrollViewer>-->
+            <ScrollViewer>
+                <ListView ItemsSource="{Binding SavedFillwords}" DisplayMemberPath="InitTime" Background="Transparent"/>
+            </ScrollViewer>
         </Grid>
         <Grid Grid.Column="1">
             <DockPanel>

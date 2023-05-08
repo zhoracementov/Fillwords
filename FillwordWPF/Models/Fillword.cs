@@ -1,4 +1,5 @@
 ﻿using FillwordWPF.Models;
+using FillwordWPF.Services;
 using FillwordWPF.Services.Serializers;
 using System;
 using System.Collections.Generic;
@@ -10,31 +11,33 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace FillwordWPF.Services
+namespace FillwordWPF.Models
 {
-    internal class FillwordSaveLoadService
+    internal class Fillword
     {
-        private readonly static JsonObjectSerializer json = new JsonObjectSerializer();
+        private readonly static ObjectSerializer json = new JsonObjectSerializer();
 
-        public IEnumerable<FillwordItem> FillwordItemsLinear { get; set; }
+        public ObservableCollection<FillwordItem> FillwordItemsLinear { get; set; }
         public GameProcessService GameProcessService { get; set; }
-
-        [JsonIgnore]
         public DateTime InitTime { get; set; }
-
-        public FillwordSaveLoadService(GameProcessService gameProcessService)
-        {
-            GameProcessService = gameProcessService;
-        }
-
-        public async void Save()
+        public async Task SaveAsync()
         {
             await json.SerializeAsync(this, GetName());
         }
 
-        public static async Task<FillwordSaveLoadService> Load(string fileName)
+        public void Save()
         {
-            return await json.DeserializeAsync<FillwordSaveLoadService>(fileName);
+            json.Serialize(this, GetName());
+        }
+
+        public static async Task<Fillword> LoadAsync(string fileName)
+        {
+            return await json.DeserializeAsync<Fillword>(fileName);
+        }
+
+        public static Fillword Load(string fileName)
+        {
+            return json.Deserialize<Fillword>(fileName);
         }
 
         private string GetName()
@@ -42,6 +45,5 @@ namespace FillwordWPF.Services
             return Path.Combine(App.SavesDataDirectory,
                 $"{Environment.UserName} - {InitTime.ToString("dd.MM.yyyy.hh.mm.ss")}");
         }
-
     }
 }
