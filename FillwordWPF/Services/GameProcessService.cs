@@ -23,12 +23,14 @@ namespace FillwordWPF.Services
             get => isGameActive;
             set
             {
+                if (isGameActive != value)
+                {
+                    if (value)
+                        OnGameStarts();
+                    else
+                        OnGameEnds();
+                }
                 isGameActive = value;
-
-                if (value)
-                    OnGameStarts();
-                else
-                    OnGameEnds();
             }
         }
 
@@ -78,8 +80,16 @@ namespace FillwordWPF.Services
 
             if (solvedThis)
             {
-                OnSolve();
+                foreach (var result in selectedList)
+                {
+                    var point = result.Point;
+                    SolvedMap[point.X, point.Y] = true;
+                }
+
                 solvedAll = CheckSolvedMap();
+
+                if (solvedAll)
+                    IsGameActive = false;
             }
 
             var list = selectedList.Select(x => x.Point).ToList();
@@ -125,17 +135,6 @@ namespace FillwordWPF.Services
             return true;
         }
 
-        private void OnSolve()
-        {
-            foreach (var result in selectedList)
-            {
-                var point = result.Point;
-                SolvedMap[point.X, point.Y] = true;
-            }
-
-            OnGameProgressChanged();
-        }
-
         private bool CheckSolvedBefore()
         {
             return selectedList
@@ -156,9 +155,11 @@ namespace FillwordWPF.Services
             if (selectedList.Count != firstLen)
                 return false;
 
-            var seq = Enumerable.Range(0, firstLen);
-
-            return selectedList.All(x => x.Word == first.Word) && selectedList.Select(x => x.Index).SequenceEqual(seq);
+            return selectedList
+                .All(x => x.Word == first.Word)
+                && selectedList
+                .Select(x => x.Index)
+                .SequenceEqual(Enumerable.Range(0, firstLen));
         }
 
         private void OnGameStarts()

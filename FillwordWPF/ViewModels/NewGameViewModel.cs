@@ -73,6 +73,8 @@ namespace FillwordWPF.ViewModels
         {
             GetSaves();
             gameOptions.OnUpdateEvent += GetSaves;
+            gameProcessService.GameStartsEvent += GetSaves;
+            gameProcessService.GameEndsEvent += GetSaves;
 
             this.gameOptions = gameOptions;
             this.downloadDataService = downloadDataService;
@@ -98,7 +100,7 @@ namespace FillwordWPF.ViewModels
                 fillwordViewModel.Size = Size;
             });
 
-            ReloadFillwordCommand = new RelayCommand(x => fillwordViewModel.CreateFillwordAsync());
+            ReloadFillwordCommand = new RelayCommand(x => fillwordViewModel.ReloadFillword());
 
             downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
         }

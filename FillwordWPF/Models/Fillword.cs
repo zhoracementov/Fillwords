@@ -20,7 +20,8 @@ namespace FillwordWPF.Models
         public ObservableCollection<FillwordItem> FillwordItemsLinear { get; set; }
         public GameProcessService GameProcessService { get; set; }
         public DateTime InitTime { get; set; }
-        public async Task SaveAsync()
+
+        public async void SaveAsync()
         {
             await json.SerializeAsync(this, GetName());
         }

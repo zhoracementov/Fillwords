@@ -4,46 +4,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
+             xmlns:c="clr-namespace:FillwordWPF.Converters"
              xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              DataContext="{Binding FillwordViewModel, Source={StaticResource ViewModelsLocator}}">
+    <UserControl.Resources>
+        <c:FillwordItemToViewModelConverter x:Key="FillwordItemConverter"/>
+        <c:BrushNameToBrushConverter x:Key="BrushNameConverter"/>
+    </UserControl.Resources>
     <Grid>
         <ItemsControl ItemsSource="{Binding FillwordItemsLinear}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid DataContext ="{Binding FillwordViewModel, Source={StaticResource ViewModelsLocator}}"
-                                 Columns="{Binding Size}" Rows="{Binding Size}"/>
+                    <UniformGrid DataContext="{Binding}"
+                                 Columns="{Binding FillwordViewModel.Size, Source={StaticResource ViewModelsLocator}}" >
+                    </UniformGrid>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <DockPanel>
+                    <DockPanel DataContext="{Binding Converter={StaticResource FillwordItemConverter}}">
                         <TextBlock DockPanel.Dock="Bottom"
-                                   Text="{Binding Word}"
+                                   Text="{Binding FillwordItem.Word}"
                                    FontSize="14"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>
                         <Grid DockPanel.Dock="Top">
-                            <Border>
-                                <TextBlock Text="{Binding Letter}"
+                            <Border Background="{Binding CurrentColor, Converter={StaticResource BrushNameConverter}}">
+                                <TextBlock Text="{Binding FillwordItem.Letter}"
+                                       Background="Transparent"
                                        FontSize="24"
-                                       Background="WhiteSmoke"
                                        TextAlignment="Center"
                                        Padding="5"/>
                             </Border>
                             <behaviors:Interaction.Triggers>
                                 <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                     <behaviors:InvokeCommandAction 
-                                        Command="{Binding FillwordViewModel.StartSelectCommand, Source={StaticResource ViewModelsLocator}}"
-                                        CommandParameter="{Binding}"/>
+                                        Command="{Binding StartSelectCommand}"
+                                        CommandParameter="{Binding FillwordItem}"/>
                                 </behaviors:EventTrigger>
                                 <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
                                     <behaviors:InvokeCommandAction 
-                                        Command="{Binding FillwordViewModel.EndSelectCommand, Source={StaticResource ViewModelsLocator}}"/>
+                                        Command="{Binding EndSelectCommand}"/>
                                 </behaviors:EventTrigger>
                                 <behaviors:EventTrigger EventName="MouseEnter">
                                     <behaviors:InvokeCommandAction 
-                                        Command="{Binding FillwordViewModel.SelectNextItemCommand, Source={StaticResource ViewModelsLocator}}"
-                                        CommandParameter="{Binding}"/>
+                                        Command="{Binding SelectNextItemCommand}"
+                                        CommandParameter="{Binding FillwordItem}"/>
                                 </behaviors:EventTrigger>
                             </behaviors:Interaction.Triggers>
                         </Grid>

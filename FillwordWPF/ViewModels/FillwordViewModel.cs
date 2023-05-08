@@ -35,7 +35,7 @@ namespace FillwordWPF.ViewModels
             set
             {
                 if (Set(ref size, value) && isLoaded)
-                    CreateFillwordAsync();
+                    ReloadFillword();
             }
         }
 
@@ -45,10 +45,6 @@ namespace FillwordWPF.ViewModels
             get => fillwordItemsLinear;
             set => Set(ref fillwordItemsLinear, value);
         }
-
-        public ICommand SelectNextItemCommand { get; }
-        public ICommand StartSelectCommand { get; }
-        public ICommand EndSelectCommand { get; }
 
         public FillwordViewModel(
             IWritableOptions<GameSettings> options,
@@ -63,13 +59,9 @@ namespace FillwordWPF.ViewModels
             this.gameProcessService = gameProcessService;
             this.size = options.Value.Size;
 
-            SelectNextItemCommand = new RelayCommand(OnSelectNextItem);
-            StartSelectCommand = new RelayCommand(OnStartSelectCommand);
-            EndSelectCommand = new RelayCommand(OnEndSelectCommand);
-
             gameProcessService.GameStartsEvent += OnGameProgressChanged;
             gameProcessService.GameProgressChangedEvent += OnGameProgressChanged;
-            gameProcessService.GameEndsEvent += OnGameProgressChanged;
+            gameProcessService.GameEndsEvent += OnWin;
 
             if (!App.IsDesignMode)
             {
@@ -77,42 +69,18 @@ namespace FillwordWPF.ViewModels
             }
         }
 
-        private async void OnGameProgressChanged()
+        private void OnGameProgressChanged()
         {
-            await fillwordCurrent?.SaveAsync();
+            fillwordCurrent?.SaveAsync();
         }
 
-        public void OnSelectNextItem(object parameter)
+        private void OnWin()
         {
-            var item = (FillwordItem)parameter;
-            var index = item.Point.GetLinearArrayIndex(Size, Size);
-            var itemInArr = fillwordItemsLinear[index];
-            var eq = item == itemInArr;
+            MessageBox.Show("You winner!");
 
-            if (gameProcessService.OnSelectNextItem(item))
-            {
-                //...
-            }
-        }
+            navigationService.NavigateTo<NewGameViewModel>();
 
-        public void OnEndSelectCommand(object parameter)
-        {
-            var ans = gameProcessService.OnEndSelecting();
-
-            if (ans.SolvedAll)
-            {
-                MessageBox.Show("You winner!");
-
-                navigationService.NavigateTo<NewGameViewModel>();
-                gameProcessService.IsGameActive = false;
-
-                CreateFillwordAsync();
-            }
-        }
-
-        public void OnStartSelectCommand(object parameter)
-        {
-            gameProcessService.OnStartSelecting((FillwordItem)parameter);
+            ReloadFillword();
         }
 
         public async void StartService(DownloadDataService downloadDataService)
@@ -121,12 +89,12 @@ namespace FillwordWPF.ViewModels
             {
                 isLoaded = true;
                 await Task.Delay(100);
-                CreateFillwordAsync();
+                ReloadFillword();
             };
             await DataDownloadAsync(downloadDataService);
         }
 
-        public async void CreateFillwordAsync()
+        public void ReloadFillword()
         {
             var data = new JsonObjectSerializer().Deserialize<WordsData>(App.LoadedDataFileName);
             var table = new FillwordTableRandomBuilder(data, Size).Build();
