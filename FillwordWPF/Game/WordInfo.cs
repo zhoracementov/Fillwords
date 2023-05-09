@@ -2,11 +2,18 @@
 
 namespace FillwordWPF.Game
 {
-    internal struct WordInfo
+    internal class WordInfo
     {
-        public string Definition { get; set; }
-        public string AnswerIsProbablyNotNoun { get; set; }
-        public string AnswerNeedToIncludePlural { get; set; }
+        public WordInfo(string definition, string answerIsProbablyNotNoun, string answerNeedToIncludePlural)
+        {
+            Definition = definition;
+            AnswerIsProbablyNotNoun = answerIsProbablyNotNoun;
+            AnswerNeedToIncludePlural = answerNeedToIncludePlural;
+        }
+
+        public string Definition { get; }
+        public string AnswerIsProbablyNotNoun { get; }
+        public string AnswerNeedToIncludePlural { get; }
 
         //public override string ToString()
         //{

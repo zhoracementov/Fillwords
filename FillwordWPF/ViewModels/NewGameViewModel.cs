@@ -1,10 +1,12 @@
 ﻿using FillwordWPF.Commands;
+using FillwordWPF.Extenstions;
 using FillwordWPF.Game;
 using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Navigation;
 using FillwordWPF.Services.Serializers;
 using FillwordWPF.Services.WritableOptions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -17,6 +19,7 @@ namespace FillwordWPF.ViewModels
         private readonly IWritableOptions<GameSettings> gameOptions;
         private readonly DownloadDataService downloadDataService;
         private readonly FillwordViewModel fillwordViewModel;
+        private readonly GameProcessService gameProcessService;
         private readonly Dictionary<string, object> tempChanges;
 
         public int Size
@@ -27,7 +30,7 @@ namespace FillwordWPF.ViewModels
             set
             {
                 tempChanges[nameof(Size)] = value;
-                fillwordViewModel.Size = value;
+                ReloadFillword(value);
                 OnPropertyChanged();
             }
         }
@@ -59,6 +62,19 @@ namespace FillwordWPF.ViewModels
             set => Set(ref savedFillwords, value);
         }
 
+        private Save selectedSave;
+        public Save SelectedSave
+        {
+            get => selectedSave;
+            set
+            {
+                if (value != null || Set(ref selectedSave, value))
+                {
+                    ReloadFillword(value.GetFillword());
+                }
+            }
+        }
+
         public ICommand NavigateToMenuCommand { get; }
         public ICommand ReloadFillwordCommand { get; }
         public ICommand NavigateToNewGameCommand { get; }
@@ -79,6 +95,7 @@ namespace FillwordWPF.ViewModels
             this.gameOptions = gameOptions;
             this.downloadDataService = downloadDataService;
             this.fillwordViewModel = fillwordViewModel;
+            this.gameProcessService = gameProcessService;
 
             tempChanges = new Dictionary<string, object>();
 
@@ -97,12 +114,46 @@ namespace FillwordWPF.ViewModels
             ResetChangesCommand = new RelayCommand(x =>
             {
                 ResetChanges();
-                fillwordViewModel.Size = Size;
             });
 
-            ReloadFillwordCommand = new RelayCommand(x => fillwordViewModel.ReloadFillword());
+            ReloadFillwordCommand = new RelayCommand(x => ReloadFillword(Size));
 
             downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
+
+            DataDownloadAsync(downloadDataService);
+        }
+
+        public void ReloadFillword(Fillword fillword)
+        {
+            fillwordViewModel.Fillword = fillword;
+        }
+
+        public void ReloadFillword(int size)
+        {
+            var data = new JsonObjectSerializer().Deserialize<WordsData>(App.LoadedDataFileName);
+            var table = new FillwordTableRandomBuilder(data, size).Build();
+            var linear = new ObservableCollection<FillwordItem>(table.AsLinear());
+
+            var fillword = new Fillword
+            {
+                ItemsLinear = linear,
+                GameProcessService = gameProcessService,
+                InitTime = DateTime.Now,
+                Size = size
+            };
+
+            ReloadFillword(fillword);
+        }
+
+        public async Task DataDownloadAsync(DownloadDataService downloadDataService)
+        {
+            if (downloadDataService.IsDisposed)
+                return;
+
+            using (downloadDataService)
+            {
+                await downloadDataService.StartDownload();
+            }
         }
 
         private void GetSaves()
@@ -119,6 +170,7 @@ namespace FillwordWPF.ViewModels
                 await Task.Delay(300);
                 IsInLoading = false;
                 downloadDataService.ProgressChanged -= DownloadDataService_ProgressChanged;
+                ReloadFillword(Size);
             }
         }
 

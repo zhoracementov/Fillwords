@@ -2,7 +2,7 @@
 
 namespace FillwordWPF.Game
 {
-    internal readonly struct Point
+    internal class Point
     {
         public int X { get; }
         public int Y { get; }

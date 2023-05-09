@@ -2,6 +2,7 @@
 using FillwordWPF.Game;
 using FillwordWPF.Models;
 using FillwordWPF.Services.WritableOptions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace FillwordWPF.Services
         private bool isEnter;
 
         private bool isGameActive;
+        [JsonIgnore]
         public bool IsGameActive
         {
             get => isGameActive;
@@ -45,7 +47,7 @@ namespace FillwordWPF.Services
         public event Action GameProgressChangedEvent;
         public event Action GameEndsEvent;
 
-        public GameProcessService()
+        public GameProcessService() : this(App.Host.Services.GetRequiredService<IWritableOptions<GameSettings>>())
         {
             //...
         }

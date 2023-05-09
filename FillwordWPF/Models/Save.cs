@@ -8,15 +8,21 @@ namespace FillwordWPF.Models
 {
     internal class Save
     {
+        public string name;
+        public string Name => name ??= new FileInfo(FilePath).Name;
+
         public string FilePath { get; set; }
-        public Fillword Fillword => Fillword.Load(FilePath);
-        public DateTime InitTime => Fillword.InitTime;
 
         public static IEnumerable<Save> GetSaves()
         {
             return Directory
                 .GetFiles(App.SavesDataDirectory, "*.json", SearchOption.TopDirectoryOnly)
                 .Select(file => new Save { FilePath = file });
+        }
+
+        public Fillword GetFillword()
+        {
+            return Fillword.Load(FilePath);
         }
     }
 }

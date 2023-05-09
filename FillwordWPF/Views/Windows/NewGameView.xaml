@@ -18,14 +18,17 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <ScrollViewer>
-                <ListView ItemsSource="{Binding SavedFillwords}" DisplayMemberPath="InitTime" Background="Transparent"/>
+                <ListView ItemsSource="{Binding SavedFillwords}"
+                          DisplayMemberPath="Name"
+                          Background="Transparent"
+                          SelectedItem="{Binding SelectedSave}"/>
             </ScrollViewer>
         </Grid>
         <Grid Grid.Column="1">
             <DockPanel>
                 <Grid DockPanel.Dock="Bottom" Height="5"/>
                 <ProgressBar DockPanel.Dock="Bottom" Value="{Binding DownloadProgressLevel}" Height="30" Visibility="{Binding Path=IsInLoading, Converter={StaticResource BoolToVisConverter} }"/>
-                <Slider DockPanel.Dock="Bottom" Value="{Binding Size}" Minimum="3" Maximum="16" Visibility="{Binding Path=IsShowSlider, Converter={StaticResource BoolToVisConverter}}"/>
+                <Slider DockPanel.Dock="Bottom" Value="{Binding Size}" Minimum="3" Maximum="10" Visibility="{Binding Path=IsShowSlider, Converter={StaticResource BoolToVisConverter}}"/>
                 <!--<Slider Template="{DynamicResource SliderStyle}" DockPanel.Dock="Bottom" Value="{Binding Size}" Minimum="3" Maximum="16" Visibility="{Binding Path=IsShowSlider, Converter={StaticResource BoolToVisConverter}}"/>-->
                 <Grid DockPanel.Dock="Bottom" Height="5"/>
                 <v:FillwordView DockPanel.Dock="Bottom" Margin="25"/>

@@ -1,13 +1,13 @@
 ﻿using FillwordWPF.Game;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FillwordWPF.Models
 {
-    internal readonly struct FillwordItem
+    internal class FillwordItem
     {
         public int Index { get; }
         public WordInfo Info { get; }
-        public char Letter => Word[Index];
         public Point Point { get; }
         public string Word { get; }
 
@@ -40,7 +40,7 @@ namespace FillwordWPF.Models
 
         public override string ToString()
         {
-            return Letter.ToString();
+            return Word[Index].ToString();
         }
     }
 }

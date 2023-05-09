@@ -69,12 +69,7 @@ namespace FillwordWPF.Game
                     var valueFound = valueMatches[indexInSplit - 1].Value;
                     var valueNew = valueOld.Definition.Replace($"({indexInSplit}*)", valueFound);
 
-                    data[keyLinked] = new WordInfo
-                    {
-                        Definition = valueNew,
-                        AnswerIsProbablyNotNoun = valueOld.AnswerIsProbablyNotNoun,
-                        AnswerNeedToIncludePlural = valueOld.AnswerNeedToIncludePlural,
-                    };
+                    data[keyLinked] = new WordInfo(valueNew, valueOld.AnswerIsProbablyNotNoun, valueOld.AnswerNeedToIncludePlural);
 
                     //Console.WriteLine(valueFound);
                     //Console.WriteLine(valueNew);

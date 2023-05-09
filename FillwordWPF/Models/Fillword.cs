@@ -17,9 +17,10 @@ namespace FillwordWPF.Models
     {
         private readonly static ObjectSerializer json = new JsonObjectSerializer();
 
-        public ObservableCollection<FillwordItem> FillwordItemsLinear { get; set; }
+        public ObservableCollection<FillwordItem> ItemsLinear { get; set; }
         public GameProcessService GameProcessService { get; set; }
         public DateTime InitTime { get; set; }
+        public int Size { get; set; }
 
         public async void SaveAsync()
         {

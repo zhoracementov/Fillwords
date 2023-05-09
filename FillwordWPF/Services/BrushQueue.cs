@@ -11,8 +11,10 @@ namespace FillwordWPF.Services
         private readonly Queue<string> colorsQueue;
         private readonly Dictionary<string, Brush> createdBefore;
 
-        public Brush Default { get; }
         public string DefaultString { get; }
+        public Brush Default { get; }
+
+        public string NextString => DequeueEnqueue();
         public Brush Next
         {
             get
@@ -20,18 +22,23 @@ namespace FillwordWPF.Services
                 var next = DequeueEnqueue();
 
                 if (createdBefore.TryGetValue(next, out var value))
+                {
                     return value;
+                }
                 else
-                    return GetBrush(next);
+                {
+                    var brush = GetBrush(next);
+                    createdBefore[next] = brush;
+                    return brush;
+                }
             }
         }
-
-        public string NextString => DequeueEnqueue();
 
         public BrushQueue()
         {
             colorsQueue = new Queue<string>(GetBasicColors());
             createdBefore = new Dictionary<string, Brush>();
+
             DefaultString = DequeueEnqueue();
             Default = GetBrush(DefaultString);
         }

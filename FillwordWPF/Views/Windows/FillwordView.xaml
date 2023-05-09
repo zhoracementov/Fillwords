@@ -12,11 +12,11 @@
         <c:BrushNameToBrushConverter x:Key="BrushNameConverter"/>
     </UserControl.Resources>
     <Grid>
-        <ItemsControl ItemsSource="{Binding FillwordItemsLinear}">
+        <ItemsControl ItemsSource="{Binding Fillword.ItemsLinear}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid DataContext="{Binding}"
-                                 Columns="{Binding FillwordViewModel.Size, Source={StaticResource ViewModelsLocator}}" >
+                                 Columns="{Binding FillwordViewModel.Fillword.Size, Source={StaticResource ViewModelsLocator}}" >
                     </UniformGrid>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
@@ -30,7 +30,7 @@
                                    HorizontalAlignment="Center"/>
                         <Grid DockPanel.Dock="Top">
                             <Border Background="{Binding CurrentColor, Converter={StaticResource BrushNameConverter}}">
-                                <TextBlock Text="{Binding FillwordItem.Letter}"
+                                <TextBlock Text="{Binding FillwordItem}"
                                        Background="Transparent"
                                        FontSize="24"
                                        TextAlignment="Center"

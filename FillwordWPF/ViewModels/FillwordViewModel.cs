@@ -24,26 +24,16 @@ namespace FillwordWPF.ViewModels
         private readonly IWritableOptions<GameSettings> options;
         private readonly INavigationService navigationService;
         private readonly GameProcessService gameProcessService;
-        private Fillword fillwordCurrent;
-        private bool isLoaded;
 
-
-        private int size;
-        public int Size
+        private Fillword fillword;
+        public Fillword Fillword
         {
-            get => size;
+            get => fillword;
             set
             {
-                if (Set(ref size, value) && isLoaded)
-                    ReloadFillword();
+                if (Set(ref fillword, value))
+                    OnPropertyChanged(nameof(Size));
             }
-        }
-
-        private ObservableCollection<FillwordItem> fillwordItemsLinear;
-        public ObservableCollection<FillwordItem> FillwordItemsLinear
-        {
-            get => fillwordItemsLinear;
-            set => Set(ref fillwordItemsLinear, value);
         }
 
         public FillwordViewModel(
@@ -52,72 +42,18 @@ namespace FillwordWPF.ViewModels
             DownloadDataService downloadDataService,
             GameProcessService gameProcessService)
         {
-            FillwordItemsLinear = new ObservableCollection<FillwordItem>();
-
             this.options = options;
             this.navigationService = navigationService;
             this.gameProcessService = gameProcessService;
-            this.size = options.Value.Size;
 
             gameProcessService.GameStartsEvent += OnGameProgressChanged;
             gameProcessService.GameProgressChangedEvent += OnGameProgressChanged;
-            gameProcessService.GameEndsEvent += OnWin;
-
-            if (!App.IsDesignMode)
-            {
-                StartService(downloadDataService);
-            }
+            gameProcessService.GameEndsEvent += OnGameProgressChanged;
         }
 
         private void OnGameProgressChanged()
         {
-            fillwordCurrent?.SaveAsync();
-        }
-
-        private void OnWin()
-        {
-            MessageBox.Show("You winner!");
-
-            navigationService.NavigateTo<NewGameViewModel>();
-
-            ReloadFillword();
-        }
-
-        public async void StartService(DownloadDataService downloadDataService)
-        {
-            downloadDataService.SuccessfullyDownloaded += async (a, b, c) =>
-            {
-                isLoaded = true;
-                await Task.Delay(100);
-                ReloadFillword();
-            };
-            await DataDownloadAsync(downloadDataService);
-        }
-
-        public void ReloadFillword()
-        {
-            var data = new JsonObjectSerializer().Deserialize<WordsData>(App.LoadedDataFileName);
-            var table = new FillwordTableRandomBuilder(data, Size).Build();
-
-            FillwordItemsLinear = new ObservableCollection<FillwordItem>(table.AsLinear());
-
-            fillwordCurrent = new Fillword
-            {
-                FillwordItemsLinear = FillwordItemsLinear,
-                GameProcessService = gameProcessService,
-                InitTime = DateTime.Now
-            };
-        }
-
-        public async Task DataDownloadAsync(DownloadDataService downloadDataService)
-        {
-            if (downloadDataService.IsDisposed)
-                return;
-
-            using (downloadDataService)
-            {
-                await downloadDataService.StartDownload();
-            }
+            fillword?.SaveAsync();
         }
     }
 }
