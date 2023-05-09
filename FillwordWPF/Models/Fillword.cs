@@ -45,7 +45,7 @@ namespace FillwordWPF.Models
         private string GetName()
         {
             return Path.Combine(App.SavesDataDirectory,
-                $"{Environment.UserName} - {InitTime.ToString("dd.MM.yyyy.hh.mm.ss")}");
+                $"{Environment.UserName} - {InitTime.ToString("dd.MM.yyyy HH.mm.ss")}");
         }
     }
 }

@@ -10,7 +10,7 @@ namespace FillwordWPF.Extenstions
 
         public static IEnumerable<T> PickRandom<T>(this IEnumerable<T> source, int count, Random random = null, Func<T, bool> predicate = default)
         {
-            return source.ShakeAll(random, predicate).Take(count);
+            return source.Where(predicate).ShakeAll(random).Take(count);
         }
 
         public static T PickRandom<T>(this IEnumerable<T> source, Random random = null, Func<T, bool> predicate = default)
@@ -44,9 +44,9 @@ namespace FillwordWPF.Extenstions
             return tryResult;
         }
 
-        public static IEnumerable<T> ShakeAll<T>(this IEnumerable<T> source, Random random = null, Func<T, bool> predicate = default)
+        public static IEnumerable<T> ShakeAll<T>(this IEnumerable<T> source, Random random = null)
         {
-            return source.Where(predicate).OrderBy(x => (random ?? rnd).Next());
+            return source.OrderBy(x => (random ?? rnd).Next());
         }
     }
 }

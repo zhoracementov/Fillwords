@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <c:FillwordItemToViewModelConverter x:Key="FillwordItemConverter"/>
         <c:BrushNameToBrushConverter x:Key="BrushNameConverter"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="DimGray"/>
     </UserControl.Resources>
     <Grid>
         <ItemsControl ItemsSource="{Binding Fillword.ItemsLinear}">
@@ -23,13 +24,15 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel DataContext="{Binding Converter={StaticResource FillwordItemConverter}}">
-                        <TextBlock DockPanel.Dock="Bottom"
+                        <!--<TextBlock DockPanel.Dock="Bottom"
                                    Text="{Binding FillwordItem.Word}"
                                    FontSize="14"
                                    VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center"/>-->
                         <Grid DockPanel.Dock="Top">
-                            <Border Background="{Binding CurrentColor, Converter={StaticResource BrushNameConverter}}">
+                            <Border Background="{Binding CurrentColor, Converter={StaticResource BrushNameConverter}}"
+                                    BorderThickness="3"
+                                    BorderBrush="{StaticResource BorderBrush}">
                                 <TextBlock Text="{Binding FillwordItem}"
                                        Background="Transparent"
                                        FontSize="24"
