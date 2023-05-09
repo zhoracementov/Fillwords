@@ -9,13 +9,16 @@ using FillwordWPF.Services.WritableOptions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace FillwordWPF.ViewModels
 {
     internal class NewGameViewModel : ViewModel
     {
+        private readonly INavigationService navigationService;
         private readonly IWritableOptions<GameSettings> gameOptions;
         private readonly DownloadDataService downloadDataService;
         private readonly FillwordViewModel fillwordViewModel;
@@ -68,7 +71,7 @@ namespace FillwordWPF.ViewModels
             get => selectedSave;
             set
             {
-                if (value != null || Set(ref selectedSave, value))
+                if (value != null && Set(ref selectedSave, value))
                 {
                     ReloadFillword(value.GetFillword());
                 }
@@ -91,7 +94,9 @@ namespace FillwordWPF.ViewModels
             gameOptions.OnUpdateEvent += GetSaves;
             gameProcessService.GameStartsEvent += GetSaves;
             gameProcessService.GameEndsEvent += GetSaves;
+            gameProcessService.GameEndsEvent += OnWin;
 
+            this.navigationService = navigationService;
             this.gameOptions = gameOptions;
             this.downloadDataService = downloadDataService;
             this.fillwordViewModel = fillwordViewModel;
@@ -120,12 +125,20 @@ namespace FillwordWPF.ViewModels
 
             downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
 
-            DataDownloadAsync(downloadDataService);
+            DataDownloadAsync();
+        }
+
+        private void OnWin()
+        {
+            MessageBox.Show("You winner!");
+            navigationService.NavigateTo<NewGameViewModel>();
+            ReloadFillword(Size);
         }
 
         public void ReloadFillword(Fillword fillword)
         {
             fillwordViewModel.Fillword = fillword;
+            gameProcessService.SolvedMap = fillword.GameProcessService.SolvedMap;
         }
 
         public void ReloadFillword(int size)
@@ -145,7 +158,7 @@ namespace FillwordWPF.ViewModels
             ReloadFillword(fillword);
         }
 
-        public async Task DataDownloadAsync(DownloadDataService downloadDataService)
+        public async Task DataDownloadAsync()
         {
             if (downloadDataService.IsDisposed)
                 return;
@@ -158,7 +171,8 @@ namespace FillwordWPF.ViewModels
 
         private void GetSaves()
         {
-            SavedFillwords = new ObservableCollection<Save>(Save.GetSaves());
+            var saves = Save.GetSaves(new JsonObjectSerializer()).Reverse();
+            SavedFillwords = new ObservableCollection<Save>(saves);
         }
 
         private async void DownloadDataService_ProgressChanged(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage)

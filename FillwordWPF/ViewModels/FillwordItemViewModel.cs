@@ -39,7 +39,7 @@ namespace FillwordWPF.ViewModels
             EndSelectCommand = new RelayCommand(OnEndSelectCommand);
 
             this.gameProcessService = gameProcessService;
-            this.currentColor = brushQueue.NextString;
+            this.currentColor = brushQueue.StartString;
         }
 
         public void OnSelectNextItem(object parameter)

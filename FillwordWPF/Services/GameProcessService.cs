@@ -57,7 +57,7 @@ namespace FillwordWPF.Services
             selectedList = new LinkedList<FillwordItem>();
             this.settings = settings;
 
-            GameStartsEvent += OnRestart;
+            GameEndsEvent += OnRestart;
         }
 
         public void OnStartSelecting(FillwordItem fillwordItem)
@@ -92,6 +92,8 @@ namespace FillwordWPF.Services
 
                 if (solvedAll)
                     IsGameActive = false;
+                else
+                    OnGameProgressChanged();
             }
 
             var list = selectedList.Select(x => x.Point).ToList();
