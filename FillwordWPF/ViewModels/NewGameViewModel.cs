@@ -9,6 +9,7 @@ using FillwordWPF.Services.WritableOptions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -83,6 +84,8 @@ namespace FillwordWPF.ViewModels
         public ICommand NavigateToNewGameCommand { get; }
         public ICommand ResetChangesCommand { get; }
 
+        public ICommand DeleteSaveCommand { get; }
+
         public NewGameViewModel(
             INavigationService navigationService,
             IWritableOptions<GameSettings> gameOptions,
@@ -123,13 +126,30 @@ namespace FillwordWPF.ViewModels
 
             ReloadFillwordCommand = new RelayCommand(x => ReloadFillword(Size));
 
+            DeleteSaveCommand = new RelayCommand(DeleteSeletedSave);
+
             downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
 
             DataDownloadAsync();
         }
 
+        private void DeleteSeletedSave(object parameter)
+        {
+            var selected = (Save)parameter;
+
+            File.Delete(selected.FilePath);
+
+            if (!SavedFillwords.Remove(selected))
+                throw new InvalidOperationException();
+
+            if (SavedFillwords.Count == 0)
+                ReloadFillword(Size);
+        }
+
         private void OnWin()
         {
+            gameProcessService.SolvedMap = new bool[Size, Size];
+
             MessageBox.Show("You winner!");
             navigationService.NavigateTo<NewGameViewModel>();
             ReloadFillword(Size);
@@ -154,6 +174,8 @@ namespace FillwordWPF.ViewModels
                 InitTime = DateTime.Now,
                 Size = size
             };
+
+            fillword.GameProcessService.SolvedMap = new bool[size, size];
 
             ReloadFillword(fillword);
         }

@@ -14,7 +14,6 @@ namespace FillwordWPF.Services
 {
     internal class GameProcessService
     {
-        private readonly IWritableOptions<GameSettings> settings;
         private readonly LinkedList<FillwordItem> selectedList;
         private bool isEnter;
 
@@ -47,27 +46,19 @@ namespace FillwordWPF.Services
         public event Action GameProgressChangedEvent;
         public event Action GameEndsEvent;
 
-        public GameProcessService() : this(App.Host.Services.GetRequiredService<IWritableOptions<GameSettings>>())
-        {
-            //...
-        }
-
-        public GameProcessService(IWritableOptions<GameSettings> settings)
+        public GameProcessService()
         {
             selectedList = new LinkedList<FillwordItem>();
-            this.settings = settings;
-
-            GameEndsEvent += OnRestart;
         }
 
-        public void OnStartSelecting(FillwordItem fillwordItem)
+        public bool OnStartSelecting(FillwordItem fillwordItem)
         {
             if (!IsGameActive)
-                return;
+                return false;
 
             isEnter = true;
 
-            Add(fillwordItem);
+            return Add(fillwordItem);
         }
 
         public (bool SolvedThis, bool SolvedAll, IList<Point> Points) OnEndSelecting()
@@ -179,11 +170,6 @@ namespace FillwordWPF.Services
         private void OnGameProgressChanged()
         {
             GameProgressChangedEvent?.Invoke();
-        }
-
-        private void OnRestart()
-        {
-            SolvedMap = new bool[settings.Value.Size, settings.Value.Size];
         }
     }
 }
