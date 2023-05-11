@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataLoaderConsoleTest.Data.Extenstions
+namespace DataLoaderConsoleTest
 {
     internal static class EnumerablePickExtention
     {
@@ -10,7 +10,7 @@ namespace DataLoaderConsoleTest.Data.Extenstions
 
         public static IEnumerable<T> PickRandom<T>(this IEnumerable<T> source, int count, Random random = null, Func<T, bool> predicate = default)
         {
-            return source.ShakeAll(random, predicate).Take(count);
+            return source.Where(predicate).ShakeAll(random).Take(count);
         }
 
         public static T PickRandom<T>(this IEnumerable<T> source, Random random = null, Func<T, bool> predicate = default)
@@ -37,16 +37,16 @@ namespace DataLoaderConsoleTest.Data.Extenstions
         {
             random ??= rnd;
 
-            var selected = source.Where(predicate).ToArray();
+            var selected = (predicate is null ? source : source.Where(predicate)).ToArray();
             var size = selected.Length;
             var tryResult = size > 0;
             result = selected.ElementAtOrDefault(random.Next(size));
             return tryResult;
         }
 
-        public static IEnumerable<T> ShakeAll<T>(this IEnumerable<T> source, Random random = null, Func<T, bool> predicate = default)
+        public static IEnumerable<T> ShakeAll<T>(this IEnumerable<T> source, Random random = null)
         {
-            return source.Where(predicate).OrderBy(x => (random ?? rnd).Next());
+            return source.OrderBy(x => (random ?? rnd).Next());
         }
     }
 }

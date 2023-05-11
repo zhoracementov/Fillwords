@@ -25,6 +25,8 @@ namespace FillwordWPF.ViewModels
         private readonly FillwordViewModel fillwordViewModel;
         private readonly GameProcessService gameProcessService;
         private readonly Dictionary<string, object> tempChanges;
+        private bool isSavedLoaded;
+
 
         public int Size
         {
@@ -74,6 +76,7 @@ namespace FillwordWPF.ViewModels
             {
                 if (value != null && Set(ref selectedSave, value))
                 {
+                    isSavedLoaded = true;
                     ReloadFillword(value.GetFillword());
                 }
             }
@@ -95,9 +98,9 @@ namespace FillwordWPF.ViewModels
         {
             GetSaves();
             gameOptions.OnUpdateEvent += GetSaves;
-            gameProcessService.GameStartsEvent += GetSaves;
-            gameProcessService.GameEndsEvent += GetSaves;
-            gameProcessService.GameEndsEvent += OnWin;
+            gameProcessService.GameStarts += GetSaves;
+            gameProcessService.GameEnds += GetSaves;
+            gameProcessService.GameEnds += OnWin;
 
             this.navigationService = navigationService;
             this.gameOptions = gameOptions;
@@ -115,7 +118,7 @@ namespace FillwordWPF.ViewModels
             NavigateToNewGameCommand = new RelayCommand(x =>
             {
                 SaveChanges();
-                gameProcessService.IsGameActive = true;
+                gameProcessService.StartGame(isSavedLoaded);
                 navigationService.NavigateTo<GameViewModel>();
             });
 
@@ -149,6 +152,7 @@ namespace FillwordWPF.ViewModels
         private void OnWin()
         {
             gameProcessService.SolvedMap = new bool[Size, Size];
+            gameProcessService.ColorsMap = new string[Size, Size];
 
             MessageBox.Show("You winner!");
             navigationService.NavigateTo<NewGameViewModel>();
@@ -159,6 +163,7 @@ namespace FillwordWPF.ViewModels
         {
             fillwordViewModel.Fillword = fillword;
             gameProcessService.SolvedMap = fillword.GameProcessService.SolvedMap;
+            gameProcessService.ColorsMap = fillword.GameProcessService.ColorsMap;
         }
 
         public void ReloadFillword(int size)
@@ -167,7 +172,7 @@ namespace FillwordWPF.ViewModels
             var table = new FillwordTableRandomBuilder(data, size).Build();
             var linear = new ObservableCollection<FillwordItem>(table.AsLinear());
 
-            var fillword = new Fillword
+            var newFillword = new Fillword
             {
                 ItemsLinear = linear,
                 GameProcessService = gameProcessService,
@@ -175,9 +180,11 @@ namespace FillwordWPF.ViewModels
                 Size = size
             };
 
-            fillword.GameProcessService.SolvedMap = new bool[size, size];
+            newFillword.GameProcessService.SolvedMap = new bool[size, size];
+            newFillword.GameProcessService.ColorsMap = new string[size, size];
 
-            ReloadFillword(fillword);
+            isSavedLoaded = false;
+            ReloadFillword(newFillword);
         }
 
         public async Task DataDownloadAsync()

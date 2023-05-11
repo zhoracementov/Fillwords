@@ -5,6 +5,7 @@ using FillwordWPF.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -13,11 +14,7 @@ namespace FillwordWPF.ViewModels
     internal class FillwordItemViewModel : ViewModel
     {
         private readonly GameProcessService gameProcessService;
-        private readonly BrushQueue brushQueue;
 
-        private static string selectionColor;
-        private static string defaultColor;
-        private static List<FillwordItemViewModel> selectionList;
 
         private string currentColor;
         public string CurrentColor
@@ -30,7 +27,11 @@ namespace FillwordWPF.ViewModels
         public FillwordItem FillwordItem
         {
             get => fillwordItem;
-            set => Set(ref fillwordItem, value);
+            set
+            {
+                if (Set(ref fillwordItem, value))
+                    CurrentColor = gameProcessService.ColorsMap.GetAt(value.Point);
+            }
         }
 
         public ICommand SelectNextItemCommand { get; }
@@ -44,27 +45,20 @@ namespace FillwordWPF.ViewModels
             EndSelectCommand = new RelayCommand(OnEndSelectCommand);
 
             this.gameProcessService = gameProcessService;
-            this.brushQueue = brushQueue;
 
-            defaultColor = brushQueue.StartString;
-            selectionColor = brushQueue.NextString;
-            selectionList = new List<FillwordItemViewModel>();
 
-            this.currentColor = defaultColor;
+            gameProcessService.GameFailedSelection += SetColor;
+        }
 
+        private void SetColor()
+        {
+            CurrentColor = gameProcessService.ColorsMap.GetAt(FillwordItem.Point);
         }
 
         public void OnSelectNextItem(object parameter)
         {
             var res = gameProcessService.OnSelectNextItem(FillwordItem);
-
-            if (res && CurrentColor == defaultColor)
-            {
-                if (!selectionList.Contains(this))
-                    selectionList.Add(this);
-
-                CurrentColor = selectionColor;
-            }
+            SetColor();
         }
 
         public void OnEndSelectCommand(object parameter)
@@ -73,30 +67,14 @@ namespace FillwordWPF.ViewModels
 
             if (res.SolvedThis)
             {
-                selectionColor = brushQueue.NextString;
+                MessageBox.Show($"{FillwordItem.Word}{Environment.NewLine}{FillwordItem.Info.Definition}");
             }
-            else
-            {
-                foreach (var item in selectionList)
-                {
-                    item.CurrentColor = defaultColor;
-                }
-            }
-
-            selectionList.Clear();
         }
 
         public void OnStartSelectCommand(object parameter)
         {
             var res = gameProcessService.OnStartSelecting(FillwordItem);
-            
-            if (res && CurrentColor == defaultColor)
-            {
-                if (!selectionList.Contains(this))
-                    selectionList.Add(this);
-                
-                CurrentColor = selectionColor;
-            }
+            SetColor();
         }
     }
 }

@@ -46,9 +46,9 @@ namespace FillwordWPF.ViewModels
             this.navigationService = navigationService;
             this.gameProcessService = gameProcessService;
 
-            gameProcessService.GameStartsEvent += OnGameProgressChanged;
-            gameProcessService.GameProgressChangedEvent += OnGameProgressChanged;
-            gameProcessService.GameEndsEvent += OnGameProgressChanged;
+            gameProcessService.GameStarts += OnGameProgressChanged;
+            gameProcessService.GameProgressChanged += OnGameProgressChanged;
+            gameProcessService.GameEnds += OnGameProgressChanged;
         }
 
         private void OnGameProgressChanged()

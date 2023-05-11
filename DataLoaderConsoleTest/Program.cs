@@ -1,112 +1,84 @@
-﻿using DataLoaderConsoleTest.Data;
-using DataLoaderConsoleTest.Load;
-using DataLoaderConsoleTest.Table;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Unicode;
 
 namespace DataLoaderConsoleTest
 {
-    internal class GameSettings
-    {
-        public static ObjectSerializer Serializer { get; set; }
-        public static string SettingsFileName => ConfigurationManager.AppSettings["recordsFilePath"];
-
-
-        private readonly Dictionary<string, string> settings;
-
-        private void SetValue(string field, string value)
-        {
-            settings[field] = value;
-            Serializer.Serialize(settings, SettingsFileName);
-        }
-
-        public Difficulty Difficulty
-        {
-            get => Enum.Parse<Difficulty>(settings["difficulty"], true);
-            set => SetValue("difficulty", value.ToString().ToLower());
-        }
-
-        public int MinWordLength
-        {
-            get => int.Parse(settings["minWordLength"]);
-            set => SetValue("minWordLength", value.ToString());
-        }
-
-        public string SaveDataFileName
-        {
-            get => settings["saveDataFileName"];
-            set => SetValue("saveDataFileName", value);
-        }
-
-        public GameSettings()
-        {
-            Serializer = new JsonObjectSerializer(new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                WriteIndented = true,
-            });
-
-            settings = new Dictionary<string, string>
-            {
-                { "difficulty", "easy" },
-                { "minWordLength", "3" },
-                { "saveDataFileName", "data" },
-            };
-
-            var fileInfo = new FileInfo(SettingsFileName);
-
-            if (!fileInfo.Exists || fileInfo.Length == 0)
-            {
-                Serializer.Serialize(settings, fileInfo.FullName);
-            }
-
-            settings = Serializer.Deserialize<Dictionary<string, string>>(fileInfo.FullName);
-        }
-    }
-
     internal class Program
     {
         private const string FileName = "data.json";
+        private const string OutputFileName = "dataOutput.json";
         private const string URL = @"https://raw.githubusercontent.com/Harrix/Russian-Nouns/main/src/data.json";
 
-        private static void Main()
+        private static void Main(string[] args)
         {
-            var settings = new GameSettings();
-            Console.WriteLine(settings.Difficulty);
+            var downloadDataInput = new DownloadDataInput(URL, FileName);
+            var downloadDataService = new DownloadDataService(downloadDataInput);
 
-            settings.Difficulty = Difficulty.Easy;
-            Console.WriteLine(settings.Difficulty);
-            //var loader = new JsonWebDataLoader<WordsData>(URL, FileName);
-            //loader.LoadData().Wait();
+            _ = downloadDataService.StartDownload();
 
-            //Console.WriteLine("Старт!");
-            //Console.ReadKey();
+            var data = GetData();
 
-            //var stopWatch = new Stopwatch();
-            //stopWatch.Start();
+            data = UserFilterItems(data);
 
-            //var table = new FillwordTableRandomBuilder(loader.Data, Difficulty.Medium).Build();
+            using var fStream = File.OpenWrite(OutputFileName);
+            JsonSerializer.Serialize(fStream, data, DefaultOptions);
+        }
 
-            //stopWatch.Stop();
+        private static WordsData UserFilterItems(WordsData data)
+        {
+            var ansYes = "1";
+            var ansNo = "0";
+            var ansStop = "-";
 
-            //Console.WriteLine("RunTime " + stopWatch.Elapsed.Ticks);
+            data = new WordInfoDefinitionConverter(data).Convert();
 
-            //Console.WriteLine();
+            var preview = new List<string>();
 
-            //for (int i = 0; i < table.Size; i++)
-            //{
-            //    for (int j = 0; j < table.Size; j++)
-            //    {
-            //        Console.Write(table[i, j].CurrentLetter + " ");
-            //    }
-            //    Console.WriteLine();
-            //}
+            while (true)
+            {
+                var tryPickRes = data.TryPickRandom(out var result, new Random(), x => !preview.Contains(x.Key) && x.Key.Length == 4);
 
-            Console.ReadKey();
+                if (!tryPickRes)
+                    break;
+
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine("[{0}, {1}]", result.Key, result.Value.Definition);
+                Console.WriteLine($"Удалить? [{ansYes} - Да, {ansNo} - Нет, {ansStop} - Стоп]");
+
+                var ans = Console.ReadLine();
+                if (ans == ansYes)
+                {
+                    data.Remove(result.Key);
+                }
+                else if (ans == ansStop)
+                {
+                    break;
+                }
+
+                preview.Add(result.Key);
+            }
+
+            return data;
+        }
+
+        private static JsonSerializerOptions DefaultOptions => new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true,
+            
+        };
+
+        private static WordsData GetData()
+        {
+            using var fStream = File.OpenRead(FileName);
+            return JsonSerializer.Deserialize<WordsData>(fStream, DefaultOptions);
         }
     }
 }

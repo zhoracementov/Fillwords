@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace DataLoaderConsoleTest.Data
+namespace DataLoaderConsoleTest
 {
     internal class WordInfoDefinitionConverter
     {
@@ -26,6 +27,11 @@ namespace DataLoaderConsoleTest.Data
             {
                 var item = data.ElementAt(i);
 
+                if (item.Key.Any(char.IsUpper))
+                {
+                    data.Remove(item.Key);
+                }
+
                 var matches = regexCurrDefinition
                     .Matches(item.Value.Definition)
                     .OfType<Match>();
@@ -48,7 +54,7 @@ namespace DataLoaderConsoleTest.Data
                         continue;
                     }
 
-                    if (data[keyLinked] == null)
+                    if (!data.ContainsKey(keyLinked))
                     {
                         Errors.Add(keyLinked);
                         continue;

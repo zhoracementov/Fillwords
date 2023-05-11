@@ -26,6 +26,7 @@ namespace FillwordWPF.Services.Serializers
         {
             this.jsonSerializerOptions = jsonSerializerOptions ?? DefaultOptions;
             this.jsonSerializerOptions.Converters.Add(new TwoDimBoolArrayJsonConverter());
+            this.jsonSerializerOptions.Converters.Add(new TwoDimStringArrayJsonConverter());
         }
 
         public override T Deserialize<T>(string fileName)

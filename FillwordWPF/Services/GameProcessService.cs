@@ -15,23 +15,38 @@ namespace FillwordWPF.Services
     internal class GameProcessService
     {
         private readonly LinkedList<FillwordItem> selectedList;
+        private readonly BrushQueue brushQueue;
+
+        private string defaultColor;
+        private string selectionColor;
+
         private bool isEnter;
 
         private bool isGameActive;
-        [JsonIgnore]
-        public bool IsGameActive
+
+        public void StartGame(bool isRestart = false)
         {
-            get => isGameActive;
-            set
+            if (!isRestart)
             {
-                if (isGameActive != value)
+                for (int i = 0; i < ColorsMap.GetLength(0); i++)
                 {
-                    if (value)
-                        OnGameStarts();
-                    else
-                        OnGameEnds();
+                    for (int j = 0; j < ColorsMap.GetLength(1); j++)
+                    {
+                        ColorsMap[i, j] = brushQueue.StartString;
+                    }
                 }
-                isGameActive = value;
+            }
+
+            OnGameStarts();
+            isGameActive = true;
+        }
+
+        public void StopGame()
+        {
+            if (isGameActive)
+            {
+                isGameActive = false;
+                OnGameEnds();
             }
         }
 
@@ -42,29 +57,51 @@ namespace FillwordWPF.Services
             set => solvedMap = value;
         }
 
-        public event Action GameStartsEvent;
-        public event Action GameProgressChangedEvent;
-        public event Action GameEndsEvent;
+        private string[,] colorsMap;
+        public string[,] ColorsMap
+        {
+            get => colorsMap;
+            set => colorsMap = value;
+        }
 
-        public GameProcessService()
+        public event Action GameStarts;
+        public event Action GameProgressChanged;
+        public event Action GameEnds;
+
+        public event Action GameFailedSelection;
+
+        public GameProcessService(BrushQueue brushQueue)
         {
             selectedList = new LinkedList<FillwordItem>();
+            this.brushQueue = brushQueue;
+            this.defaultColor = brushQueue.StartString;
+            this.selectionColor = brushQueue.NextString;
+        }
+
+        public GameProcessService() : this(new BrushQueue())
+        {
+
         }
 
         public bool OnStartSelecting(FillwordItem fillwordItem)
         {
-            if (!IsGameActive)
+            if (!isGameActive)
                 return false;
 
             isEnter = true;
 
-            return Add(fillwordItem);
+            var res = Add(fillwordItem);
+
+            if (res && !SolvedMap.GetAt(fillwordItem.Point))
+                colorsMap.SetAt(fillwordItem.Point, selectionColor);
+
+            return res;
         }
 
-        public (bool SolvedThis, bool SolvedAll, IList<Point> Points) OnEndSelecting()
+        public (bool SolvedThis, bool SolvedAll) OnEndSelecting()
         {
-            if (!IsGameActive)
-                return (false, false, null);
+            if (!isGameActive)
+                return (false, false);
 
             isEnter = false;
 
@@ -75,31 +112,49 @@ namespace FillwordWPF.Services
             {
                 foreach (var result in selectedList)
                 {
-                    var point = result.Point;
-                    SolvedMap[point.X, point.Y] = true;
+                    SolvedMap.SetAt(result.Point, true);
                 }
 
                 solvedAll = CheckSolvedMap();
 
                 if (solvedAll)
-                    IsGameActive = false;
+                    StopGame();
                 else
                     OnGameProgressChanged();
-            }
 
-            var list = selectedList.Select(x => x.Point).ToList();
+                selectionColor = brushQueue.NextString;
+            }
+            else
+            {
+                OnGameFailedSelection();
+            }
 
             selectedList.Clear();
 
-            return (solvedThis, solvedAll, list);
+            return (solvedThis, solvedAll);
+        }
+
+        private void OnGameFailedSelection()
+        {
+            foreach (var result in selectedList)
+            {
+                ColorsMap.SetAt(result.Point, defaultColor);
+            }
+
+            GameFailedSelection?.Invoke();
         }
 
         public bool OnSelectNextItem(FillwordItem fillwordItem)
         {
-            if (!IsGameActive)
+            if (!isGameActive)
                 return false;
 
-            return Add(fillwordItem);
+            var res = Add(fillwordItem);
+
+            if (res && !SolvedMap.GetAt(fillwordItem.Point))
+                colorsMap.SetAt(fillwordItem.Point, selectionColor);
+
+            return res;
         }
 
         //public bool OnUnSelectNextItem(FillwordItem fillwordItem)
@@ -126,6 +181,12 @@ namespace FillwordWPF.Services
             if (selectedList.Count > 0 && selectedList.Last.Value == fillwordItem)
                 return false;
 
+            if (selectedList.Count > 0 && selectedList.Last.Value.Point.GetDistance(fillwordItem.Point) > 1)
+                return false;
+
+            if (SolvedMap.GetAt(fillwordItem.Point))
+                return false;
+
             selectedList.AddLast(fillwordItem);
             return true;
         }
@@ -144,6 +205,9 @@ namespace FillwordWPF.Services
 
         private bool CheckSolvedWord()
         {
+            if (selectedList.Count == 0)
+                return false;
+
             var first = selectedList.First.Value;
             var firstLen = first.Word.Length;
 
@@ -159,17 +223,17 @@ namespace FillwordWPF.Services
 
         private void OnGameStarts()
         {
-            GameStartsEvent?.Invoke();
+            GameStarts?.Invoke();
         }
 
         private void OnGameEnds()
         {
-            GameEndsEvent?.Invoke();
+            GameEnds?.Invoke();
         }
 
         private void OnGameProgressChanged()
         {
-            GameProgressChangedEvent?.Invoke();
+            GameProgressChanged?.Invoke();
         }
     }
 }

@@ -13,6 +13,11 @@ namespace FillwordWPF.Game
             Y = y;
         }
 
+        public double GetDistance(Point other)
+        {
+            return Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2));
+        }
+
         public override bool Equals(object obj)
         {
             return obj is Point point &&

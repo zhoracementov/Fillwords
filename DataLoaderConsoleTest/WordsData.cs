@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace DataLoaderConsoleTest.Data
+namespace DataLoaderConsoleTest
 {
     internal class WordsData : Dictionary<string, WordInfo>
     {

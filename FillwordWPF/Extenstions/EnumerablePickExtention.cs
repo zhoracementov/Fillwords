@@ -37,7 +37,7 @@ namespace FillwordWPF.Extenstions
         {
             random ??= rnd;
 
-            var selected = source.Where(predicate).ToArray();
+            var selected = predicate is null ? source.ToArray() : source.Where(predicate).ToArray();
             var size = selected.Length;
             var tryResult = size > 0;
             result = selected.ElementAtOrDefault(random.Next(size));

@@ -11,6 +11,8 @@ namespace FillwordWPF.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is null) return null;
+
             return (Brush)typeof(Brushes).GetProperty((string)value).GetValue(null);
         }
 
