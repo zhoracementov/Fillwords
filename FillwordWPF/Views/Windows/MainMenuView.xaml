@@ -5,33 +5,64 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FillwordWPF.Views.Windows"
              mc:Ignorable="d"
+             xmlns:v="clr-namespace:FillwordWPF.Views.Windows" xmlns:c="clr-namespace:FillwordWPF.Converters"
              DataContext="{Binding MenuWindowViewModel, Source={StaticResource ViewModelsLocator}}"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="720" d:DesignWidth="1024">
+    <UserControl.Resources>
+        <c:FillwordItemToViewModelConverter x:Key="FillwordItemConverter"/>
+        <c:BrushNameToBrushConverter x:Key="BrushNameConverter"/>
+        <SolidColorBrush x:Key="FontBrush" Color="Black"/>
+        <c:MarginConverter x:Key="MarginConverter"/>
+    </UserControl.Resources>
     <Grid>
-        <Grid HorizontalAlignment="Right" Margin="50, 50" Width="250">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Grid.ColumnSpan="2">
+            <!--<ItemsControl>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <UniformGrid Columns="4"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                
+            </ItemsControl>-->
+        </Grid>
+        <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
-                <RowDefinition/>
+                <!--<RowDefinition/>-->
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Button Content="Fillwords"
+                        Margin="10"
+                        FontSize="32"
+                        Style="{DynamicResource ButtonStyle}"
                         Command="{Binding ShowMetaInfoCommand}">
                 </Button>
             </Grid>
             <Grid Grid.Row="1">
                 <Button Content="New game"
+                        Margin="10"
+                        FontSize="32"
+                        Style="{DynamicResource ButtonStyle}"
                         Command="{Binding StartNewGameCommand}">
                 </Button>
             </Grid>
-            <Grid Grid.Row="2">
+            <!--<Grid Grid.Row="2">
                 <Button Content="Settings"
                         Command="{Binding OpenSettingsCommand}">
                 </Button>
-            </Grid>
-            <Grid Grid.Row="3">
+            </Grid>-->
+            <Grid Grid.Row="2">
                 <Button Content="Close"
+                        Margin="10"
+                        FontSize="32"
+                        Style="{DynamicResource ButtonStyle}"
                         Command="{Binding CloseAppCommand}">
                 </Button>
             </Grid>

@@ -12,17 +12,55 @@ using System.Text.Json.Serialization;
 
 namespace FillwordWPF.Services
 {
-    internal class GameProcessService
+    public class GameProcessService
     {
         private readonly LinkedList<FillwordItem> selectedList;
-        private readonly BrushQueue brushQueue;
+        private readonly BrushesNamesLoopQueue brushesNamesLoopQueue;
 
         private string defaultColor;
         private string selectionColor;
 
         private bool isEnter;
-
         private bool isGameActive;
+
+        public bool IsGameActive => isGameActive;
+
+        private string[,] colorsMap;
+        public string[,] ColorsMap
+        {
+            get => colorsMap;
+            set => colorsMap = value;
+        }
+
+        public string DefaultColor
+        {
+            get => defaultColor;
+            set => defaultColor = value;
+        }
+
+        public string SelectionColor
+        {
+            get => selectionColor;
+            set => selectionColor = value;
+        }
+
+        public event Action GameStarted;
+        public event Action GameProgressChanged;
+        public event Action GameStoped;
+        public event Action GameSelectionFailed;
+
+        public GameProcessService(BrushesNamesLoopQueue brushQueue)
+        {
+            selectedList = new LinkedList<FillwordItem>();
+            this.brushesNamesLoopQueue = brushQueue;
+            this.DefaultColor = brushQueue.StartString;
+            this.SelectionColor = brushQueue.NextString;
+        }
+
+        public GameProcessService() : this(new BrushesNamesLoopQueue())
+        {
+
+        }
 
         public void StartGame(bool isRestart = false)
         {
@@ -32,7 +70,7 @@ namespace FillwordWPF.Services
                 {
                     for (int j = 0; j < ColorsMap.GetLength(1); j++)
                     {
-                        ColorsMap[i, j] = brushQueue.StartString;
+                        ColorsMap[i, j] = brushesNamesLoopQueue.StartString;
                     }
                 }
             }
@@ -41,46 +79,15 @@ namespace FillwordWPF.Services
             isGameActive = true;
         }
 
-        public void StopGame()
+        public void StopGame(bool IsBreak = false)
         {
             if (isGameActive)
             {
                 isGameActive = false;
-                OnGameEnds();
+
+                if (!IsBreak)
+                    OnGameEnds();
             }
-        }
-
-        private bool[,] solvedMap;
-        public bool[,] SolvedMap
-        {
-            get => solvedMap;
-            set => solvedMap = value;
-        }
-
-        private string[,] colorsMap;
-        public string[,] ColorsMap
-        {
-            get => colorsMap;
-            set => colorsMap = value;
-        }
-
-        public event Action GameStarts;
-        public event Action GameProgressChanged;
-        public event Action GameEnds;
-
-        public event Action GameFailedSelection;
-
-        public GameProcessService(BrushQueue brushQueue)
-        {
-            selectedList = new LinkedList<FillwordItem>();
-            this.brushQueue = brushQueue;
-            this.defaultColor = brushQueue.StartString;
-            this.selectionColor = brushQueue.NextString;
-        }
-
-        public GameProcessService() : this(new BrushQueue())
-        {
-
         }
 
         public bool OnStartSelecting(FillwordItem fillwordItem)
@@ -92,8 +99,8 @@ namespace FillwordWPF.Services
 
             var res = Add(fillwordItem);
 
-            if (res && !SolvedMap.GetAt(fillwordItem.Point))
-                colorsMap.SetAt(fillwordItem.Point, selectionColor);
+            if (res && !CheckSolvedItem(fillwordItem))
+                ColorsMap.SetAt(fillwordItem.Point, SelectionColor);
 
             return res;
         }
@@ -110,19 +117,14 @@ namespace FillwordWPF.Services
 
             if (solvedThis)
             {
-                foreach (var result in selectedList)
-                {
-                    SolvedMap.SetAt(result.Point, true);
-                }
-
                 solvedAll = CheckSolvedMap();
+
+                OnGameProgressChanged();
 
                 if (solvedAll)
                     StopGame();
-                else
-                    OnGameProgressChanged();
 
-                selectionColor = brushQueue.NextString;
+                SelectionColor = brushesNamesLoopQueue.NextString;
             }
             else
             {
@@ -134,16 +136,6 @@ namespace FillwordWPF.Services
             return (solvedThis, solvedAll);
         }
 
-        private void OnGameFailedSelection()
-        {
-            foreach (var result in selectedList)
-            {
-                ColorsMap.SetAt(result.Point, defaultColor);
-            }
-
-            GameFailedSelection?.Invoke();
-        }
-
         public bool OnSelectNextItem(FillwordItem fillwordItem)
         {
             if (!isGameActive)
@@ -151,8 +143,8 @@ namespace FillwordWPF.Services
 
             var res = Add(fillwordItem);
 
-            if (res && !SolvedMap.GetAt(fillwordItem.Point))
-                colorsMap.SetAt(fillwordItem.Point, selectionColor);
+            if (res && !CheckSolvedItem(fillwordItem))
+                ColorsMap.SetAt(fillwordItem.Point, SelectionColor);
 
             return res;
         }
@@ -184,23 +176,35 @@ namespace FillwordWPF.Services
             if (selectedList.Count > 0 && selectedList.Last.Value.Point.GetDistance(fillwordItem.Point) > 1)
                 return false;
 
-            if (SolvedMap.GetAt(fillwordItem.Point))
+            if (CheckSolvedItem(fillwordItem))
                 return false;
 
             selectedList.AddLast(fillwordItem);
             return true;
         }
 
+        public bool CheckSolvedItem(FillwordItem fillwordItem)
+        {
+            return CheckSolvedItem(fillwordItem.Point);
+        }
+
+        public bool CheckSolvedItem(Point point)
+        {
+            return ColorsMap.GetAt(point) != DefaultColor;
+        }
+
         private bool CheckSolvedBefore()
         {
             return selectedList
                 .Select(x => x.Point)
-                .Any(pt => SolvedMap[pt.X, pt.Y]);
+                .Any(pt => !CheckSolvedItem(pt));
         }
 
         private bool CheckSolvedMap()
         {
-            return SolvedMap.AsLinear().All(x => x);
+            return ColorsMap
+                .AsLinear()
+                .All(x => x != DefaultColor);
         }
 
         private bool CheckSolvedWord()
@@ -223,17 +227,33 @@ namespace FillwordWPF.Services
 
         private void OnGameStarts()
         {
-            GameStarts?.Invoke();
+            GameStarted?.Invoke();
         }
 
         private void OnGameEnds()
         {
-            GameEnds?.Invoke();
+            GameStoped?.Invoke();
         }
 
         private void OnGameProgressChanged()
         {
             GameProgressChanged?.Invoke();
         }
+
+        private void OnGameFailedSelection()
+        {
+            foreach (var result in selectedList)
+            {
+                ColorsMap.SetAt(result.Point, DefaultColor);
+            }
+
+            OnGameSelectionFailed();
+        }
+
+        private void OnGameSelectionFailed()
+        {
+            GameSelectionFailed?.Invoke();
+        }
+
     }
 }

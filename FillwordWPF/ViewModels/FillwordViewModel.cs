@@ -21,39 +21,34 @@ namespace FillwordWPF.ViewModels
 {
     internal class FillwordViewModel : ViewModel
     {
-        private readonly IWritableOptions<GameSettings> options;
         private readonly INavigationService navigationService;
         private readonly GameProcessService gameProcessService;
+        private readonly ObjectSerializer objectSerializer;
 
         private Fillword fillword;
         public Fillword Fillword
         {
             get => fillword;
-            set
-            {
-                if (Set(ref fillword, value))
-                    OnPropertyChanged(nameof(Size));
-            }
+            set => Set(ref fillword, value);
         }
 
         public FillwordViewModel(
-            IWritableOptions<GameSettings> options,
             INavigationService navigationService,
             DownloadDataService downloadDataService,
-            GameProcessService gameProcessService)
+            GameProcessService gameProcessService,
+            ObjectSerializer objectSerializer)
         {
-            this.options = options;
             this.navigationService = navigationService;
             this.gameProcessService = gameProcessService;
+            this.objectSerializer = objectSerializer;
 
-            gameProcessService.GameStarts += OnGameProgressChanged;
+            gameProcessService.GameStarted += OnGameProgressChanged;
             gameProcessService.GameProgressChanged += OnGameProgressChanged;
-            gameProcessService.GameEnds += OnGameProgressChanged;
         }
 
         private void OnGameProgressChanged()
         {
-            fillword?.SaveAsync();
+            fillword?.SaveAsync(objectSerializer);
         }
     }
 }

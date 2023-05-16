@@ -2,7 +2,7 @@
 
 namespace FillwordWPF.Game
 {
-    internal class WordInfo
+    public class WordInfo
     {
         public WordInfo(string definition, string answerIsProbablyNotNoun, string answerNeedToIncludePlural)
         {

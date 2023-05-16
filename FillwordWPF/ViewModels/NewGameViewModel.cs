@@ -27,6 +27,7 @@ namespace FillwordWPF.ViewModels
         private readonly Dictionary<string, object> tempChanges;
         private bool isSavedLoaded;
 
+        private ObjectSerializer objectSerializer;
 
         public int Size
         {
@@ -77,7 +78,7 @@ namespace FillwordWPF.ViewModels
                 if (value != null && Set(ref selectedSave, value))
                 {
                     isSavedLoaded = true;
-                    ReloadFillword(value.GetFillword());
+                    ReloadFillword(Fillword.Load(value.FilePath, objectSerializer));
                 }
             }
         }
@@ -86,7 +87,7 @@ namespace FillwordWPF.ViewModels
         public ICommand ReloadFillwordCommand { get; }
         public ICommand NavigateToNewGameCommand { get; }
         public ICommand ResetChangesCommand { get; }
-
+        public ICommand ResetProgressCommand { get; }
         public ICommand DeleteSaveCommand { get; }
 
         public NewGameViewModel(
@@ -94,14 +95,10 @@ namespace FillwordWPF.ViewModels
             IWritableOptions<GameSettings> gameOptions,
             DownloadDataService downloadDataService,
             FillwordViewModel fillwordViewModel,
-            GameProcessService gameProcessService)
+            GameProcessService gameProcessService,
+            ObjectSerializer objectSerializer)
         {
-            GetSaves();
-            gameOptions.OnUpdateEvent += GetSaves;
-            gameProcessService.GameStarts += GetSaves;
-            gameProcessService.GameEnds += GetSaves;
-            gameProcessService.GameEnds += OnWin;
-
+            this.objectSerializer = objectSerializer;
             this.navigationService = navigationService;
             this.gameOptions = gameOptions;
             this.downloadDataService = downloadDataService;
@@ -110,6 +107,12 @@ namespace FillwordWPF.ViewModels
 
             tempChanges = new Dictionary<string, object>();
 
+            GetSaves();
+            gameOptions.OnUpdateEvent += GetSaves;
+            gameProcessService.GameStarted += GetSaves;
+            gameProcessService.GameStoped += GetSaves;
+            gameProcessService.GameStoped += OnWin;
+
             NavigateToMenuCommand = new RelayCommand(x =>
             {
                 navigationService.NavigateTo<MainMenuViewModel>();
@@ -117,41 +120,61 @@ namespace FillwordWPF.ViewModels
 
             NavigateToNewGameCommand = new RelayCommand(x =>
             {
-                SaveChanges();
-                gameProcessService.StartGame(isSavedLoaded);
-                navigationService.NavigateTo<GameViewModel>();
+                if (!isSavedLoaded && isInLoading)
+                {
+                    //...
+                }
+                else
+                { 
+                    SaveChanges();
+                    gameProcessService.StartGame(isSavedLoaded);
+                    navigationService.NavigateTo<GameViewModel>();
+                }
             });
 
-            ResetChangesCommand = new RelayCommand(x =>
-            {
-                ResetChanges();
-            });
+            ResetChangesCommand = new RelayCommand(x => ResetChanges());
 
             ReloadFillwordCommand = new RelayCommand(x => ReloadFillword(Size));
 
             DeleteSaveCommand = new RelayCommand(DeleteSeletedSave);
+
+            ResetProgressCommand = new RelayCommand(OnResetProgress);
 
             downloadDataService.ProgressChanged += DownloadDataService_ProgressChanged;
 
             DataDownloadAsync();
         }
 
+        private void OnResetProgress(object obj)
+        {
+            var size = fillwordViewModel.Fillword.GameProcessService.ColorsMap.Length;
+            fillwordViewModel.Fillword.GameProcessService.ColorsMap = new string[size, size];
+        }
+
         private void DeleteSeletedSave(object parameter)
         {
+            if (parameter is null)
+                return;
+
             var selected = (Save)parameter;
 
             File.Delete(selected.FilePath);
 
-            if (!SavedFillwords.Remove(selected))
+            if (SavedFillwords.Count != 0 && !SavedFillwords.Remove(selected))
                 throw new InvalidOperationException();
 
             if (SavedFillwords.Count == 0)
+            {
                 ReloadFillword(Size);
+            }
+            else
+            {
+                SelectedSave = SavedFillwords.First();
+            }
         }
 
         private void OnWin()
         {
-            gameProcessService.SolvedMap = new bool[Size, Size];
             gameProcessService.ColorsMap = new string[Size, Size];
 
             MessageBox.Show("You winner!");
@@ -159,35 +182,23 @@ namespace FillwordWPF.ViewModels
             ReloadFillword(Size);
         }
 
-        public void ReloadFillword(Fillword fillword)
+        private void ReloadFillword(Fillword fillword)
         {
+            gameProcessService.StopGame(true);
             fillwordViewModel.Fillword = fillword;
-            gameProcessService.SolvedMap = fillword.GameProcessService.SolvedMap;
             gameProcessService.ColorsMap = fillword.GameProcessService.ColorsMap;
         }
 
-        public void ReloadFillword(int size)
+        private void ReloadFillword(int size)
         {
-            var data = new JsonObjectSerializer().Deserialize<WordsData>(App.LoadedDataFileName);
-            var table = new FillwordTableRandomBuilder(data, size).Build();
-            var linear = new ObservableCollection<FillwordItem>(table.AsLinear());
-
-            var newFillword = new Fillword
-            {
-                ItemsLinear = linear,
-                GameProcessService = gameProcessService,
-                InitTime = DateTime.Now,
-                Size = size
-            };
-
-            newFillword.GameProcessService.SolvedMap = new bool[size, size];
-            newFillword.GameProcessService.ColorsMap = new string[size, size];
+            gameProcessService.ColorsMap = new string[size, size];
+            var newFillword = Fillword.CreateRandom(size, gameProcessService, new JsonObjectSerializer());
 
             isSavedLoaded = false;
             ReloadFillword(newFillword);
         }
 
-        public async Task DataDownloadAsync()
+        private async Task DataDownloadAsync()
         {
             if (downloadDataService.IsDisposed)
                 return;
@@ -200,7 +211,7 @@ namespace FillwordWPF.ViewModels
 
         private void GetSaves()
         {
-            var saves = Save.GetSaves(new JsonObjectSerializer()).Reverse();
+            var saves = Save.GetSaves(objectSerializer).Reverse();
             SavedFillwords = new ObservableCollection<Save>(saves);
         }
 
@@ -208,16 +219,18 @@ namespace FillwordWPF.ViewModels
         {
             DownloadProgressLevel = progressPercentage.Value;
 
-            if (totalFileSize == totalBytesDownloaded)
+            if (totalFileSize == totalBytesDownloaded || isSavedLoaded)
             {
                 await Task.Delay(300);
                 IsInLoading = false;
                 downloadDataService.ProgressChanged -= DownloadDataService_ProgressChanged;
-                ReloadFillword(Size);
+
+                if (!isSavedLoaded)
+                    ReloadFillword(Size);
             }
         }
 
-        public void SaveChanges()
+        private void SaveChanges()
         {
             var type = gameOptions.Value.GetType();
             foreach (var item in tempChanges)
@@ -227,7 +240,7 @@ namespace FillwordWPF.ViewModels
             }
         }
 
-        public void ResetChanges()
+        private void ResetChanges()
         {
             tempChanges.Clear();
             foreach (var property in GetType().GetProperties())

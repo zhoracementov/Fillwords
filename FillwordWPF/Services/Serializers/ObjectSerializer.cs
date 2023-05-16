@@ -2,7 +2,7 @@
 
 namespace FillwordWPF.Services.Serializers
 {
-    internal abstract class ObjectSerializer
+    public abstract class ObjectSerializer
     {
         public abstract string FileFormat { get; }
 
@@ -12,6 +12,6 @@ namespace FillwordWPF.Services.Serializers
         public abstract Task SerializeAsync<T>(T obj, string fileName);
 
         public virtual string GetFileName(string fileName) =>
-            !fileName.Contains(FileFormat) ? fileName + FileFormat : fileName;
+            !fileName.EndsWith(FileFormat) ? fileName + FileFormat : fileName;
     }
 }

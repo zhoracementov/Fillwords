@@ -2,7 +2,7 @@
 
 namespace FillwordWPF.Game
 {
-    internal class Point
+    public class Point
     {
         public int X { get; }
         public int Y { get; }

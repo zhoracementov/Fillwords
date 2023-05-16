@@ -18,11 +18,14 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
-            <ScrollViewer>
+            <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate1}">
                 <ListView ItemsSource="{Binding SavedFillwords}"
                           DisplayMemberPath="Name"
                           Background="Transparent"
-                          SelectedItem="{Binding SelectedSave}">
+                          Foreground="LightGray"
+                          BorderBrush="Transparent"
+                          SelectedItem="{Binding SelectedSave}"
+                          FontSize="20">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="MouseRightButtonUp">
                             <behaviors:InvokeCommandAction 
@@ -37,8 +40,14 @@
             <DockPanel>
                 <Grid DockPanel.Dock="Bottom" Height="5"/>
                 <ProgressBar DockPanel.Dock="Bottom" Value="{Binding DownloadProgressLevel}" Height="30" Visibility="{Binding Path=IsInLoading, Converter={StaticResource BoolToVisConverter} }"/>
-                <Slider DockPanel.Dock="Bottom" Value="{Binding Size}" Minimum="3" Maximum="10" Visibility="{Binding Path=IsShowSlider, Converter={StaticResource BoolToVisConverter}}"/>
-                <!--<Slider Template="{DynamicResource SliderStyle}" DockPanel.Dock="Bottom" Value="{Binding Size}" Minimum="3" Maximum="16" Visibility="{Binding Path=IsShowSlider, Converter={StaticResource BoolToVisConverter}}"/>-->
+                <!--<Slider DockPanel.Dock="Bottom" Value="{Binding Size}" Minimum="3" Maximum="10" Visibility="{Binding Path=IsShowSlider, Converter={StaticResource BoolToVisConverter}}"/>-->
+                <Slider Template="{DynamicResource SliderStyle}"
+                        DockPanel.Dock="Bottom"
+                        Value="{Binding Size}"
+                        Minimum="3"
+                        Maximum="10"
+                        Visibility="{Binding Path=IsShowSlider,
+                        Converter={StaticResource BoolToVisConverter}}"/>
                 <Grid DockPanel.Dock="Bottom" Height="5"/>
                 <v:FillwordView DockPanel.Dock="Bottom" Margin="25"/>
             </DockPanel>
@@ -57,19 +66,34 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
-                <RowDefinition/>
+                <!--<RowDefinition/>-->
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <Button Content="Start" Command = "{Binding NavigateToNewGameCommand}" Margin="50, 25"/>
+                <Button Content="Start"
+                        Style="{DynamicResource ButtonStyle}"
+                        Command = "{Binding NavigateToNewGameCommand}"
+                        Margin="5, 15"
+                        FontSize="32"/>
             </Grid>
             <Grid Grid.Row="1">
-                <Button Content="Reload" Command = "{Binding ReloadFillwordCommand}" Margin="50, 25"/>
+                <Button Content="Reload"
+                        Style="{DynamicResource ButtonStyle}"
+                        Command = "{Binding ReloadFillwordCommand}"
+                        Margin="5, 15"
+                        FontSize="32"/>
             </Grid>
-            <Grid Grid.Row="2">
+            <!--<Grid Grid.Row="2">
+                <Button Content="Reset progress" Command = "{Binding ResetProgressCommand}" Margin="50, 25"/>
+            </Grid>-->
+            <!--<Grid Grid.Row="2">
                 <Button Content="Reset" Command = "{Binding ResetChangesCommand}" Margin="50, 25"/>
-            </Grid>
+            </Grid>-->
             <Grid Grid.Row="3">
-                <Button Content="Back" Command = "{Binding NavigateToMenuCommand}" Margin="50, 25"/>
+                <Button Content="Back"
+                        Style="{DynamicResource ButtonStyle}"
+                        Command = "{Binding NavigateToMenuCommand}"
+                        Margin="5, 15"
+                        FontSize="32"/>
             </Grid>
         </Grid>
     </Grid>

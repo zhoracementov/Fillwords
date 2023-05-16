@@ -56,6 +56,9 @@ namespace FillwordWPF
         public static string LoadedDataFileName =>
             Path.Combine(DataDirectory, ConfigurationManager.AppSettings["loadedDataFileName"]);
 
+        public static string BrushesNamesFileName =>
+            Path.Combine(DataDirectory, ConfigurationManager.AppSettings["brushesNamesFileName"]);
+
         public static string SettingsFileName =>
             ConfigurationManager.AppSettings["settingsFileName"];
 

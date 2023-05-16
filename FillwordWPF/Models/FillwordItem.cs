@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace FillwordWPF.Models
 {
-    internal class FillwordItem
+    public class FillwordItem
     {
         public int Index { get; }
         public WordInfo Info { get; }
@@ -17,6 +17,11 @@ namespace FillwordWPF.Models
             Info = info;
             Point = point;
             Word = word;
+        }
+
+        protected FillwordItem()
+        {
+            //...
         }
 
         public static bool operator ==(FillwordItem l, FillwordItem r)

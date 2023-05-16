@@ -9,6 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/ScrollBarStyle.xaml"/>
                 <ResourceDictionary Source="Styles/SliderStyle.xaml"/>
+                <ResourceDictionary Source="Styles/ButtonStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <vm:ViewModelsLocator x:Key="ViewModelsLocator"/>

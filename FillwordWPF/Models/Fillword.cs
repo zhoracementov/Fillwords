@@ -1,4 +1,6 @@
-﻿using FillwordWPF.Models;
+﻿using FillwordWPF.Extenstions;
+using FillwordWPF.Game;
+using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Serializers;
 using System;
@@ -13,33 +15,50 @@ using System.Threading.Tasks;
 
 namespace FillwordWPF.Models
 {
-    internal class Fillword
+    public class Fillword
     {
-        private readonly static ObjectSerializer json = new JsonObjectSerializer();
+        private readonly static ObjectSerializer serializer = new JsonObjectSerializer();
 
         public ObservableCollection<FillwordItem> ItemsLinear { get; set; }
         public GameProcessService GameProcessService { get; set; }
         public DateTime InitTime { get; set; }
         public int Size { get; set; }
 
-        public async void SaveAsync()
+        public async void SaveAsync(ObjectSerializer objectSerializer)
         {
-            await json.SerializeAsync(this, GetName());
+            await objectSerializer.SerializeAsync(this, GetName());
         }
 
-        public void Save()
+        public void Save(ObjectSerializer objectSerializer)
         {
-            json.Serialize(this, GetName());
+            objectSerializer.Serialize(this, GetName());
         }
 
-        public static async Task<Fillword> LoadAsync(string fileName)
+        public static async Task<Fillword> LoadAsync(string fileName, ObjectSerializer objectSerializer)
         {
-            return await json.DeserializeAsync<Fillword>(fileName);
+            return await objectSerializer.DeserializeAsync<Fillword>(fileName);
         }
 
-        public static Fillword Load(string fileName)
+        public static Fillword Load(string fileName, ObjectSerializer objectSerializer)
         {
-            return json.Deserialize<Fillword>(fileName);
+            return objectSerializer.Deserialize<Fillword>(fileName);
+        }
+
+        public static Fillword CreateRandom(int size, GameProcessService gameProcessService, ObjectSerializer objectSerializer)
+        {
+            var data = objectSerializer.Deserialize<WordsData>(App.LoadedDataFileName);
+            var table = new FillwordTableRandomBuilder(data, size).Build();
+            var linear = new ObservableCollection<FillwordItem>(table.AsLinear());
+
+            var newFillword = new Fillword
+            {
+                ItemsLinear = linear,
+                GameProcessService = gameProcessService,
+                InitTime = DateTime.Now,
+                Size = size
+            };
+
+            return newFillword;
         }
 
         private string GetName()

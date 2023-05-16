@@ -1,6 +1,7 @@
 ﻿using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Navigation;
+using FillwordWPF.Services.Serializers;
 using FillwordWPF.Services.WritableOptions;
 using FillwordWPF.ViewModels;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,7 @@ namespace FillwordWPF
             app.InitializeComponent();
             app.Run();
         }
+
         public static IHostBuilder CreateHostBuilder(string[] agrs) => Host
                 .CreateDefaultBuilder(agrs)
                 .UseContentRoot(App.DataDirectory)
@@ -42,7 +44,8 @@ namespace FillwordWPF
                 .AddSingleton<DownloadDataInput>()
                 .AddSingleton<DownloadDataService>()
                 .AddSingleton<GameProcessService>()
-                .AddSingleton<BrushQueue>()
+                .AddSingleton<BrushesNamesLoopQueue>()
+                .AddSingleton<ObjectSerializer, JsonObjectSerializer>()
                 .AddSingleton<Func<Type, ViewModel>>(sp => vmt => (ViewModel)sp.GetRequiredService(vmt))
                 .ConfigureWritable<GameSettings>(host.Configuration.GetSection(nameof(GameSettings)), App.SettingsFileName);
     }

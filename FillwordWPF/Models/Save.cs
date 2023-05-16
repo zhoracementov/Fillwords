@@ -21,9 +21,5 @@ namespace FillwordWPF.Models
                 .Select(file => new Save { FilePath = file });
         }
 
-        public Fillword GetFillword()
-        {
-            return Fillword.Load(FilePath);
-        }
     }
 }

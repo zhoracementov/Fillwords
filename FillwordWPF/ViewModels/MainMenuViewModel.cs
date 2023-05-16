@@ -1,4 +1,5 @@
 ﻿using FillwordWPF.Commands;
+using FillwordWPF.Models;
 using FillwordWPF.Services;
 using FillwordWPF.Services.Navigation;
 using FillwordWPF.Services.Serializers;

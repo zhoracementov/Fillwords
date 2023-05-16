@@ -10,7 +10,8 @@
     <UserControl.Resources>
         <c:FillwordItemToViewModelConverter x:Key="FillwordItemConverter"/>
         <c:BrushNameToBrushConverter x:Key="BrushNameConverter"/>
-        <SolidColorBrush x:Key="BorderBrush" Color="DimGray"/>
+        <SolidColorBrush x:Key="FontBrush" Color="Black"/>
+        <c:MarginConverter x:Key="MarginConverter"/>
     </UserControl.Resources>
     <Grid>
         <ItemsControl ItemsSource="{Binding Fillword.ItemsLinear}">
@@ -30,14 +31,16 @@
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"/>-->
                         <Grid DockPanel.Dock="Top">
-                            <Border Background="{Binding CurrentColor, Converter={StaticResource BrushNameConverter}}"
-                                    BorderThickness="3"
-                                    BorderBrush="{StaticResource BorderBrush}">
+                            <Border BorderThickness="3"
+                                    BorderBrush="Transparent"
+                                    CornerRadius="10"
+                                    Margin="{Binding Margin, Converter={StaticResource MarginConverter}}"
+                                    Background="{Binding BackgroungCurrentColor, Converter={StaticResource BrushNameConverter}}"
+                                    >
                                 <TextBlock Text="{Binding FillwordItem}"
-                                       Background="Transparent"
-                                       FontSize="24"
-                                       TextAlignment="Center"
-                                       Padding="5"/>
+                                       FontSize="44"
+                                       Foreground="{StaticResource FontBrush}"
+                                       TextAlignment="Center"/>
                             </Border>
                             <behaviors:Interaction.Triggers>
                                 <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
@@ -45,15 +48,28 @@
                                         Command="{Binding StartSelectCommand}"
                                         CommandParameter="{Binding FillwordItem}"/>
                                 </behaviors:EventTrigger>
+                                <!--<behaviors:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                    <behaviors:InvokeCommandAction 
+                                        Command="{Binding StartSelectCommand}"
+                                        CommandParameter="{Binding FillwordItem}"/>
+                                </behaviors:EventTrigger>-->
                                 <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
                                     <behaviors:InvokeCommandAction 
                                         Command="{Binding EndSelectCommand}"/>
                                 </behaviors:EventTrigger>
+                                <!--<behaviors:EventTrigger EventName="PreviewMouseRightButtonUp">
+                                    <behaviors:InvokeCommandAction 
+                                        Command="{Binding EndSelectCommand}"/>
+                                </behaviors:EventTrigger>-->
                                 <behaviors:EventTrigger EventName="MouseEnter">
                                     <behaviors:InvokeCommandAction 
                                         Command="{Binding SelectNextItemCommand}"
                                         CommandParameter="{Binding FillwordItem}"/>
                                 </behaviors:EventTrigger>
+                                <!--<behaviors:EventTrigger EventName="MouseLeave">
+                                    <behaviors:InvokeCommandAction 
+                                        Command="{Binding EndSelectCommand}"/>
+                                </behaviors:EventTrigger>-->
                             </behaviors:Interaction.Triggers>
                         </Grid>
                     </DockPanel>

@@ -24,8 +24,8 @@ namespace FillwordWPF.ViewModels
             NavigationService.NavigateTo<MainMenuViewModel>();
             NavigateToMenuCommand = new RelayCommand(x =>
             {
+                gameProcessService.StopGame(true);
                 NavigationService.NavigateTo<MainMenuViewModel>();
-                //gameProcessService.IsGameActive = false;
             });
         }
     }

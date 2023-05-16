@@ -14,13 +14,8 @@ namespace FillwordWPF.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var g = App.Host.Services.GetRequiredService<GameProcessService>();
-            var q = App.Host.Services.GetRequiredService<BrushQueue>();
-            var vm = new FillwordItemViewModel(g, q)
-            {
-                FillwordItem = (FillwordItem)value
-            };
-
+            var vm = App.Host.Services.GetRequiredService<FillwordItemViewModel>();
+            vm.FillwordItem = (FillwordItem)value;
             return vm;
         }
 
