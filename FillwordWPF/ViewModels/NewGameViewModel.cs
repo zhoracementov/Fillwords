@@ -184,7 +184,7 @@ namespace FillwordWPF.ViewModels
 
         private void ReloadFillword(Fillword fillword)
         {
-            gameProcessService.StopGame(true);
+            fillword.GameProcessService.StopGame(true);
             fillwordViewModel.Fillword = fillword;
             gameProcessService.ColorsMap = fillword.GameProcessService.ColorsMap;
         }

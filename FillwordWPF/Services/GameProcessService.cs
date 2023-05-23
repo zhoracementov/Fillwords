@@ -32,18 +32,6 @@ namespace FillwordWPF.Services
             set => colorsMap = value;
         }
 
-        public string DefaultColor
-        {
-            get => defaultColor;
-            set => defaultColor = value;
-        }
-
-        public string SelectionColor
-        {
-            get => selectionColor;
-            set => selectionColor = value;
-        }
-
         public event Action GameStarted;
         public event Action GameProgressChanged;
         public event Action GameStoped;
@@ -53,8 +41,8 @@ namespace FillwordWPF.Services
         {
             selectedList = new LinkedList<FillwordItem>();
             this.brushesNamesLoopQueue = brushQueue;
-            this.DefaultColor = brushQueue.StartString;
-            this.SelectionColor = brushQueue.NextString;
+            this.defaultColor = brushQueue.StartString;
+            this.selectionColor = brushQueue.NextString;
         }
 
         public GameProcessService() : this(new BrushesNamesLoopQueue())
@@ -100,7 +88,7 @@ namespace FillwordWPF.Services
             var res = Add(fillwordItem);
 
             if (res && !CheckSolvedItem(fillwordItem))
-                ColorsMap.SetAt(fillwordItem.Point, SelectionColor);
+                ColorsMap.SetAt(fillwordItem.Point, selectionColor);
 
             return res;
         }
@@ -124,7 +112,7 @@ namespace FillwordWPF.Services
                 if (solvedAll)
                     StopGame();
 
-                SelectionColor = brushesNamesLoopQueue.NextString;
+                selectionColor = brushesNamesLoopQueue.NextString;
             }
             else
             {
@@ -144,7 +132,7 @@ namespace FillwordWPF.Services
             var res = Add(fillwordItem);
 
             if (res && !CheckSolvedItem(fillwordItem))
-                ColorsMap.SetAt(fillwordItem.Point, SelectionColor);
+                ColorsMap.SetAt(fillwordItem.Point, selectionColor);
 
             return res;
         }
@@ -190,7 +178,7 @@ namespace FillwordWPF.Services
 
         public bool CheckSolvedItem(Point point)
         {
-            return ColorsMap.GetAt(point) != DefaultColor;
+            return ColorsMap.GetAt(point) != defaultColor;
         }
 
         private bool CheckSolvedBefore()
@@ -204,7 +192,7 @@ namespace FillwordWPF.Services
         {
             return ColorsMap
                 .AsLinear()
-                .All(x => x != DefaultColor);
+                .All(x => x != defaultColor);
         }
 
         private bool CheckSolvedWord()
@@ -244,7 +232,7 @@ namespace FillwordWPF.Services
         {
             foreach (var result in selectedList)
             {
-                ColorsMap.SetAt(result.Point, DefaultColor);
+                ColorsMap.SetAt(result.Point, defaultColor);
             }
 
             OnGameSelectionFailed();
